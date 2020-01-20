@@ -77,7 +77,7 @@ fn create_axis_library(db_location: &str, axis_definitions: &[AxisDefinition]) {
 	}
 }
 
-fn create_key_library(db_location: &str, x_axis: &AxisDefinition, y_axis: &AxisDefinition) {//could be optimised for breeze (smaller x/y)
+fn create_key_library(db_location: &str, x_axis: &AxisDefinition, y_axis: &AxisDefinition) {
 	let library_key_location = format!("{}{}{}_{}", db_location, KEY_FILE_NAME, x_axis.id, y_axis.id);
 	u64::create_db(&library_key_location, (x_axis.max * y_axis.max) + size_of::<u64>() as u64);
 }
