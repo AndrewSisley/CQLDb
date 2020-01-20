@@ -1,5 +1,5 @@
 [package]
-name = "dm"
+name = "cql_db"
 version = "0.1.0"
 authors = ["Andrew Sisley <asisley@jaguarlandrover.com>"]
 edition = "2018"
