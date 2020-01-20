@@ -9,9 +9,15 @@ const VALUE_SIZE: usize = 9;
 const HAS_VALUE_FLAG: u8 = 1;
 const NULL_FLAG: u8 = 0;
 
-pub fn create_db(db_location: &str, db_size: u64) {
+pub fn create_db(db_location: &str) {
     let file = File::create(db_location).unwrap();
-    file.set_len(db_size * VALUE_SIZE as u64).unwrap();
+    file.set_len(0);
+}
+
+pub fn grow_db(db_location: &str, size_to_grow: u64) {
+    // FIXME: Need to make sure that this operation is atomic.
+    let mut file = OpenOptions::new().write(true).open(db_location).unwrap();
+    file.set_len(file.metadata().unwrap().len() + size_to_grow * VALUE_SIZE as u64);
 }
 
 pub fn write_to_db(db_location: &str, value_location: u64, input_value: Option<f64>) {
@@ -50,7 +56,7 @@ pub fn read_from_db(db_location: &str, value_location: u64) -> Option<f64> {
     Some(rdr.read_f64::<LittleEndian>().unwrap())
 }
 
-pub fn read_to_stream(db_location: &str, stream: &mut Write, value_location: u64, n_values: u64) {println!("t0");
+pub fn read_to_stream(db_location: &str, stream: &mut Write, value_location: u64, n_values: u64) {
     let mut file = File::open(&db_location).unwrap();
 
     file.seek(SeekFrom::Start(value_location * VALUE_SIZE as u64)).unwrap();

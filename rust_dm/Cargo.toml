@@ -5,3 +5,4 @@ authors = ["Andrew Sisley <asisley@jaguarlandrover.com>"]
 
 [dependencies]
 ds = { path = "../rust_ds" }
+itertools = "0.8.0"
