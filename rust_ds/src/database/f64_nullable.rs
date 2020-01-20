@@ -63,7 +63,7 @@ pub fn read_to_stream(db_location: &str, stream: &mut dyn Write, value_location:
     for _i in 0..n_values {
         let mut buffer = [0; 9];
         file.read(&mut buffer).unwrap();
-        stream.write(&mut buffer);
+        stream.write(&mut buffer).unwrap();
     }
 
     stream.flush().unwrap();
