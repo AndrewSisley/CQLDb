@@ -10,7 +10,7 @@ const NULL_FLAG: u8 = 0;
 
 pub fn create_db(db_location: &str) {
     let file = File::create(db_location).unwrap();
-    file.set_len(0);
+    file.set_len(0).unwrap();
 }
 
 pub fn grow_db(db_location: &str, size_to_grow: u64) {
