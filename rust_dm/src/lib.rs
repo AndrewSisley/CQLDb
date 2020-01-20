@@ -21,7 +21,7 @@ pub fn create_db(db_location: &str, axis_definitions: &[AxisDefinition]) {
     }
 }
 
-pub fn add_key(db_location: &str, x: u64, y: u64, x_axis: &AxisDefinition, y_axis: &AxisDefinition) -> u64 {//could remove fixed/starting db size and grow as these are added.
+pub fn add_key(db_location: &str, x: u64, y: u64, x_axis: &AxisDefinition, y_axis: &AxisDefinition) -> u64 {
 	let library_key_location = format!("{}{}{}_{}", db_location, KEY_FILE_NAME, x_axis.id, y_axis.id);
 	let last_key = u64::read_from_db(&library_key_location, 0);
 
