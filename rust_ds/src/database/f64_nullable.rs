@@ -2,7 +2,6 @@ extern crate byteorder;//consider move to main
 
 use std::fs::{File, OpenOptions}; 
 use std::io::{Read, Write, Cursor, SeekFrom, Seek};
-use std::net::TcpStream;
 use self::byteorder::{ReadBytesExt, WriteBytesExt, LittleEndian};
 
 const VALUE_SIZE: usize = 9;
