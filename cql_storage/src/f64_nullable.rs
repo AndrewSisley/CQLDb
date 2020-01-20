@@ -1,9 +1,6 @@
-extern crate byteorder;//consider move to main
-
-use std::fs::{File, OpenOptions}; 
+use std::fs::{File, OpenOptions};
 use std::io::{Read, Write, Cursor, SeekFrom, Seek};
-use std::net::TcpStream;
-use self::byteorder::{ReadBytesExt, WriteBytesExt, LittleEndian};
+use byteorder::{ReadBytesExt, WriteBytesExt, LittleEndian};
 
 const VALUE_SIZE: usize = 9;
 const HAS_VALUE_FLAG: u8 = 1;
@@ -11,23 +8,23 @@ const NULL_FLAG: u8 = 0;
 
 pub fn create_db(db_location: &str) {
     let file = File::create(db_location).unwrap();
-    file.set_len(0);
+    file.set_len(0).unwrap();
 }
 
 pub fn grow_db(db_location: &str, size_to_grow: u64) {
     // FIXME: Need to make sure that this operation is atomic.
-    let mut file = OpenOptions::new().write(true).open(db_location).unwrap();
-    file.set_len(file.metadata().unwrap().len() + size_to_grow * VALUE_SIZE as u64);
+    let file = OpenOptions::new().write(true).open(db_location).unwrap();
+    file.set_len(file.metadata().unwrap().len() + size_to_grow * VALUE_SIZE as u64).unwrap();
 }
 
 pub fn write_to_db(db_location: &str, value_location: u64, input_value: Option<f64>) {
 	let mut file = OpenOptions::new().write(true).open(db_location).unwrap();
 
 	file.seek(SeekFrom::Start(value_location * VALUE_SIZE as u64)).unwrap();
-    
+
     match input_value {
-        None => { 
-            file.write(&[NULL_FLAG; 1]).unwrap(); 
+        None => {
+            file.write(&[NULL_FLAG; 1]).unwrap();
         }
         Some(value) => {
             file.write(&[HAS_VALUE_FLAG; 1]).unwrap();
@@ -56,15 +53,15 @@ pub fn read_from_db(db_location: &str, value_location: u64) -> Option<f64> {
     Some(rdr.read_f64::<LittleEndian>().unwrap())
 }
 
-pub fn read_to_stream(db_location: &str, stream: &mut Write, value_location: u64, n_values: u64) {
+pub fn read_to_stream(db_location: &str, stream: &mut dyn Write, value_location: u64, n_values: u64) {
     let mut file = File::open(&db_location).unwrap();
 
     file.seek(SeekFrom::Start(value_location * VALUE_SIZE as u64)).unwrap();
-    
+
     for _i in 0..n_values {
         let mut buffer = [0; 9];
         file.read(&mut buffer).unwrap();
-        stream.write(&mut buffer);
+        stream.write(&mut buffer).unwrap();
     }
 
     stream.flush().unwrap();

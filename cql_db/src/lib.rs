@@ -1,10 +1,6 @@
-extern crate ds;
-extern crate itertools;
-
-use ds::database::{ f64_nullable, u64 };
+use cql_storage::{ f64_nullable, u64 };
 use std::io::Write;
-use std::mem::{size_of, size_of_val};
-use std::fs::File;
+use std::mem::{ size_of };
 use itertools::Itertools;
 
 const AXIS_FILE_NAME: &str = "/ax";
@@ -22,7 +18,7 @@ pub fn create_db(db_location: &str, axis_definitions: &[AxisDefinition]) {
     }
 }
 
-pub fn add_key(db_location: &str, x: u64, y: u64, x_axis: &AxisDefinition, y_axis: &AxisDefinition) -> u64 {//could remove fixed/starting db size and grow as these are added.
+pub fn add_key(db_location: &str, x: u64, y: u64, x_axis: &AxisDefinition, y_axis: &AxisDefinition) -> u64 {
 	let library_key_location = format!("{}{}{}_{}", db_location, KEY_FILE_NAME, x_axis.id, y_axis.id);
 	let last_key = u64::read_from_db(&library_key_location, 0);
 
@@ -58,8 +54,7 @@ pub fn read_value(db_location: &str, location: &[u64]) -> Option<f64> {
 	f64_nullable::read_from_db(&db_key_location, position)
 }
 
-//should check size here:
-pub fn read_to_stream(db_location: &str, stream: &mut Write, location: &[u64], n_values: u64) {
+pub fn read_to_stream(db_location: &str, stream: &mut dyn Write, location: &[u64], n_values: u64) {
 	let db_key_location = format!("{}{}", db_location, DB_FILE_NAME);
 
 	let position = calculate_position(db_location, location);
@@ -78,7 +73,7 @@ fn create_axis_library(db_location: &str, axis_definitions: &[AxisDefinition]) {
 	}
 }
 
-fn create_key_library(db_location: &str, x_axis: &AxisDefinition, y_axis: &AxisDefinition) {//could be optimised for breeze (smaller x/y)
+fn create_key_library(db_location: &str, x_axis: &AxisDefinition, y_axis: &AxisDefinition) {
 	let library_key_location = format!("{}{}{}_{}", db_location, KEY_FILE_NAME, x_axis.id, y_axis.id);
 	u64::create_db(&library_key_location, (x_axis.max * y_axis.max) + size_of::<u64>() as u64);
 }
@@ -88,7 +83,7 @@ fn calculate_position(db_location: &str, location: &[u64]) -> u64 {
 
     let mut x_position = location[0];
     for x_axis_id in 1..last_index {
-        let y_axis_id = (x_axis_id + 1);
+        let y_axis_id = x_axis_id + 1;
         let y_position = location[x_axis_id as usize];
         let y_axis_definition = get_axis_definition(db_location, y_axis_id);
 

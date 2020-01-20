@@ -1,0 +1,9 @@
+[package]
+name = "cql_db"
+version = "0.1.0"
+authors = ["Andrew Sisley"]
+edition = "2018"
+
+[dependencies]
+cql_storage = { path = "../cql_storage" }
+itertools = "0.8.0"
