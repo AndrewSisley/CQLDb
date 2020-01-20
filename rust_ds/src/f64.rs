@@ -1,4 +1,4 @@
-use std::fs::{File, OpenOptions}; 
+use std::fs::{File, OpenOptions};
 use std::io::{Read, Write, Cursor, SeekFrom, Seek};
 use byteorder::{ReadBytesExt, WriteBytesExt, LittleEndian};
 
