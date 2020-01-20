@@ -1,6 +1,6 @@
 extern crate byteorder;//consider move to main
 
-use std::fs::{File, OpenOptions}; 
+use std::fs::{File, OpenOptions};
 use std::io::{Read, Write, Cursor, SeekFrom, Seek};
 use self::byteorder::{ReadBytesExt, WriteBytesExt, LittleEndian};
 
@@ -23,10 +23,10 @@ pub fn write_to_db(db_location: &str, value_location: u64, input_value: Option<f
 	let mut file = OpenOptions::new().write(true).open(db_location).unwrap();
 
 	file.seek(SeekFrom::Start(value_location * VALUE_SIZE as u64)).unwrap();
-    
+
     match input_value {
-        None => { 
-            file.write(&[NULL_FLAG; 1]).unwrap(); 
+        None => {
+            file.write(&[NULL_FLAG; 1]).unwrap();
         }
         Some(value) => {
             file.write(&[HAS_VALUE_FLAG; 1]).unwrap();
@@ -59,7 +59,7 @@ pub fn read_to_stream(db_location: &str, stream: &mut dyn Write, value_location:
     let mut file = File::open(&db_location).unwrap();
 
     file.seek(SeekFrom::Start(value_location * VALUE_SIZE as u64)).unwrap();
-    
+
     for _i in 0..n_values {
         let mut buffer = [0; 9];
         file.read(&mut buffer).unwrap();
