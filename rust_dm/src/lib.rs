@@ -87,7 +87,7 @@ fn calculate_position(db_location: &str, location: &[u64]) -> u64 {
 
     let mut x_position = location[0];
     for x_axis_id in 1..last_index {
-        let y_axis_id = (x_axis_id + 1);
+        let y_axis_id = x_axis_id + 1;
         let y_position = location[x_axis_id as usize];
         let y_axis_definition = get_axis_definition(db_location, y_axis_id);
 
