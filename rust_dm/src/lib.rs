@@ -57,7 +57,6 @@ pub fn read_value(db_location: &str, location: &[u64]) -> Option<f64> {
 	f64_nullable::read_from_db(&db_key_location, position)
 }
 
-//should check size here:
 pub fn read_to_stream(db_location: &str, stream: &mut dyn Write, location: &[u64], n_values: u64) {
 	let db_key_location = format!("{}{}", db_location, DB_FILE_NAME);
 
