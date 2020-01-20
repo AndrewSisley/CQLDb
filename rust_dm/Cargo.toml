@@ -1,0 +1,7 @@
+[package]
+name = "dm"
+version = "0.1.0"
+authors = ["Andrew Sisley <asisley@jaguarlandrover.com>"]
+
+[dependencies]
+ds = { path = "../rust_ds" }

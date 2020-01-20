@@ -1,0 +1,8 @@
+[package]
+name = "ds"
+version = "0.1.0"
+authors = ["Andrew Sisley"]
+
+[dependencies]
+byteorder = "1"
+time = "0.1"
