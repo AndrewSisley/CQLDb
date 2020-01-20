@@ -15,7 +15,7 @@ pub fn create_db(db_location: &str) {
 
 pub fn grow_db(db_location: &str, size_to_grow: u64) {
     // FIXME: Need to make sure that this operation is atomic.
-    let mut file = OpenOptions::new().write(true).open(db_location).unwrap();
+    let file = OpenOptions::new().write(true).open(db_location).unwrap();
     file.set_len(file.metadata().unwrap().len() + size_to_grow * VALUE_SIZE as u64);
 }
 
