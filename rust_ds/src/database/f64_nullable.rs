@@ -1,8 +1,6 @@
-extern crate byteorder;//consider move to main
-
 use std::fs::{File, OpenOptions};
 use std::io::{Read, Write, Cursor, SeekFrom, Seek};
-use self::byteorder::{ReadBytesExt, WriteBytesExt, LittleEndian};
+use byteorder::{ReadBytesExt, WriteBytesExt, LittleEndian};
 
 const VALUE_SIZE: usize = 9;
 const HAS_VALUE_FLAG: u8 = 1;
