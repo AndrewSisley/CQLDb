@@ -4,7 +4,6 @@ extern crate itertools;
 use ds::database::{ f64_nullable, u64 };
 use std::io::Write;
 use std::mem::{ size_of };
-use std::fs::File;
 use itertools::Itertools;
 
 const AXIS_FILE_NAME: &str = "/ax";
