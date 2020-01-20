@@ -55,7 +55,7 @@ pub fn read_from_db(db_location: &str, value_location: u64) -> Option<f64> {
     Some(rdr.read_f64::<LittleEndian>().unwrap())
 }
 
-pub fn read_to_stream(db_location: &str, stream: &mut Write, value_location: u64, n_values: u64) {
+pub fn read_to_stream(db_location: &str, stream: &mut dyn Write, value_location: u64, n_values: u64) {
     let mut file = File::open(&db_location).unwrap();
 
     file.seek(SeekFrom::Start(value_location * VALUE_SIZE as u64)).unwrap();
