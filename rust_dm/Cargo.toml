@@ -5,5 +5,5 @@ authors = ["Andrew Sisley <asisley@jaguarlandrover.com>"]
 edition = "2018"
 
 [dependencies]
-ds = { path = "../rust_ds" }
+cql_storage = { path = "../cql_storage" }
 itertools = "0.8.0"

@@ -1,5 +1,5 @@
 [package]
-name = "ds"
+name = "cql_storage"
 version = "0.1.0"
 authors = ["Andrew Sisley"]
 edition = "2018"
