@@ -1,4 +1,4 @@
-use cql_storage::{ f64_nullable, u64 };
+use cql_storage::{ f64_nullable, u64, cql_type::CqlType };
 use std::io::Write;
 use std::mem::{ size_of };
 use itertools::Itertools;
@@ -7,9 +7,9 @@ const AXIS_FILE_NAME: &str = "/ax";
 const KEY_FILE_NAME: &str = "/key";
 const DB_FILE_NAME: &str = "/db";
 
-pub fn create_db(db_location: &str, axis_definitions: &[AxisDefinition]) {
+pub fn create_db<TStore: CqlType>(db_location: &str, axis_definitions: &[AxisDefinition]) {
     let db_key_location = format!("{}{}", db_location, DB_FILE_NAME);
-	f64_nullable::create_db(&db_key_location);
+	TStore::create_db(&db_key_location);
 
     create_axis_library(db_location, axis_definitions);
 
@@ -18,7 +18,7 @@ pub fn create_db(db_location: &str, axis_definitions: &[AxisDefinition]) {
     }
 }
 
-pub fn add_key(db_location: &str, x: u64, y: u64, x_axis: &AxisDefinition, y_axis: &AxisDefinition) -> u64 {
+pub fn add_key<TStore: CqlType>(db_location: &str, x: u64, y: u64, x_axis: &AxisDefinition, y_axis: &AxisDefinition) -> u64 {
 	let library_key_location = format!("{}{}{}_{}", db_location, KEY_FILE_NAME, x_axis.id, y_axis.id);
 	let last_key = u64::read_from_db(&library_key_location, 0);
 
@@ -29,7 +29,7 @@ pub fn add_key(db_location: &str, x: u64, y: u64, x_axis: &AxisDefinition, y_axi
     if y_axis.id == last_axis_id - 1 {
         let last_axis = get_axis_definition(db_location, last_axis_id);
         let db_key_location = format!("{}{}", db_location, DB_FILE_NAME);
-        f64_nullable::grow_db(&db_key_location,last_axis.max);
+        TStore::grow_database(&db_key_location,last_axis.max);
     }
 
     u64::write_to_db(&library_key_location, 0 as u64, new_key);
