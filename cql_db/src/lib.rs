@@ -1,4 +1,4 @@
-use cql_storage::{ f64_nullable, u64, cql_type::{ CqlType, CqlWritable, CqlReadable } };
+use cql_storage::{ u64, cql_type::{ CqlType, CqlWritable, CqlReadable, CqlStreamReadable } };
 use std::io::Write;
 use std::mem::{ size_of };
 use itertools::Itertools;
@@ -54,12 +54,12 @@ pub fn read_value<TStore: CqlReadable>(db_location: &str, location: &[u64]) -> T
 	TStore::read_from_db(&db_key_location, position)
 }
 
-pub fn read_to_stream(db_location: &str, stream: &mut dyn Write, location: &[u64], n_values: u64) {
+pub fn read_to_stream<TStore: CqlStreamReadable>(db_location: &str, stream: &mut dyn Write, location: &[u64], n_values: u64) {
 	let db_key_location = format!("{}{}", db_location, DB_FILE_NAME);
 
 	let position = calculate_position(db_location, location);
 
-	f64_nullable::read_to_stream(&db_key_location, stream, position, n_values)
+	TStore::read_to_stream(&db_key_location, stream, position, n_values)
 }
 
 fn create_axis_library(db_location: &str, axis_definitions: &[AxisDefinition]) {

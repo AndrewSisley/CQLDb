@@ -3,7 +3,7 @@ use std::io::{Read, Write, Cursor, SeekFrom, Seek};
 use byteorder::{ReadBytesExt, WriteBytesExt, LittleEndian};
 
 use crate::internal::grow_database::grow_database;
-use crate::cql_type::{ CqlType, CqlWritable, CqlReadable };
+use crate::cql_type::{ CqlType, CqlWritable, CqlReadable, CqlStreamReadable };
 
 const VALUE_SIZE: usize = 9;
 const HAS_VALUE_FLAG: u8 = 1;
@@ -57,16 +57,18 @@ impl CqlReadable for Option<f64> {
     }
 }
 
-pub fn read_to_stream(db_location: &str, stream: &mut dyn Write, value_location: u64, n_values: u64) {
-    let mut file = File::open(&db_location).unwrap();
+impl CqlStreamReadable for Option<f64> {
+    fn read_to_stream(db_location: &str, stream: &mut dyn Write, value_location: u64, n_values: u64) {
+        let mut file = File::open(&db_location).unwrap();
 
-    file.seek(SeekFrom::Start(value_location * VALUE_SIZE as u64)).unwrap();
+        file.seek(SeekFrom::Start(value_location * VALUE_SIZE as u64)).unwrap();
 
-    for _i in 0..n_values {
-        let mut buffer = [0; 9];
-        file.read(&mut buffer).unwrap();
-        stream.write(&mut buffer).unwrap();
+        for _i in 0..n_values {
+            let mut buffer = [0; 9];
+            file.read(&mut buffer).unwrap();
+            stream.write(&mut buffer).unwrap();
+        }
+
+        stream.flush().unwrap();
     }
-
-    stream.flush().unwrap();
 }
