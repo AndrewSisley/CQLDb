@@ -1,8 +1,21 @@
-use std::fs::{File};
-use std::io::{Read, Cursor, SeekFrom, Seek};
-use byteorder::{ReadBytesExt, LittleEndian};
+use std::fs::{File, OpenOptions};
+use std::io::{Read, Write, Cursor, SeekFrom, Seek};
+use byteorder::{ReadBytesExt, WriteBytesExt, LittleEndian};
 
 const VALUE_SIZE: usize = (255 * 4) + 2;
+
+pub fn write_to_db(db_location: &str, value_location: u64, input_value: String) {
+	let mut file = OpenOptions::new().write(true).open(db_location).unwrap();
+
+    file.seek(SeekFrom::Start(value_location * VALUE_SIZE as u64)).unwrap();
+
+    let input_length: u16 = input_value.len() as u16;
+    let mut length_wtr = vec![];
+    length_wtr.write_u16::<LittleEndian>(input_length).unwrap();
+    file.write(&length_wtr).unwrap();
+
+    file.write(&input_value.into_bytes()).unwrap();
+}
 
 pub fn read_from_db(db_location: &str, value_location: u64) -> String {
 	let mut file = File::open(&db_location).unwrap();
