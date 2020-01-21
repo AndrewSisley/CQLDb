@@ -3,11 +3,18 @@ use std::io::{Read, Write, Cursor, SeekFrom, Seek};
 use byteorder::{ReadBytesExt, WriteBytesExt, LittleEndian};
 
 use crate::internal::grow_database::grow_database;
+use crate::cql_type::{ CqlType, CqlWritable, CqlReadable };
 
 const VALUE_SIZE: usize = (255 * 4) + 2;
 
-pub fn grow_db(db_location: &str, size_to_grow: u64) {
-    grow_database(db_location, size_to_grow, VALUE_SIZE as u64)
+pub struct TinyText;
+
+impl CqlType for TinyText {
+    type ValueType = String;
+
+    fn grow_database(db_location: &str, size_to_grow: u64) {
+        grow_database(db_location, size_to_grow, VALUE_SIZE as u64)
+    }
 }
 
 pub fn write_to_db(db_location: &str, value_location: u64, input_value: String) {
