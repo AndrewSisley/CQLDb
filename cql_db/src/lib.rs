@@ -1,7 +1,16 @@
-use cql_storage::{ u64, cql_type::{ CqlType, CqlWritable, CqlReadable, CqlStreamReadable } };
 use std::io::Write;
 use std::mem::{ size_of };
 use itertools::Itertools;
+
+use cql_storage::{
+    u64,
+    cql_type::{
+        CqlType,
+        CqlWritable,
+        CqlReadable,
+        CqlStreamReadable
+    }
+};
 
 const AXIS_FILE_NAME: &str = "/ax";
 const KEY_FILE_NAME: &str = "/key";
