@@ -1,4 +1,4 @@
-use cql_storage::{ f64_nullable, u64, cql_type::{ CqlType, CqlWritable } };
+use cql_storage::{ f64_nullable, u64, cql_type::{ CqlType, CqlWritable, CqlReadable } };
 use std::io::Write;
 use std::mem::{ size_of };
 use itertools::Itertools;
@@ -46,12 +46,12 @@ pub fn write_value<TStore: CqlWritable>(db_location: &str, location: &[u64], val
 	TStore::write_to_db(&db_key_location, position, value)
 }
 
-pub fn read_value(db_location: &str, location: &[u64]) -> Option<f64> {
+pub fn read_value<TStore: CqlReadable>(db_location: &str, location: &[u64]) -> TStore::ValueType {
 	let db_key_location = format!("{}{}", db_location, DB_FILE_NAME);
 
 	let position = calculate_position(db_location, location);
 
-	f64_nullable::read_from_db(&db_key_location, position)
+	TStore::read_from_db(&db_key_location, position)
 }
 
 pub fn read_to_stream(db_location: &str, stream: &mut dyn Write, location: &[u64], n_values: u64) {

@@ -14,3 +14,7 @@ pub trait CqlType {
 pub trait CqlWritable: CqlType {
     fn write_to_db(db_location: &str, value_location: u64, input_value: Self::ValueType);
 }
+
+pub trait CqlReadable: CqlType {
+    fn read_from_db(db_location: &str, value_location: u64) -> Self::ValueType;
+}
