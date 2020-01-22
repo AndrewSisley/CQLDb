@@ -20,11 +20,11 @@ pub fn create_db<TStore: CqlType>(db_location: &str, axis_definitions: &[AxisDef
     let db_key_location = format!("{}{}", db_location, DB_FILE_NAME);
 	TStore::create_db(&db_key_location);
 
-    create_axis_library(db_location, axis_definitions);
+    /*create_axis_library(db_location, axis_definitions);
 
     for (x_axis, y_axis) in axis_definitions.as_ref().iter().take(axis_definitions.len() - 1).tuple_windows() {
         create_key_library(db_location, x_axis, y_axis);
-    }
+    }*/
 }
 
 pub fn add_key<TStore: CqlType>(db_location: &str, x: u64, y: u64, x_axis: &AxisDefinition, y_axis: &AxisDefinition) -> u64 {

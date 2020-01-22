@@ -12,3 +12,6 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 cfg-if = "0.1"
 wasm-bindgen = { version = "0.2.50", features = ["serde-serialize"] }
+cql_db = { path = "../cql_db" }
+cql_storage = { path = "../cql_storage" }
+console_error_panic_hook = "0.1.6"
