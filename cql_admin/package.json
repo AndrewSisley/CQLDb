@@ -1,0 +1,25 @@
+{
+  "name": "cql-admin",
+  "version": "0.0.0",
+  "scripts": {
+    "start": "wasm-pack build --out-dir src/.wasm && electron-webpack dev",
+    "build": "electron-webpack",
+    "dist": "npm build && electron-builder",
+    "dist:dir": "build dist --dir -c.compression=store -c.mac.identity=null"
+  },
+  "devDependencies": {
+    "electron": "5.0.6",
+    "electron-builder": "^21.0.11",
+    "electron-webpack": "^2.7.4",
+    "webpack": "~4.35.3",
+    "@wasm-tool/wasm-pack-plugin": "0.4.2",
+    "text-encoding": "^0.7.0",
+    "html-webpack-plugin": "^3.2.0",
+    "webpack-cli": "^3.1.1",
+    "webpack-dev-server": "^3.1.0",
+    "copy-webpack-plugin": "^5.0.0"
+  },
+  "dependencies": {
+    "source-map-support": "^0.5.12"
+  }
+}
