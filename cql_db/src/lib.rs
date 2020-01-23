@@ -1,15 +1,24 @@
-use cql_storage::{ f64_nullable, u64 };
 use std::io::Write;
 use std::mem::{ size_of };
 use itertools::Itertools;
+
+use cql_storage::{
+    u64,
+    cql_type::{
+        CqlType,
+        CqlWritable,
+        CqlReadable,
+        CqlStreamReadable
+    }
+};
 
 const AXIS_FILE_NAME: &str = "/ax";
 const KEY_FILE_NAME: &str = "/key";
 const DB_FILE_NAME: &str = "/db";
 
-pub fn create_db(db_location: &str, axis_definitions: &[AxisDefinition]) {
+pub fn create_db<TStore: CqlType>(db_location: &str, axis_definitions: &[AxisDefinition]) {
     let db_key_location = format!("{}{}", db_location, DB_FILE_NAME);
-	f64_nullable::create_db(&db_key_location);
+	TStore::create_db(&db_key_location);
 
     create_axis_library(db_location, axis_definitions);
 
@@ -18,7 +27,7 @@ pub fn create_db(db_location: &str, axis_definitions: &[AxisDefinition]) {
     }
 }
 
-pub fn add_key(db_location: &str, x: u64, y: u64, x_axis: &AxisDefinition, y_axis: &AxisDefinition) -> u64 {
+pub fn add_key<TStore: CqlType>(db_location: &str, x: u64, y: u64, x_axis: &AxisDefinition, y_axis: &AxisDefinition) -> u64 {
 	let library_key_location = format!("{}{}{}_{}", db_location, KEY_FILE_NAME, x_axis.id, y_axis.id);
 	let last_key = u64::read_from_db(&library_key_location, 0);
 
@@ -29,7 +38,7 @@ pub fn add_key(db_location: &str, x: u64, y: u64, x_axis: &AxisDefinition, y_axi
     if y_axis.id == last_axis_id - 1 {
         let last_axis = get_axis_definition(db_location, last_axis_id);
         let db_key_location = format!("{}{}", db_location, DB_FILE_NAME);
-        f64_nullable::grow_db(&db_key_location,last_axis.max);
+        TStore::grow_database(&db_key_location,last_axis.max);
     }
 
     u64::write_to_db(&library_key_location, 0 as u64, new_key);
@@ -38,28 +47,28 @@ pub fn add_key(db_location: &str, x: u64, y: u64, x_axis: &AxisDefinition, y_axi
     new_key
 }
 
-pub fn write_value(db_location: &str, location: &[u64], value: Option<f64>) {
+pub fn write_value<TStore: CqlWritable>(db_location: &str, location: &[u64], value: TStore::ValueType) {
 	let db_key_location = format!("{}{}", db_location, DB_FILE_NAME);
 
 	let position = calculate_position(db_location, location);
 
-	f64_nullable::write_to_db(&db_key_location, position, value)
+	TStore::write_to_db(&db_key_location, position, value)
 }
 
-pub fn read_value(db_location: &str, location: &[u64]) -> Option<f64> {
+pub fn read_value<TStore: CqlReadable>(db_location: &str, location: &[u64]) -> TStore::ValueType {
 	let db_key_location = format!("{}{}", db_location, DB_FILE_NAME);
 
 	let position = calculate_position(db_location, location);
 
-	f64_nullable::read_from_db(&db_key_location, position)
+	TStore::read_from_db(&db_key_location, position)
 }
 
-pub fn read_to_stream(db_location: &str, stream: &mut dyn Write, location: &[u64], n_values: u64) {
+pub fn read_to_stream<TStore: CqlStreamReadable>(db_location: &str, stream: &mut dyn Write, location: &[u64], n_values: u64) {
 	let db_key_location = format!("{}{}", db_location, DB_FILE_NAME);
 
 	let position = calculate_position(db_location, location);
 
-	f64_nullable::read_to_stream(&db_key_location, stream, position, n_values)
+	TStore::read_to_stream(&db_key_location, stream, position, n_values)
 }
 
 fn create_axis_library(db_location: &str, axis_definitions: &[AxisDefinition]) {
