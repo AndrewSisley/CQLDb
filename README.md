@@ -8,3 +8,18 @@ Currently the project is split into two sub-projects, [cql_storage](cql_storage)
 The project works by treating the file system as an N dimensional array, removing the need to scan for items in order to find them. Currently the number of dimensions must be specified on create of the database, however each dimension may grow on demand.
 
 The project was originally built with an eye on storing large volumes of relational time series data, however I am looking to explore other uses in my other projects. Benchmarks were available in the original repo and hopefully I'll clean them up port them over to here pretty promptly.
+
+
+## Benchmarks
+
+Benchmarks (like everywhere else) are still very much a WIP, however you can find a quick and very rough summary in the table below (run on an 8th gen Intel i5 with SSD). You can run them locally from the cql_db folder with the following command `rustup run nightly cargo bench` if/after you have installed the rust nightly build.
+
+### Single point read (nullable f64)
+
+Database size | Point location | Mean read time (ns)
+--- | --- | ---
+[1] | [1] | 4 027 (+/- 606)
+[100 000] | [100 000] | 4 036 (+/- 493)
+[1, 1, 1, 1] | [1, 1, 1, 1] | 11 481 (+/- 1 272)
+[1, 100 000, 1, 1] | [1, 100 000, 1, 1] | 11 471 (+/- 1 052)
+[1, 1, 1, 100 000] | [1, 1, 1, 100 000] | 11 441 (+/- 1 830)
