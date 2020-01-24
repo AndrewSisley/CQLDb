@@ -446,7 +446,6 @@ fn unpack_stream<F>(stream: &mut Cursor<Vec<u8>>, n_values: usize, mut res: F) w
         match stream.read(&mut null_buffer) {
             Ok(n) => {
                 if n == 0 { break; }
-                else if null_buffer[0] == 2 { break; }
                 else if null_buffer[0] == 0 {
                     stream.read(&mut value_buffer).unwrap();
                     res(index, None);
