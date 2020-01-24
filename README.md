@@ -23,3 +23,17 @@ Database size | Point location | Mean read time (ns)
 [1, 1, 1, 1] | [1, 1, 1, 1] | 11 481 (+/- 1 272)
 [1, 100 000, 1, 1] | [1, 100 000, 1, 1] | 11 471 (+/- 1 052)
 [1, 1, 1, 100 000] | [1, 1, 1, 100 000] | 11 441 (+/- 1 830)
+
+### Stream read (nullable f64)
+N number of points read across the last axis from the start location, benchmark includes the time taken to read from bytestream into an array.
+
+Database size | Some/None | Start location | N points | Mean read time (ns) | Mean per point (ns)
+--- | --- | --- | --- | --- | ---
+[1] | None | [1] | 1 | 1 777 (+/- 446) | 1 777
+[1] | Some | [1] | 1 | 1 844 (+/- 315) | 1 844
+[100 000] | None | [50 000] | 50 000 | 16 419 859 (+/- 500 229) | 328
+[100 000] | Some | [50 000] | 50 000 | 19 312 754 (+/- 262 656) | 386
+[1, 1, 1, 1] | None | [1, 1, 1, 1] | 1 | 11 118 (+/- 2 158) | 11 118
+[1, 1, 1, 1] | Some | [1, 1, 1, 1] | 1 | 11 093 (+/- 2 603) | 11 093
+[1, 1, 1, 100 000] | None | [1, 1, 1, 50 000] | 50 000 | 19 110 911 (+/- 469 478) | 382
+[1, 1, 1, 100 000] | Some | [1, 1, 1, 50 000] | 50 000 | 19 299 048 (+/- 337 764) | 385
