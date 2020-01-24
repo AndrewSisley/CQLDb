@@ -323,7 +323,7 @@ fn _4d_f64_nullable_stream_read_empty_location_1_1_1_50000_to_1_1_1_100000(b: &m
     ];
 
     let n_values_to_read = 50000usize;
-    let base_point = [1, 1, 1, 1];
+    let base_point = [1, 1, 1, 50000];
 
     cql_db::create_db::<Option<f64>>(
         DATABASE_LOCATION,
@@ -387,7 +387,7 @@ fn _4d_f64_nullable_stream_read_populated_location_1_1_1_50000_to_1_1_1_100000(b
     ];
 
     let n_values_to_read = 50000usize;
-    let base_point = [1, 1, 1, 1];
+    let base_point = [1, 1, 1, 50000];
     let base_value = 78352.3;
 
     cql_db::create_db::<Option<f64>>(
