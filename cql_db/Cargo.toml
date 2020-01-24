@@ -6,6 +6,7 @@ edition = "2018"
 
 [dev-dependencies]
 serial_test = "*"
+byteorder = "1"
 
 [dependencies]
 cql_storage = { path = "../cql_storage" }
