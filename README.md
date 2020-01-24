@@ -12,7 +12,7 @@ The project was originally built with an eye on storing large volumes of relatio
 
 ## Benchmarks
 
-Benchmarks (like everywhere else) are still very much a WIP, however you can find a quick and very rough summary in the table below (run on an 8th gen Intel i5 with SSD). You can run them locally from the cql_db folder with the following command `rustup run nightly cargo bench` if/after you have installed the rust nightly build.
+Benchmarks (like everywhere else) are still very much a WIP, however you can find a quick and very rough summary in the table below (run on an 8th gen Intel i5 with SSD). You can run them locally from the cql_db folder with the following command `rustup run nightly cargo bench` if/after you have installed the rust nightly build, but it will use about 900 kB of disk space.
 
 ### Single point read (nullable f64)
 
