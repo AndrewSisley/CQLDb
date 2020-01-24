@@ -88,6 +88,10 @@ fn create_key_library(db_location: &str, x_axis: &AxisDefinition, y_axis: &AxisD
 }
 
 fn calculate_position(db_location: &str, location: &[u64]) -> u64 {
+    if location.len() == 1 {
+        return location[0]
+    }
+
     let last_index = location.len() as u64 - 1;
 
     let mut x_position = location[0];
