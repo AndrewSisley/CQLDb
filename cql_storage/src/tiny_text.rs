@@ -3,7 +3,7 @@ use std::io::{Read, Write, Cursor, SeekFrom, Seek};
 use byteorder::{ReadBytesExt, WriteBytesExt, LittleEndian};
 
 use crate::internal::grow_database::grow_database;
-use crate::cql_type::{ CqlType, CqlWritable, CqlReadable };
+use crate::cql_type::{ CqlType, CqlWritable, CqlReadable, CqlStreamReadable };
 
 const VALUE_SIZE: usize = (255 * 4);
 const LENGTH_SIZE: usize = 2;
@@ -55,5 +55,30 @@ impl CqlReadable for TinyText {
 
         let string_bytes = value_buffer[0..size].to_vec();
         String::from_utf8(string_bytes).unwrap()
+    }
+}
+
+impl CqlStreamReadable for TinyText {
+    fn read_to_stream(db_location: &str, stream: &mut dyn Write, value_location: u64, n_values: u64) {
+        let mut file = File::open(&db_location).unwrap();
+
+        file.seek(SeekFrom::Start(value_location * UNIT_SIZE as u64)).unwrap();
+        let mut value_buffer = [0; VALUE_SIZE];
+
+        for _i in 0..n_values {
+            // must have value cleared for each value read or previous value will be quietly retained and re-written to the (out) stream
+            let mut size_buffer = [0; LENGTH_SIZE];
+
+            file.read(&mut size_buffer).unwrap();
+            let mut size_rdr = Cursor::new(size_buffer);
+            let size = usize::from(size_rdr.read_u16::<LittleEndian>().unwrap());
+
+            file.read(&mut value_buffer).unwrap();
+
+            stream.write(&mut size_buffer).unwrap();
+            stream.write(&mut value_buffer[0..size]).unwrap();
+        }
+
+        stream.flush().unwrap();
     }
 }
