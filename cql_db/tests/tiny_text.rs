@@ -1,9 +1,8 @@
 mod constants;
 
-use std::io::{ Read, Cursor, SeekFrom, Seek };
-use byteorder::{ ReadBytesExt, LittleEndian };
+use std::io::{ Cursor, SeekFrom, Seek };
 use serial_test::serial;
-use cql_storage::tiny_text::TinyText;
+use cql_storage::tiny_text::{ TinyText, unpack_stream };
 use constants::DATABASE_LOCATION;
 
 #[test]
@@ -388,28 +387,4 @@ fn _1d_tiny_text_database_allows_for_multi_point_stream_reads() {
     assert_eq!(result[2], String::new());
     assert_eq!(result[3], value4.to_string());
     assert_eq!(result[4], String::new());
-}
-
-fn unpack_stream<F>(stream: &mut Cursor<Vec<u8>>, n_values: usize, mut res: F) where F: FnMut(usize, String) {
-    let mut size_buffer = [0; 2];
-
-    for index in 0..n_values {
-        match stream.read(&mut size_buffer) {
-            Ok(n) => {
-                if n == 0 { break; }
-                let mut size_rdr = Cursor::new(size_buffer);
-                let size = usize::from(size_rdr.read_u16::<LittleEndian>().unwrap());
-
-                if size == 0 {
-                    res(index, String::new());
-                }
-                else {
-                    let mut value_buffer = vec![0; size];
-                    stream.read_exact(&mut value_buffer).unwrap();
-                    res(index, String::from_utf8(value_buffer).unwrap());
-                }
-            },
-            Err(_) => panic!()
-        }
-    }
 }
