@@ -72,3 +72,28 @@ impl CqlStreamReadable for Option<f64> {
         stream.flush().unwrap();
     }
 }
+
+pub fn unpack_stream<F>(stream: &mut Cursor<Vec<u8>>, n_values: usize, mut res: F) where F: FnMut(usize, Option<f64>) {
+    for index in 0..n_values {
+        let mut null_buffer = [0; 1];
+        let mut value_buffer = [0; 8];
+
+        match stream.read(&mut null_buffer) {
+            Ok(n) => {
+                if n == 0 { break; }
+                else if null_buffer[0] == 0 {
+                    stream.read(&mut value_buffer).unwrap();
+                    res(index, None);
+                }
+                else {
+                    let mut value_buffer = [0; 8];
+                    stream.read(&mut value_buffer).unwrap();
+
+                    let mut rdr = Cursor::new(value_buffer);
+                    res(index, Some(rdr.read_f64::<LittleEndian>().unwrap()));
+                }
+            },
+            Err(_) => panic!()
+        }
+    }
+}

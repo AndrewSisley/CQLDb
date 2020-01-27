@@ -2,10 +2,10 @@
 mod constants;
 extern crate test;
 
-use std::io::{ Read, Cursor, SeekFrom, Seek };
-use byteorder::{ ReadBytesExt, LittleEndian };
+use std::io::{ Cursor, SeekFrom, Seek };
 use constants::DATABASE_LOCATION;
 use test::{ Bencher };
+use cql_storage::f64_nullable::{ unpack_stream };
 
 #[bench]
 fn _1d_f64_nullable_stream_read_empty_location_1_to_1(b: &mut Bencher) {
@@ -436,29 +436,4 @@ fn _4d_f64_nullable_stream_read_populated_location_1_1_1_50000_to_1_1_1_100000(b
             result[idx] = value
         });
     });
-}
-
-fn unpack_stream<F>(stream: &mut Cursor<Vec<u8>>, n_values: usize, mut res: F) where F: FnMut(usize, Option<f64>) {
-    for index in 0..n_values {
-        let mut null_buffer = [0; 1];
-        let mut value_buffer = [0; 8];
-
-        match stream.read(&mut null_buffer) {
-            Ok(n) => {
-                if n == 0 { break; }
-                else if null_buffer[0] == 0 {
-                    stream.read(&mut value_buffer).unwrap();
-                    res(index, None);
-                }
-                else {
-                    let mut value_buffer = [0; 8];
-                    stream.read(&mut value_buffer).unwrap();
-
-                    let mut rdr = Cursor::new(value_buffer);
-                    res(index, Some(rdr.read_f64::<LittleEndian>().unwrap()));
-                }
-            },
-            Err(_) => panic!()
-        }
-    }
 }
