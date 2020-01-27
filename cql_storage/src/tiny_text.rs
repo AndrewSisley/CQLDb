@@ -5,7 +5,9 @@ use byteorder::{ReadBytesExt, WriteBytesExt, LittleEndian};
 use crate::internal::grow_database::grow_database;
 use crate::cql_type::{ CqlType, CqlWritable, CqlReadable };
 
-const VALUE_SIZE: usize = (255 * 4) + 2;
+const VALUE_SIZE: usize = (255 * 4);
+const LENGTH_SIZE: usize = 2;
+const UNIT_SIZE: usize = VALUE_SIZE + LENGTH_SIZE;
 
 pub struct TinyText;
 
@@ -13,7 +15,7 @@ impl CqlType for TinyText {
     type ValueType = String;
 
     fn grow_database(db_location: &str, size_to_grow: u64) {
-        grow_database(db_location, size_to_grow, VALUE_SIZE as u64)
+        grow_database(db_location, size_to_grow, UNIT_SIZE as u64)
     }
 }
 
@@ -21,7 +23,7 @@ impl CqlWritable for TinyText {
     fn write_to_db(db_location: &str, value_location: u64, input_value: Self::ValueType) {
         let mut file = OpenOptions::new().write(true).open(db_location).unwrap();
 
-        file.seek(SeekFrom::Start(value_location * VALUE_SIZE as u64)).unwrap();
+        file.seek(SeekFrom::Start(value_location * UNIT_SIZE as u64)).unwrap();
 
         let input_length: u16 = input_value.len() as u16;
         let mut length_wtr = vec![];
@@ -36,9 +38,9 @@ impl CqlReadable for TinyText {
     fn read_from_db(db_location: &str, value_location: u64) -> Self::ValueType {
         let mut file = File::open(&db_location).unwrap();
 
-        file.seek(SeekFrom::Start(value_location * VALUE_SIZE as u64)).unwrap();
+        file.seek(SeekFrom::Start(value_location * UNIT_SIZE as u64)).unwrap();
 
-        let mut size_buffer = [0; 2];
+        let mut size_buffer = [0; LENGTH_SIZE];
         file.read(&mut size_buffer).unwrap();
 
         let mut size_rdr = Cursor::new(size_buffer);
