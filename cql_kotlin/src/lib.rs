@@ -2,6 +2,14 @@
 
 use libc::c_void;
 
+#[no_mangle]
+#[derive(Debug)]
+#[allow(non_camel_case_types)]
+pub enum Java_tests_StorageType {
+    F64Nullable = 0,
+    TinyText = 1,
+}
+
 #[repr(C)]
 #[allow(non_snake_case)]
 pub struct JNINativeInterface {
@@ -18,6 +26,7 @@ pub struct JNINativeInterface {
 pub type JNIEnv = *const JNINativeInterface;
 
 #[no_mangle]
-pub extern fn Java_tests_Test_hello(_jre: *mut JNIEnv, _class: *const c_void) {
-    println!("hello from rust");
+pub extern fn Java_tests_Test_hello(_jre: *mut JNIEnv, _class: *const c_void, v: Java_tests_StorageType) -> Java_tests_StorageType {
+    println!("hello from rust {:?}", v);
+    v
 }
