@@ -1,0 +1,8 @@
+{
+    "name": "cql-kotlin",
+    "version": "0.0.0",
+    "scripts": {
+        "start": "npm run-script build && java -jar target/debug/test.jar",
+        "build": "cargo build && kotlinc src/test.kt -include-runtime -d target/debug/test.jar"
+    }
+}
