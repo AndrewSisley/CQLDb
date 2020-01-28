@@ -25,8 +25,18 @@ pub struct JNINativeInterface {
 
 pub type JNIEnv = *const JNINativeInterface;
 
+#[repr(C)]
+#[allow(non_snake_case)]
+pub struct Java_tests_AxisDefinition {
+    pub id: u64,
+	pub max: u64,
+}
+
 #[no_mangle]
-pub extern fn Java_tests_Test_hello(_jre: *mut JNIEnv, _class: *const c_void, v: Java_tests_StorageType) -> Java_tests_StorageType {
-    println!("hello from rust {:?}", v);
+pub extern fn Java_tests_Test_hello(_jre: *mut JNIEnv, _class: *const c_void, v: Java_tests_StorageType, ax: *mut Java_tests_AxisDefinition) -> Java_tests_StorageType {
+    unsafe {
+        let axis = &(*ax);
+        println!("hello from rust {:?} {} {}", v, axis.id, axis.max);
+    }
     v
 }
