@@ -2,6 +2,7 @@ mod constants;
 
 use serial_test::serial;
 use constants::DATABASE_LOCATION;
+use cql_storage::f64_nullable::NullableF64;
 
 #[test]
 #[serial]
@@ -16,18 +17,18 @@ fn _1d_f64_nullable_database_allows_for_single_point_read_writes() {
     let point1 = [2];
     let value1 = Some(42.87);
 
-    cql_db::create_db::<Option<f64>>(
+    cql_db::create_db::<NullableF64>(
         DATABASE_LOCATION,
         &axis
     );
 
-    cql_db::write_value::<Option<f64>>(
+    cql_db::write_value::<NullableF64>(
         DATABASE_LOCATION,
         &point1,
         value1
     );
 
-    let result1 = cql_db::read_value::<Option<f64>>(
+    let result1 = cql_db::read_value::<NullableF64>(
         DATABASE_LOCATION,
         &point1
     );
@@ -60,12 +61,12 @@ fn _4d_f64_nullable_database_allows_for_single_point_read_writes() {
     let point1 = [2, 4, 3, 1];
     let value1 = Some(-5.6);
 
-    cql_db::create_db::<Option<f64>>(
+    cql_db::create_db::<NullableF64>(
         DATABASE_LOCATION,
         &axis
     );
 
-    let first_to_second_key = cql_db::add_key::<Option<f64>>(
+    let first_to_second_key = cql_db::add_key::<NullableF64>(
         DATABASE_LOCATION,
         point1[0],
         point1[1],
@@ -73,7 +74,7 @@ fn _4d_f64_nullable_database_allows_for_single_point_read_writes() {
         &axis[1]
     );
 
-    cql_db::add_key::<Option<f64>>(
+    cql_db::add_key::<NullableF64>(
         DATABASE_LOCATION,
         first_to_second_key,
         point1[2],
@@ -81,13 +82,13 @@ fn _4d_f64_nullable_database_allows_for_single_point_read_writes() {
         &axis[2]
     );
 
-    cql_db::write_value::<Option<f64>>(
+    cql_db::write_value::<NullableF64>(
         DATABASE_LOCATION,
         &point1,
         value1
     );
 
-    let result1 = cql_db::read_value::<Option<f64>>(
+    let result1 = cql_db::read_value::<NullableF64>(
         DATABASE_LOCATION,
         &point1
     );
@@ -126,12 +127,12 @@ fn _4d_f64_nullable_database_allows_for_single_point_read_writes_given_multiple_
     let value3 = Some(0f64);
     let value5 = Some(-5745.6642);
 
-    cql_db::create_db::<Option<f64>>(
+    cql_db::create_db::<NullableF64>(
         DATABASE_LOCATION,
         &axis
     );
 
-    let first_to_second_key1 = cql_db::add_key::<Option<f64>>(
+    let first_to_second_key1 = cql_db::add_key::<NullableF64>(
         DATABASE_LOCATION,
         point1[0],
         point1[1],
@@ -139,7 +140,7 @@ fn _4d_f64_nullable_database_allows_for_single_point_read_writes_given_multiple_
         &axis[1]
     );
 
-    let first_to_second_key2 = cql_db::add_key::<Option<f64>>(
+    let first_to_second_key2 = cql_db::add_key::<NullableF64>(
         DATABASE_LOCATION,
         point2[0],
         point2[1],
@@ -147,7 +148,7 @@ fn _4d_f64_nullable_database_allows_for_single_point_read_writes_given_multiple_
         &axis[1]
     );
 
-    let first_to_second_key3 = cql_db::add_key::<Option<f64>>(
+    let first_to_second_key3 = cql_db::add_key::<NullableF64>(
         DATABASE_LOCATION,
         point3[0],
         point3[1],
@@ -155,7 +156,7 @@ fn _4d_f64_nullable_database_allows_for_single_point_read_writes_given_multiple_
         &axis[1]
     );
 
-    cql_db::add_key::<Option<f64>>(
+    cql_db::add_key::<NullableF64>(
         DATABASE_LOCATION,
         first_to_second_key1,
         point1[2],
@@ -163,7 +164,7 @@ fn _4d_f64_nullable_database_allows_for_single_point_read_writes_given_multiple_
         &axis[2]
     );
 
-    cql_db::add_key::<Option<f64>>(
+    cql_db::add_key::<NullableF64>(
         DATABASE_LOCATION,
         first_to_second_key2,
         point2[2],
@@ -171,7 +172,7 @@ fn _4d_f64_nullable_database_allows_for_single_point_read_writes_given_multiple_
         &axis[2]
     );
 
-    cql_db::add_key::<Option<f64>>(
+    cql_db::add_key::<NullableF64>(
         DATABASE_LOCATION,
         first_to_second_key3,
         point3[2],
@@ -179,40 +180,40 @@ fn _4d_f64_nullable_database_allows_for_single_point_read_writes_given_multiple_
         &axis[2]
     );
 
-    cql_db::write_value::<Option<f64>>(
+    cql_db::write_value::<NullableF64>(
         DATABASE_LOCATION,
         &point1,
         value1
     );
 
-    cql_db::write_value::<Option<f64>>(
+    cql_db::write_value::<NullableF64>(
         DATABASE_LOCATION,
         &point2,
         value2
     );
 
-    cql_db::write_value::<Option<f64>>(
+    cql_db::write_value::<NullableF64>(
         DATABASE_LOCATION,
         &point3,
         value3
     );
 
-    let result1 = cql_db::read_value::<Option<f64>>(
+    let result1 = cql_db::read_value::<NullableF64>(
         DATABASE_LOCATION,
         &point1
     );
 
-    let result2 = cql_db::read_value::<Option<f64>>(
+    let result2 = cql_db::read_value::<NullableF64>(
         DATABASE_LOCATION,
         &point2
     );
 
-    let result3 = cql_db::read_value::<Option<f64>>(
+    let result3 = cql_db::read_value::<NullableF64>(
         DATABASE_LOCATION,
         &point3
     );
 
-    let result4 = cql_db::read_value::<Option<f64>>(
+    let result4 = cql_db::read_value::<NullableF64>(
         DATABASE_LOCATION,
         &point4
     );
@@ -222,13 +223,13 @@ fn _4d_f64_nullable_database_allows_for_single_point_read_writes_given_multiple_
     assert_eq!(result3, value3);
     assert_eq!(result4, None);
 
-    cql_db::write_value::<Option<f64>>(
+    cql_db::write_value::<NullableF64>(
         DATABASE_LOCATION,
         &point2,
         value5
     );
 
-    let result5 = cql_db::read_value::<Option<f64>>(
+    let result5 = cql_db::read_value::<NullableF64>(
         DATABASE_LOCATION,
         &point2
     );

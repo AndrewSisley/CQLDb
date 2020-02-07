@@ -9,7 +9,9 @@ const VALUE_SIZE: usize = 9;
 const HAS_VALUE_FLAG: u8 = 1;
 const NULL_FLAG: u8 = 0;
 
-impl CqlType for Option<f64> {
+pub struct NullableF64;
+
+impl CqlType for NullableF64 {
     type ValueType = Option<f64>;
 
     fn grow_database(db_location: &str, size_to_grow: u64) {
@@ -17,7 +19,7 @@ impl CqlType for Option<f64> {
     }
 }
 
-impl CqlWritable for Option<f64> {
+impl CqlWritable for NullableF64 {
     fn write_to_db(db_location: &str, value_location: u64, input_value: Self::ValueType) {
         let mut file = OpenOptions::new().write(true).open(db_location).unwrap();
 
@@ -37,7 +39,7 @@ impl CqlWritable for Option<f64> {
     }
 }
 
-impl CqlReadable for Option<f64> {
+impl CqlReadable for NullableF64 {
     fn read_from_db(db_location: &str, value_location: u64) -> Self::ValueType {
         let mut file = File::open(&db_location).unwrap();
 
@@ -57,7 +59,7 @@ impl CqlReadable for Option<f64> {
     }
 }
 
-impl CqlStreamReadable for Option<f64> {
+impl CqlStreamReadable for NullableF64 {
     fn read_to_stream(db_location: &str, stream: &mut dyn Write, value_location: u64, n_values: u64) {
         let mut file = File::open(&db_location).unwrap();
 
