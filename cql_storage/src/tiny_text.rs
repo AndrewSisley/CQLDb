@@ -3,7 +3,7 @@ use std::io::{Read, Write, Cursor, SeekFrom, Seek};
 use byteorder::{ReadBytesExt, WriteBytesExt, LittleEndian};
 
 use crate::internal::grow_database::grow_database;
-use crate::cql_type::{ CqlType, CqlWritable, CqlReadable, CqlStreamReadable };
+use cql_model::{ CqlType, CqlWritable, CqlReadable, CqlStreamReadable };
 
 const VALUE_SIZE: usize = (255 * 4);
 const LENGTH_SIZE: usize = 2;

@@ -2,14 +2,12 @@ use std::io::Write;
 use std::mem::{ size_of };
 use itertools::Itertools;
 
-use cql_storage::{
-    u64,
-    cql_type::{
-        CqlType,
-        CqlWritable,
-        CqlReadable,
-        CqlStreamReadable
-    }
+use cql_storage::{ u64 };
+use cql_model::{
+    CqlType,
+    CqlWritable,
+    CqlReadable,
+    CqlStreamReadable
 };
 
 const AXIS_FILE_NAME: &str = "/ax";

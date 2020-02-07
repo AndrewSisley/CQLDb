@@ -9,5 +9,6 @@ serial_test = "*"
 byteorder = "1"
 
 [dependencies]
+cql_model = { path = "../cql_model" }
 cql_storage = { path = "../cql_storage" }
 itertools = "0.8.0"

@@ -3,7 +3,7 @@
 mod constants;
 
 use constants::DATABASE_LOCATION;
-use cql_storage::cql_type::{ CqlType };
+use cql_model::{ CqlType };
 
 #[test]
 #[should_panic]
