@@ -3,7 +3,7 @@
 **/*.rs.bk
 **/Cargo.lock
 /db/
-cql_db/test_db/ax
-cql_db/test_db/db
-cql_db/test_db/key1_2
-cql_db/test_db/key2_3
+**/.test_db/ax
+**/.test_db/db
+**/.test_db/key1_2
+**/.test_db/key2_3

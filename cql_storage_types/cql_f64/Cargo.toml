@@ -1,0 +1,13 @@
+[package]
+name = "cql_f64"
+version = "0.1.0"
+authors = ["Andrew Sisley"]
+edition = "2018"
+
+[lib]
+name = "cql_f64"
+path = "src/f64.rs"
+
+[dependencies]
+cql_model = { path = "../../cql_model" }
+byteorder = "1"

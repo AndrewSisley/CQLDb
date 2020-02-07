@@ -3,13 +3,12 @@ use std::io::{Write};
 
 pub trait CqlType {
     type ValueType;
+    const VALUE_SIZE: usize;
 
     fn create_db(db_location: &str) {
         let file = File::create(db_location).unwrap();
         file.set_len(0).unwrap();
     }
-
-    fn grow_database(db_location: &str, size_to_grow: u64);
 }
 
 pub trait CqlWritable: CqlType {

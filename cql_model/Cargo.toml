@@ -1,0 +1,9 @@
+[package]
+name = "cql_model"
+version = "0.1.0"
+authors = ["Andrew Sisley"]
+edition = "2018"
+
+[lib]
+name = "cql_model"
+path = "src/cql_model.rs"

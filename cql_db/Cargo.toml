@@ -4,10 +4,11 @@ version = "0.1.0"
 authors = ["Andrew Sisley"]
 edition = "2018"
 
-[dev-dependencies]
-serial_test = "*"
-byteorder = "1"
+[lib]
+name = "cql_db"
+path = "src/cql_db.rs"
 
 [dependencies]
-cql_storage = { path = "../cql_storage" }
+cql_model = { path = "../cql_model" }
+cql_u64 = { path = "../cql_storage_types/cql_u64" }
 itertools = "0.8.0"

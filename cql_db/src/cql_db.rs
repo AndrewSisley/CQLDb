@@ -1,15 +1,13 @@
 use std::io::Write;
-use std::mem::{ size_of };
+use std::fs::OpenOptions;
 use itertools::Itertools;
 
-use cql_storage::{
-    u64,
-    cql_type::{
-        CqlType,
-        CqlWritable,
-        CqlReadable,
-        CqlStreamReadable
-    }
+use cql_u64::U64;
+use cql_model::{
+    CqlType,
+    CqlWritable,
+    CqlReadable,
+    CqlStreamReadable
 };
 
 const AXIS_FILE_NAME: &str = "/ax";
@@ -29,7 +27,7 @@ pub fn create_db<TStore: CqlType>(db_location: &str, axis_definitions: &[AxisDef
 
 pub fn add_key<TStore: CqlType>(db_location: &str, x: u64, y: u64, x_axis: &AxisDefinition, y_axis: &AxisDefinition) -> u64 {
 	let library_key_location = format!("{}{}{}_{}", db_location, KEY_FILE_NAME, x_axis.id, y_axis.id);
-	let last_key = u64::read_from_db(&library_key_location, 0);
+	let last_key = U64::read_from_db(&library_key_location, 0);
 
 	let new_key = last_key + 1 as u64;
 	let key_index = calc_index(x, y, y_axis.max);
@@ -38,11 +36,11 @@ pub fn add_key<TStore: CqlType>(db_location: &str, x: u64, y: u64, x_axis: &Axis
     if y_axis.id == last_axis_id - 1 {
         let last_axis = get_axis_definition(db_location, last_axis_id);
         let db_key_location = format!("{}{}", db_location, DB_FILE_NAME);
-        TStore::grow_database(&db_key_location,last_axis.max);
+        grow_database(&db_key_location, last_axis.max, TStore::VALUE_SIZE);
     }
 
-    u64::write_to_db(&library_key_location, 0 as u64, new_key);
-	u64::write_to_db(&library_key_location, key_index + size_of::<u64>() as u64, new_key);
+    U64::write_to_db(&library_key_location, 0 as u64, new_key);
+	U64::write_to_db(&library_key_location, key_index + U64::VALUE_SIZE as u64, new_key);
 
     new_key
 }
@@ -73,18 +71,26 @@ pub fn read_to_stream<TStore: CqlStreamReadable>(db_location: &str, stream: &mut
 
 fn create_axis_library(db_location: &str, axis_definitions: &[AxisDefinition]) {
 	let library_axis_location = format!("{}{}", db_location, AXIS_FILE_NAME);
-	u64::create_db(&library_axis_location, ((1 + axis_definitions.len()) * size_of::<u64>()) as u64);
+    U64::create_db(&library_axis_location);
+    grow_database(&library_axis_location, 1 + axis_definitions.len() as u64, U64::VALUE_SIZE);
 
-    u64::write_to_db(&library_axis_location, 0, axis_definitions.len() as u64);
+    U64::write_to_db(&library_axis_location, 0, axis_definitions.len() as u64);
 
 	for axis_definition in axis_definitions {
-		u64::write_to_db(&library_axis_location, axis_definition.id, axis_definition.max);
+		U64::write_to_db(&library_axis_location, axis_definition.id, axis_definition.max);
 	}
 }
 
 fn create_key_library(db_location: &str, x_axis: &AxisDefinition, y_axis: &AxisDefinition) {
 	let library_key_location = format!("{}{}{}_{}", db_location, KEY_FILE_NAME, x_axis.id, y_axis.id);
-	u64::create_db(&library_key_location, (x_axis.max * y_axis.max) + size_of::<u64>() as u64);
+	U64::create_db(&library_key_location);
+    grow_database(&library_key_location, 1, (x_axis.max * y_axis.max) as usize + U64::VALUE_SIZE);
+}
+
+fn grow_database(db_location: &str, size_to_grow: u64, value_size: usize) {
+    // FIXME: Need to make sure that this operation is atomic.
+    let file = OpenOptions::new().write(true).open(db_location).unwrap();
+    file.set_len(file.metadata().unwrap().len() + size_to_grow * value_size as u64).unwrap();
 }
 
 fn calculate_position(db_location: &str, location: &[u64]) -> u64 {
@@ -118,17 +124,17 @@ fn get_key(db_location: &str, x: &AxisPoint, y: &AxisPoint, y_axis: &AxisDefinit
 	let library_key_location = format!("{}{}{}_{}", db_location, KEY_FILE_NAME, x.axis_id, y.axis_id);
 	let key_location = calc_index(x.position, y.position, y_axis.max);
 
-    u64::read_from_db(&library_key_location, key_location + size_of::<u64>() as u64)
+    U64::read_from_db(&library_key_location, key_location + U64::VALUE_SIZE as u64)
 }
 
 fn get_number_of_axis(db_location: &str) -> u64 {
     let library_axis_location = format!("{}{}", db_location, AXIS_FILE_NAME);
-    u64::read_from_db(&library_axis_location, 0)
+    U64::read_from_db(&library_axis_location, 0)
 }
 
 fn get_axis_definition(db_location: &str, axis_id: u64) -> AxisDefinition {
 	let library_axis_location = format!("{}{}", db_location, AXIS_FILE_NAME);
-	let max_value = u64::read_from_db(&library_axis_location, axis_id);
+	let max_value = U64::read_from_db(&library_axis_location, axis_id);
 
 	AxisDefinition { id: axis_id, max: max_value }
 }
