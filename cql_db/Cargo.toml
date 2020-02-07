@@ -15,4 +15,5 @@ byteorder = "1"
 [dependencies]
 cql_model = { path = "../cql_model" }
 cql_storage = { path = "../cql_storage" }
+cql_u64 = { path = "../cql_storage_types/cql_u64" }
 itertools = "0.8.0"

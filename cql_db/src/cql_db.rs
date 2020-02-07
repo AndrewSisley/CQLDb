@@ -2,7 +2,7 @@ use std::io::Write;
 use std::fs::OpenOptions;
 use itertools::Itertools;
 
-use cql_storage::u64::U64;
+use cql_u64::U64;
 use cql_model::{
     CqlType,
     CqlWritable,
