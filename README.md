@@ -1,9 +1,9 @@
 # CQLDb
 Ultra lightweight, growable, array-based storage solution, currently with the out-of-the-box storage types (custom types also possible):
-- U64 (unsigned 64 integers)
-- F64 (64-bit floating point)
-- NullableF64 (nullable 64-bit floating point)
-- TinyText (255 char utf-8 strings)
+- [U64](cql_storage_types/cql_u64) (unsigned 64 integers)
+- [F64](cql_storage_types/cql_f64) (64-bit floating point)
+- [NullableF64](cql_storage_types/cql_nullable_f64) (nullable 64-bit floating point)
+- [TinyText](cql_storage_types/cql_tiny_text) (255 char utf-8 strings)
 
 The project works by treating the file system as an N dimensional array, removing the need to scan for items in order to find them. Currently the number of dimensions must be specified on create of the database, however each dimension (bar the last) may grow on demand.
 
