@@ -5,7 +5,7 @@ extern crate test;
 use constants::DATABASE_LOCATION;
 use test::{Bencher};
 
-use cql_storage::f64_nullable::NullableF64;
+use cql_nullable_f64::NullableF64;
 
 #[bench]
 fn _1d_f64_nullable_single_point_read_location_1(b: &mut Bencher) {

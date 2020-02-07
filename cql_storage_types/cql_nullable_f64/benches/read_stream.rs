@@ -5,7 +5,7 @@ extern crate test;
 use std::io::{ Cursor, SeekFrom, Seek };
 use constants::DATABASE_LOCATION;
 use test::{ Bencher };
-use cql_storage::f64_nullable::{ unpack_stream, NullableF64 };
+use cql_nullable_f64::{ unpack_stream, NullableF64 };
 
 #[bench]
 fn _1d_f64_nullable_stream_read_empty_location_1_to_1(b: &mut Bencher) {

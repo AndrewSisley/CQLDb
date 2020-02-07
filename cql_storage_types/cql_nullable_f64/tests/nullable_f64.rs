@@ -2,7 +2,7 @@ mod constants;
 
 use serial_test::serial;
 use constants::DATABASE_LOCATION;
-use cql_storage::f64_nullable::NullableF64;
+use cql_nullable_f64::NullableF64;
 
 #[test]
 #[serial]
