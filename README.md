@@ -25,9 +25,9 @@ To use this project you'll need to import the [cql_db](cql_db) sub-project and e
 
 ## Benchmarks
 
-Benchmarks (like everywhere else) are still very much a WIP, however you can find a quick and very rough summary in the table below (run on an 8th gen Intel i5 with SSD). You can run them locally from the [NullableF64](cql_storage_types/cql_nullable_f64) folder with the following command `rustup run nightly cargo bench` if/after you have installed the rust nightly build, but it will use about 900 kB of disk space.
+Benchmarks (like everywhere else) are still very much a WIP, however you can find a quick and very rough summary in the table below (run on an 8th gen Intel i5 with SSD). You can run them locally from the [NullableF64](cql_storage_types/cql_nullable_f64) folder with the following command `rustup run nightly cargo bench` if/after you have installed the rust nightly build, it will use about 900 kB of disk space.
 
-### Single point read (nullable f64)
+### Single point read - NullableF64
 
 Database size | Point location | Mean read time (ns)
 --- | --- | ---
@@ -37,7 +37,7 @@ Database size | Point location | Mean read time (ns)
 [1, 100 000, 1, 1] | [1, 100 000, 1, 1] | 11 471 (+/- 1 052)
 [1, 1, 1, 100 000] | [1, 1, 1, 100 000] | 11 441 (+/- 1 830)
 
-### Stream read (nullable f64)
+### Stream read - NullableF64
 N number of points read across the last axis from the start location, benchmark includes the time taken to read from bytestream into an array.
 
 Database size | Some/None | Start location | N points | Mean read time (ns) | Mean per point (ns)
