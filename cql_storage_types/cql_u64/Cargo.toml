@@ -8,6 +8,10 @@ edition = "2018"
 name = "cql_u64"
 path = "src/u64.rs"
 
+[dev-dependencies]
+cql_db = { path = "../../cql_db" }
+serial_test = "*"
+
 [dependencies]
 cql_model = { path = "../../cql_model" }
 byteorder = "1"
