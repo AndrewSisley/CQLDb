@@ -1,5 +1,6 @@
 # CQLDb
 Ultra lightweight, growable, array-based storage solution, currently limited to storing the following types:
+- unsigned 64 integers
 - nullable 64-bit floating point
 - TinyText (255 char utf-8 strings)
 
