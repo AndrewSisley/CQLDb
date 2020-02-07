@@ -2,7 +2,7 @@
 Ultra lightweight, growable, array-based storage solution, currently limited to storing the following types:
 - U64 (unsigned 64 integers)
 - F64 (64-bit floating point)
-- nullable 64-bit floating point
+- NullableF64 (nullable 64-bit floating point)
 - TinyText (255 char utf-8 strings)
 
 Currently the project is split into two sub-projects, [cql_storage](cql_storage) and [cql_db](cql_db).  cql_storage contains type specific code used for read/writting specific types from a file, and cql_db contains the logic allowing for database-like manipulation of the file system.
