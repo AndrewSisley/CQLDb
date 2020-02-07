@@ -52,8 +52,5 @@ struct DummyType;
 
 impl CqlType for DummyType {
     type ValueType = Option<f64>;
-
-    fn grow_database(_db_location: &str, _size_to_grow: u64) {
-        panic!("Not implemented")
-    }
+    const VALUE_SIZE: usize = 9;
 }

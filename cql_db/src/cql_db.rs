@@ -1,4 +1,5 @@
 use std::io::Write;
+use std::fs::OpenOptions;
 use std::mem::{ size_of };
 use itertools::Itertools;
 
@@ -36,7 +37,7 @@ pub fn add_key<TStore: CqlType>(db_location: &str, x: u64, y: u64, x_axis: &Axis
     if y_axis.id == last_axis_id - 1 {
         let last_axis = get_axis_definition(db_location, last_axis_id);
         let db_key_location = format!("{}{}", db_location, DB_FILE_NAME);
-        TStore::grow_database(&db_key_location, last_axis.max);
+        grow_database(&db_key_location, last_axis.max, TStore::VALUE_SIZE);
     }
 
     u64::write_to_db(&library_key_location, 0 as u64, new_key);
@@ -83,6 +84,12 @@ fn create_axis_library(db_location: &str, axis_definitions: &[AxisDefinition]) {
 fn create_key_library(db_location: &str, x_axis: &AxisDefinition, y_axis: &AxisDefinition) {
 	let library_key_location = format!("{}{}{}_{}", db_location, KEY_FILE_NAME, x_axis.id, y_axis.id);
 	u64::create_db(&library_key_location, (x_axis.max * y_axis.max) + size_of::<u64>() as u64);
+}
+
+fn grow_database(db_location: &str, size_to_grow: u64, value_size: usize) {
+    // FIXME: Need to make sure that this operation is atomic.
+    let file = OpenOptions::new().write(true).open(db_location).unwrap();
+    file.set_len(file.metadata().unwrap().len() + size_to_grow * value_size as u64).unwrap();
 }
 
 fn calculate_position(db_location: &str, location: &[u64]) -> u64 {
