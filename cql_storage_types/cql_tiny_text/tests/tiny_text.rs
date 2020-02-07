@@ -2,7 +2,7 @@ mod constants;
 
 use std::io::{ Cursor, SeekFrom, Seek };
 use serial_test::serial;
-use cql_storage::tiny_text::{ TinyText, unpack_stream };
+use cql_tiny_text::{ TinyText, unpack_stream };
 use constants::DATABASE_LOCATION;
 
 #[test]
