@@ -36,7 +36,7 @@ pub fn add_key<TStore: CqlType>(db_location: &str, x: u64, y: u64, x_axis: &Axis
     if y_axis.id == last_axis_id - 1 {
         let last_axis = get_axis_definition(db_location, last_axis_id);
         let db_key_location = format!("{}{}", db_location, DB_FILE_NAME);
-        TStore::grow_database(&db_key_location,last_axis.max);
+        TStore::grow_database(&db_key_location, last_axis.max);
     }
 
     u64::write_to_db(&library_key_location, 0 as u64, new_key);
