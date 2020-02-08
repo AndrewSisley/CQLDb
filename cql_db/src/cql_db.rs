@@ -53,26 +53,6 @@ pub fn link_dimensions<TStore: CqlType>(db_location: &str, location: &[u64]) {
     }
 }
 
-pub fn add_key<TStore: CqlType>(db_location: &str, x: u64, y: u64, x_axis: &AxisDefinition, y_axis: &AxisDefinition) -> u64 {
-	let library_key_location = format!("{}{}{}_{}", db_location, KEY_FILE_NAME, x_axis.id, y_axis.id);
-	let last_key = U64::read_from_db(&library_key_location, 0);
-
-	let new_key = last_key + 1 as u64;
-	let key_index = calc_index(x, y, y_axis.max);
-
-    let last_axis_id = get_number_of_axis(db_location);
-    if y_axis.id == last_axis_id - 1 {
-        let last_axis = get_axis_definition(db_location, last_axis_id);
-        let db_key_location = format!("{}{}", db_location, DB_FILE_NAME);
-        grow_database(&db_key_location, last_axis.max, TStore::VALUE_SIZE);
-    }
-
-    U64::write_to_db(&library_key_location, 0, new_key);
-	U64::write_to_db(&library_key_location, 1 + key_index, new_key);
-
-    new_key
-}
-
 pub fn write_value<TStore: CqlWritable>(db_location: &str, location: &[u64], value: TStore::ValueType) {
 	let db_key_location = format!("{}{}", db_location, DB_FILE_NAME);
 
@@ -125,6 +105,26 @@ fn grow_database(db_location: &str, size_to_grow: u64, value_size: usize) {
     // FIXME: Need to make sure that this operation is atomic.
     let file = OpenOptions::new().write(true).open(db_location).unwrap();
     file.set_len(file.metadata().unwrap().len() + size_to_grow * value_size as u64).unwrap();
+}
+
+fn add_key<TStore: CqlType>(db_location: &str, x: u64, y: u64, x_axis: &AxisDefinition, y_axis: &AxisDefinition) -> u64 {
+	let library_key_location = format!("{}{}{}_{}", db_location, KEY_FILE_NAME, x_axis.id, y_axis.id);
+	let last_key = U64::read_from_db(&library_key_location, 0);
+
+	let new_key = last_key + 1 as u64;
+	let key_index = calc_index(x, y, y_axis.max);
+
+    let last_axis_id = get_number_of_axis(db_location);
+    if y_axis.id == last_axis_id - 1 {
+        let last_axis = get_axis_definition(db_location, last_axis_id);
+        let db_key_location = format!("{}{}", db_location, DB_FILE_NAME);
+        grow_database(&db_key_location, last_axis.max, TStore::VALUE_SIZE);
+    }
+
+    U64::write_to_db(&library_key_location, 0, new_key);
+	U64::write_to_db(&library_key_location, 1 + key_index, new_key);
+
+    new_key
 }
 
 fn calculate_position(db_location: &str, location: &[u64]) -> u64 {
