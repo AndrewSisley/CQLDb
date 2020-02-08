@@ -84,7 +84,7 @@ fn create_axis_library(db_location: &str, axis_definitions: &[AxisDefinition]) {
 fn create_key_library(db_location: &str, x_axis: &AxisDefinition, y_axis: &AxisDefinition) {
 	let library_key_location = format!("{}{}{}_{}", db_location, KEY_FILE_NAME, x_axis.id, y_axis.id);
 	U64::create_db(&library_key_location);
-    grow_database(&library_key_location, 1, (x_axis.max * y_axis.max) as usize + U64::VALUE_SIZE);
+    grow_database(&library_key_location, 1 + (x_axis.max * y_axis.max), U64::VALUE_SIZE);
 }
 
 fn grow_database(db_location: &str, size_to_grow: u64, value_size: usize) {
