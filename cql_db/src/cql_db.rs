@@ -25,6 +25,34 @@ pub fn create_db<TStore: CqlType>(db_location: &str, axis_definitions: &[AxisDef
     }
 }
 
+pub fn link_dimensions<TStore: CqlType>(db_location: &str, location: &[u64]) {
+    let mut x_position = location[0];
+
+    for x_axis_id in 1..(location.len()) {
+        let y_axis_id = x_axis_id as u64 + 1;
+        let y_position = location[x_axis_id];
+        let y_axis_definition = get_axis_definition(db_location, y_axis_id);
+
+        let mut key = get_key(
+            db_location,
+            &AxisPoint { axis_id: x_axis_id as u64, position: x_position },
+            &AxisPoint { axis_id: y_axis_id, position: y_position },
+            &y_axis_definition
+        );
+
+        if key == 0 {
+            key = add_key::<TStore>(
+                db_location,
+                x_position,
+                y_position,
+                &get_axis_definition(db_location, x_axis_id as u64),
+                &y_axis_definition
+            );
+        };
+        x_position = key;
+    }
+}
+
 pub fn add_key<TStore: CqlType>(db_location: &str, x: u64, y: u64, x_axis: &AxisDefinition, y_axis: &AxisDefinition) -> u64 {
 	let library_key_location = format!("{}{}{}_{}", db_location, KEY_FILE_NAME, x_axis.id, y_axis.id);
 	let last_key = U64::read_from_db(&library_key_location, 0);
