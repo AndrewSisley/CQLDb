@@ -1,6 +1,5 @@
 use std::io::Write;
 use std::fs::OpenOptions;
-use itertools::Itertools;
 
 use cql_u64::U64;
 use cql_model::{
@@ -28,8 +27,8 @@ pub fn create_db<TStore: CqlType>(db_location: &str, array_size: &[u64]) {
 
     create_axis_library(db_location, &axis_definitions);
 
-    for (x_axis, y_axis) in axis_definitions.iter().take(axis_definitions.len() - 1).tuple_windows() {
-        create_key_library(db_location, x_axis, y_axis);
+    for index in 1..axis_definitions.len() - 1 {
+        create_key_library(db_location, &axis_definitions[index - 1], &axis_definitions[index]);
     }
 }
 
