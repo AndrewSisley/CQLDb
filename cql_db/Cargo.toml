@@ -11,4 +11,3 @@ path = "src/cql_db.rs"
 [dependencies]
 cql_model = { path = "../cql_model" }
 cql_u64 = { path = "../cql_storage_types/cql_u64" }
-itertools = "0.8.0"

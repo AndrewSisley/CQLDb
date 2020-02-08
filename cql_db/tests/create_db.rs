@@ -19,10 +19,7 @@ fn create_db__creates_db__given_1D_definition() {
     cql_db::create_db::<DummyType>(
         DATABASE_LOCATION,
         &[
-            cql_db::AxisDefinition {
-                id: 1,
-                max: 2,
-            },
+            2,
         ]
     )
 }
@@ -32,18 +29,9 @@ fn create_db__creates_db__given_3D_definition() {
     cql_db::create_db::<DummyType>(
         DATABASE_LOCATION,
         &[
-            cql_db::AxisDefinition {
-                id: 1,
-                max: 2,
-            },
-            cql_db::AxisDefinition {
-                id: 2,
-                max: 1,
-            },
-            cql_db::AxisDefinition {
-                id: 3,
-                max: 3,
-            },
+            2,
+            1,
+            3,
         ]
     )
 }

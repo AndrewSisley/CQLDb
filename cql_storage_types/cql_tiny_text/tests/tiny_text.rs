@@ -9,10 +9,7 @@ use constants::DATABASE_LOCATION;
 #[serial]
 fn _1d_tiny_text_database_allows_for_single_point_read_writes() {
     let axis = [
-        cql_db::AxisDefinition {
-            id: 1,
-            max: 2,
-        },
+        2,
     ];
 
     let point1 = [2];
@@ -41,22 +38,10 @@ fn _1d_tiny_text_database_allows_for_single_point_read_writes() {
 #[serial]
 fn _4d_tiny_text_database_allows_for_single_point_read_writes() {
     let axis = [
-        cql_db::AxisDefinition {
-            id: 1,
-            max: 2,
-        },
-        cql_db::AxisDefinition {
-            id: 2,
-            max: 5,
-        },
-        cql_db::AxisDefinition {
-            id: 3,
-            max: 3,
-        },
-        cql_db::AxisDefinition {
-            id: 4,
-            max: 2
-        },
+        2,
+        5,
+        3,
+        2,
     ];
 
     let point1 = [2, 4, 3, 1];
@@ -67,20 +52,9 @@ fn _4d_tiny_text_database_allows_for_single_point_read_writes() {
         &axis
     );
 
-    let first_to_second_key = cql_db::add_key::<TinyText>(
+    cql_db::link_dimensions::<TinyText>(
         DATABASE_LOCATION,
-        point1[0],
-        point1[1],
-        &axis[0],
-        &axis[1]
-    );
-
-    cql_db::add_key::<TinyText>(
-        DATABASE_LOCATION,
-        first_to_second_key,
-        point1[2],
-        &axis[1],
-        &axis[2]
+        &point1[0..3],
     );
 
     cql_db::write_value::<TinyText>(
@@ -101,22 +75,10 @@ fn _4d_tiny_text_database_allows_for_single_point_read_writes() {
 #[serial]
 fn _4d_tiny_text_database_allows_for_single_point_read_writes_given_multiple_values_and_overwrites() {
     let axis = [
-        cql_db::AxisDefinition {
-            id: 1,
-            max: 2,
-        },
-        cql_db::AxisDefinition {
-            id: 2,
-            max: 5,
-        },
-        cql_db::AxisDefinition {
-            id: 3,
-            max: 3,
-        },
-        cql_db::AxisDefinition {
-            id: 4,
-            max: 4
-        },
+        2,
+        5,
+        3,
+        4,
     ];
 
     let point1 = [2, 4, 3, 1];
@@ -133,52 +95,19 @@ fn _4d_tiny_text_database_allows_for_single_point_read_writes_given_multiple_val
         &axis
     );
 
-    let first_to_second_key1 = cql_db::add_key::<TinyText>(
+    cql_db::link_dimensions::<TinyText>(
         DATABASE_LOCATION,
-        point1[0],
-        point1[1],
-        &axis[0],
-        &axis[1]
+        &point1[0..3],
     );
 
-    let first_to_second_key2 = cql_db::add_key::<TinyText>(
+    cql_db::link_dimensions::<TinyText>(
         DATABASE_LOCATION,
-        point2[0],
-        point2[1],
-        &axis[0],
-        &axis[1]
+        &point2[0..3],
     );
 
-    let first_to_second_key3 = cql_db::add_key::<TinyText>(
+    cql_db::link_dimensions::<TinyText>(
         DATABASE_LOCATION,
-        point3[0],
-        point3[1],
-        &axis[0],
-        &axis[1]
-    );
-
-    cql_db::add_key::<TinyText>(
-        DATABASE_LOCATION,
-        first_to_second_key1,
-        point1[2],
-        &axis[1],
-        &axis[2]
-    );
-
-    cql_db::add_key::<TinyText>(
-        DATABASE_LOCATION,
-        first_to_second_key2,
-        point2[2],
-        &axis[1],
-        &axis[2]
-    );
-
-    cql_db::add_key::<TinyText>(
-        DATABASE_LOCATION,
-        first_to_second_key3,
-        point3[2],
-        &axis[1],
-        &axis[2]
+        &point3[0..3],
     );
 
     cql_db::write_value::<TinyText>(
@@ -242,10 +171,7 @@ fn _4d_tiny_text_database_allows_for_single_point_read_writes_given_multiple_val
 #[serial]
 fn _1d_tiny_text_database_allows_for_single_point_populated_stream_reads() {
     let axis = [
-        cql_db::AxisDefinition {
-            id: 1,
-            max: 2,
-        },
+        2,
     ];
 
     let n_values_to_read = 1;
@@ -286,10 +212,7 @@ fn _1d_tiny_text_database_allows_for_single_point_populated_stream_reads() {
 #[serial]
 fn _1d_tiny_text_database_allows_for_single_point_empty_stream_reads() {
     let axis = [
-        cql_db::AxisDefinition {
-            id: 1,
-            max: 2,
-        },
+        2,
     ];
 
     let n_values_to_read = 1;
@@ -323,10 +246,7 @@ fn _1d_tiny_text_database_allows_for_single_point_empty_stream_reads() {
 #[serial]
 fn _1d_tiny_text_database_allows_for_multi_point_stream_reads() {
     let axis = [
-        cql_db::AxisDefinition {
-            id: 1,
-            max: 5,
-        },
+        5,
     ];
 
     const N_VALUES_TO_READ: usize = 5;
