@@ -87,20 +87,9 @@ fn _4d_u64_single_point_write_location_1_1_1_1(b: &mut Bencher) {
         &axis
     );
 
-    let first_to_second_key = cql_db::add_key::<U64>(
+    cql_db::link_dimensions::<U64>(
         DATABASE_LOCATION,
-        point1[0],
-        point1[1],
-        &axis[0],
-        &axis[1]
-    );
-
-    cql_db::add_key::<U64>(
-        DATABASE_LOCATION,
-        first_to_second_key,
-        point1[2],
-        &axis[1],
-        &axis[2]
+        &point1[0..3],
     );
 
     b.iter(|| {
@@ -141,20 +130,9 @@ fn _4d_u64_single_point_write_location_1_1_1_100000(b: &mut Bencher) {
         &axis
     );
 
-    let first_to_second_key = cql_db::add_key::<U64>(
+    cql_db::link_dimensions::<U64>(
         DATABASE_LOCATION,
-        point1[0],
-        point1[1],
-        &axis[0],
-        &axis[1]
-    );
-
-    cql_db::add_key::<U64>(
-        DATABASE_LOCATION,
-        first_to_second_key,
-        point1[2],
-        &axis[1],
-        &axis[2]
+        &point1[0..3],
     );
 
     b.iter(|| {
@@ -195,20 +173,9 @@ fn _4d_u64_single_point_write_location_1_100000_1_1(b: &mut Bencher) {
         &axis
     );
 
-    let first_to_second_key = cql_db::add_key::<U64>(
+    cql_db::link_dimensions::<U64>(
         DATABASE_LOCATION,
-        point1[0],
-        point1[1],
-        &axis[0],
-        &axis[1]
-    );
-
-    cql_db::add_key::<U64>(
-        DATABASE_LOCATION,
-        first_to_second_key,
-        point1[2],
-        &axis[1],
-        &axis[2]
+        &point1[0..3],
     );
 
     b.iter(|| {
