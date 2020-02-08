@@ -81,6 +81,10 @@ fn create_axis_library(db_location: &str, axis_definitions: &[AxisDefinition]) {
 	}
 }
 
+// The dimensions between 0..(N - 1) are mapped in the key library, allowing each 'row' in the last dimension to be added on demand
+// reducing the storage space required.  Each key library contains the id of the last key added in the first block, and then acts like an 1D array
+// for every point thereafter, with each entry pointing at the location of it's data in the next key library, or the start of the actual data if
+// it is the penultimate dimension (N - 1).
 fn create_key_library(db_location: &str, x_axis: &AxisDefinition, y_axis: &AxisDefinition) {
 	let library_key_location = format!("{}{}{}_{}", db_location, KEY_FILE_NAME, x_axis.id, y_axis.id);
 	U64::create_db(&library_key_location);
