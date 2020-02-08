@@ -39,7 +39,7 @@ pub fn add_key<TStore: CqlType>(db_location: &str, x: u64, y: u64, x_axis: &Axis
         grow_database(&db_key_location, last_axis.max, TStore::VALUE_SIZE);
     }
 
-    U64::write_to_db(&library_key_location, 0 as u64, new_key);
+    U64::write_to_db(&library_key_location, 0, new_key);
 	U64::write_to_db(&library_key_location, 1 + key_index, new_key);
 
     new_key
