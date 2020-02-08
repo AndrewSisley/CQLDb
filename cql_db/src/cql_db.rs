@@ -40,7 +40,7 @@ pub fn add_key<TStore: CqlType>(db_location: &str, x: u64, y: u64, x_axis: &Axis
     }
 
     U64::write_to_db(&library_key_location, 0 as u64, new_key);
-	U64::write_to_db(&library_key_location, key_index + U64::VALUE_SIZE as u64, new_key);
+	U64::write_to_db(&library_key_location, 1 + key_index, new_key);
 
     new_key
 }
@@ -130,7 +130,7 @@ fn get_key(db_location: &str, x: &AxisPoint, y: &AxisPoint, y_axis: &AxisDefinit
 	let library_key_location = format!("{}{}{}_{}", db_location, KEY_FILE_NAME, x.axis_id, y.axis_id);
 	let key_location = calc_index(x.position, y.position, y_axis.max);
 
-    U64::read_from_db(&library_key_location, key_location + U64::VALUE_SIZE as u64)
+    U64::read_from_db(&library_key_location, 1 + key_location)
 }
 
 fn get_number_of_axis(db_location: &str) -> u64 {
