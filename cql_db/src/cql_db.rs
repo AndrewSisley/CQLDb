@@ -69,6 +69,8 @@ pub fn read_to_stream<TStore: CqlStreamReadable>(db_location: &str, stream: &mut
 	TStore::read_to_stream(&db_key_location, stream, position, n_values)
 }
 
+// The axis definitions are stored in the axis library.  The first block contains how many dimensions exist.
+// The subsequent blocks contain the max size of each dimension.
 fn create_axis_library(db_location: &str, axis_definitions: &[AxisDefinition]) {
 	let library_axis_location = format!("{}{}", db_location, AXIS_FILE_NAME);
     U64::create_db(&library_axis_location);
