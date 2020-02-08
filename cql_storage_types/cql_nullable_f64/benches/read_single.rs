@@ -10,10 +10,7 @@ use cql_nullable_f64::NullableF64;
 #[bench]
 fn _1d_f64_nullable_single_point_read_location_1(b: &mut Bencher) {
     let axis = [
-        cql_db::AxisDefinition {
-            id: 1,
-            max: 2,
-        },
+        2,
     ];
 
     let point1 = [1];
@@ -41,10 +38,7 @@ fn _1d_f64_nullable_single_point_read_location_1(b: &mut Bencher) {
 #[bench]
 fn _1d_f64_nullable_single_point_read_location_100000(b: &mut Bencher) {
     let axis = [
-        cql_db::AxisDefinition {
-            id: 1,
-            max: 100000,
-        },
+        100000,
     ];
 
     let point1 = [100000];
@@ -72,22 +66,10 @@ fn _1d_f64_nullable_single_point_read_location_100000(b: &mut Bencher) {
 #[bench]
 fn _4d_f64_nullable_single_point_read_location_1_1_1_1(b: &mut Bencher) {
     let axis = [
-        cql_db::AxisDefinition {
-            id: 1,
-            max: 2,
-        },
-        cql_db::AxisDefinition {
-            id: 2,
-            max: 2,
-        },
-        cql_db::AxisDefinition {
-            id: 3,
-            max: 2,
-        },
-        cql_db::AxisDefinition {
-            id: 4,
-            max: 2
-        },
+        2,
+        2,
+        2,
+        2,
     ];
 
     let point1 = [1, 1, 1, 1];
@@ -120,22 +102,10 @@ fn _4d_f64_nullable_single_point_read_location_1_1_1_1(b: &mut Bencher) {
 #[bench]
 fn _4d_f64_nullable_single_point_read_location_1_1_1_100000(b: &mut Bencher) {
     let axis = [
-        cql_db::AxisDefinition {
-            id: 1,
-            max: 2,
-        },
-        cql_db::AxisDefinition {
-            id: 2,
-            max: 2,
-        },
-        cql_db::AxisDefinition {
-            id: 3,
-            max: 2,
-        },
-        cql_db::AxisDefinition {
-            id: 4,
-            max: 100000
-        },
+        2,
+        2,
+        2,
+        100000,
     ];
 
     let point1 = [1, 1, 1, 100000];
@@ -168,22 +138,10 @@ fn _4d_f64_nullable_single_point_read_location_1_1_1_100000(b: &mut Bencher) {
 #[bench]
 fn _4d_f64_nullable_single_point_read_location_1_100000_1_1(b: &mut Bencher) {
     let axis = [
-        cql_db::AxisDefinition {
-            id: 1,
-            max: 2,
-        },
-        cql_db::AxisDefinition {
-            id: 2,
-            max: 100000,
-        },
-        cql_db::AxisDefinition {
-            id: 3,
-            max: 2,
-        },
-        cql_db::AxisDefinition {
-            id: 4,
-            max: 2
-        },
+        2,
+        100000,
+        2,
+        2,
     ];
 
     let point1 = [1, 100000, 1, 1];

@@ -10,10 +10,7 @@ use cql_nullable_f64::{ unpack_stream, NullableF64 };
 #[bench]
 fn _1d_f64_nullable_stream_read_empty_location_1_to_1(b: &mut Bencher) {
     let axis = [
-        cql_db::AxisDefinition {
-            id: 1,
-            max: 2,
-        },
+        2,
     ];
 
     let n_values_to_read = 1usize;
@@ -46,10 +43,7 @@ fn _1d_f64_nullable_stream_read_empty_location_1_to_1(b: &mut Bencher) {
 #[bench]
 fn _1d_f64_nullable_stream_read_populated_location_1_to_1(b: &mut Bencher) {
     let axis = [
-        cql_db::AxisDefinition {
-            id: 1,
-            max: 2,
-        },
+        2,
     ];
 
     let n_values_to_read = 1usize;
@@ -89,10 +83,7 @@ fn _1d_f64_nullable_stream_read_populated_location_1_to_1(b: &mut Bencher) {
 #[bench]
 fn _1d_f64_nullable_stream_read_empty_location_50000_to_100000(b: &mut Bencher) {
     let axis = [
-        cql_db::AxisDefinition {
-            id: 1,
-            max: 100000,
-        },
+        100000,
     ];
 
     let n_values_to_read = 50000usize;
@@ -125,10 +116,7 @@ fn _1d_f64_nullable_stream_read_empty_location_50000_to_100000(b: &mut Bencher) 
 #[bench]
 fn _1d_f64_nullable_stream_read_populated_location_50000_to_100000(b: &mut Bencher) {
     let axis = [
-        cql_db::AxisDefinition {
-            id: 1,
-            max: 100000,
-        },
+        100000,
     ];
 
     let n_values_to_read = 50000usize;
@@ -170,22 +158,10 @@ fn _1d_f64_nullable_stream_read_populated_location_50000_to_100000(b: &mut Bench
 #[bench]
 fn _4d_f64_nullable_stream_read_empty_location_1_1_1_1_to_1_1_1_1(b: &mut Bencher) {
     let axis = [
-        cql_db::AxisDefinition {
-            id: 1,
-            max: 2,
-        },
-        cql_db::AxisDefinition {
-            id: 2,
-            max: 2,
-        },
-        cql_db::AxisDefinition {
-            id: 3,
-            max: 2,
-        },
-        cql_db::AxisDefinition {
-            id: 4,
-            max: 2
-        },
+        2,
+        2,
+        2,
+        2,
     ];
     let n_values_to_read = 1usize;
     let base_point = [1, 1, 1, 1];
@@ -222,22 +198,10 @@ fn _4d_f64_nullable_stream_read_empty_location_1_1_1_1_to_1_1_1_1(b: &mut Benche
 #[bench]
 fn _4d_f64_nullable_stream_read_populated_location_1_1_1_1_to_1_1_1_1(b: &mut Bencher) {
     let axis = [
-        cql_db::AxisDefinition {
-            id: 1,
-            max: 2,
-        },
-        cql_db::AxisDefinition {
-            id: 2,
-            max: 2,
-        },
-        cql_db::AxisDefinition {
-            id: 3,
-            max: 2,
-        },
-        cql_db::AxisDefinition {
-            id: 4,
-            max: 2
-        },
+        2,
+        2,
+        2,
+        2,
     ];
 
     let n_values_to_read = 1usize;
@@ -282,22 +246,10 @@ fn _4d_f64_nullable_stream_read_populated_location_1_1_1_1_to_1_1_1_1(b: &mut Be
 #[bench]
 fn _4d_f64_nullable_stream_read_empty_location_1_1_1_50000_to_1_1_1_100000(b: &mut Bencher) {
     let axis = [
-        cql_db::AxisDefinition {
-            id: 1,
-            max: 2,
-        },
-        cql_db::AxisDefinition {
-            id: 2,
-            max: 2,
-        },
-        cql_db::AxisDefinition {
-            id: 3,
-            max: 2,
-        },
-        cql_db::AxisDefinition {
-            id: 4,
-            max: 100000
-        },
+        2,
+        2,
+        2,
+        100000,
     ];
 
     let n_values_to_read = 50000usize;
@@ -335,22 +287,10 @@ fn _4d_f64_nullable_stream_read_empty_location_1_1_1_50000_to_1_1_1_100000(b: &m
 #[bench]
 fn _4d_f64_nullable_stream_read_populated_location_1_1_1_50000_to_1_1_1_100000(b: &mut Bencher) {
     let axis = [
-        cql_db::AxisDefinition {
-            id: 1,
-            max: 2,
-        },
-        cql_db::AxisDefinition {
-            id: 2,
-            max: 2,
-        },
-        cql_db::AxisDefinition {
-            id: 3,
-            max: 2,
-        },
-        cql_db::AxisDefinition {
-            id: 4,
-            max: 100000
-        },
+        2,
+        2,
+        2,
+        100000,
     ];
 
     let n_values_to_read = 50000usize;

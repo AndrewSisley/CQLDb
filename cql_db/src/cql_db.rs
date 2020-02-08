@@ -14,13 +14,21 @@ const AXIS_FILE_NAME: &str = "/ax";
 const KEY_FILE_NAME: &str = "/key";
 const DB_FILE_NAME: &str = "/db";
 
-pub fn create_db<TStore: CqlType>(db_location: &str, axis_definitions: &[AxisDefinition]) {
+pub fn create_db<TStore: CqlType>(db_location: &str, array_size: &[u64]) {
     let db_key_location = format!("{}{}", db_location, DB_FILE_NAME);
-	TStore::create_db(&db_key_location);
+    TStore::create_db(&db_key_location);
 
-    create_axis_library(db_location, axis_definitions);
+    let mut axis_definitions = Vec::with_capacity(array_size.len());
+    for index in 0..array_size.len() {
+        axis_definitions.push(AxisDefinition {
+            id: index as u64 + 1,
+            max: array_size[index] as u64,
+        });
+    }
 
-    for (x_axis, y_axis) in axis_definitions.as_ref().iter().take(axis_definitions.len() - 1).tuple_windows() {
+    create_axis_library(db_location, &axis_definitions);
+
+    for (x_axis, y_axis) in axis_definitions.iter().take(axis_definitions.len() - 1).tuple_windows() {
         create_key_library(db_location, x_axis, y_axis);
     }
 }
@@ -180,7 +188,7 @@ fn calc_index(x: u64, y: u64, y_max: u64) -> u64 {
 	((x - 1) * y_max) + y//overflow check on -1!! happens if axis are not linked
 }
 
-pub struct AxisDefinition {
+struct AxisDefinition {
 	pub id: u64,
 	pub max: u64,
 }
