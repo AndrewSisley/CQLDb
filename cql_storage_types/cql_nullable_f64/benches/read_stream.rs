@@ -195,20 +195,9 @@ fn _4d_f64_nullable_stream_read_empty_location_1_1_1_1_to_1_1_1_1(b: &mut Benche
         &axis
     );
 
-    let first_to_second_key = cql_db::add_key::<NullableF64>(
+    cql_db::link_dimensions::<NullableF64>(
         DATABASE_LOCATION,
-        base_point[0],
-        base_point[1],
-        &axis[0],
-        &axis[1]
-    );
-
-    cql_db::add_key::<NullableF64>(
-        DATABASE_LOCATION,
-        first_to_second_key,
-        base_point[2],
-        &axis[1],
-        &axis[2]
+        &base_point[0..3],
     );
 
     let mut result: [Option<f64>; 1] = [None; 1];
@@ -260,20 +249,9 @@ fn _4d_f64_nullable_stream_read_populated_location_1_1_1_1_to_1_1_1_1(b: &mut Be
         &axis
     );
 
-    let first_to_second_key = cql_db::add_key::<NullableF64>(
+    cql_db::link_dimensions::<NullableF64>(
         DATABASE_LOCATION,
-        base_point[0],
-        base_point[1],
-        &axis[0],
-        &axis[1]
-    );
-
-    cql_db::add_key::<NullableF64>(
-        DATABASE_LOCATION,
-        first_to_second_key,
-        base_point[2],
-        &axis[1],
-        &axis[2]
+        &base_point[0..3],
     );
 
     cql_db::write_value::<NullableF64>(
@@ -330,20 +308,9 @@ fn _4d_f64_nullable_stream_read_empty_location_1_1_1_50000_to_1_1_1_100000(b: &m
         &axis
     );
 
-    let first_to_second_key = cql_db::add_key::<NullableF64>(
+    cql_db::link_dimensions::<NullableF64>(
         DATABASE_LOCATION,
-        base_point[0],
-        base_point[1],
-        &axis[0],
-        &axis[1]
-    );
-
-    cql_db::add_key::<NullableF64>(
-        DATABASE_LOCATION,
-        first_to_second_key,
-        base_point[2],
-        &axis[1],
-        &axis[2]
+        &base_point[0..3],
     );
 
     let mut result: [Option<f64>; 50000] = [None; 50000];
@@ -395,20 +362,9 @@ fn _4d_f64_nullable_stream_read_populated_location_1_1_1_50000_to_1_1_1_100000(b
         &axis
     );
 
-    let first_to_second_key = cql_db::add_key::<NullableF64>(
+    cql_db::link_dimensions::<NullableF64>(
         DATABASE_LOCATION,
-        base_point[0],
-        base_point[1],
-        &axis[0],
-        &axis[1]
-    );
-
-    cql_db::add_key::<NullableF64>(
-        DATABASE_LOCATION,
-        first_to_second_key,
-        base_point[2],
-        &axis[1],
-        &axis[2]
+        &base_point[0..3],
     );
 
     for index in 0..n_values_to_read {
