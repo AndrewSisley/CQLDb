@@ -67,20 +67,9 @@ fn _4d_tiny_text_database_allows_for_single_point_read_writes() {
         &axis
     );
 
-    let first_to_second_key = cql_db::add_key::<TinyText>(
+    cql_db::link_dimensions::<TinyText>(
         DATABASE_LOCATION,
-        point1[0],
-        point1[1],
-        &axis[0],
-        &axis[1]
-    );
-
-    cql_db::add_key::<TinyText>(
-        DATABASE_LOCATION,
-        first_to_second_key,
-        point1[2],
-        &axis[1],
-        &axis[2]
+        &point1[0..3],
     );
 
     cql_db::write_value::<TinyText>(
@@ -133,52 +122,19 @@ fn _4d_tiny_text_database_allows_for_single_point_read_writes_given_multiple_val
         &axis
     );
 
-    let first_to_second_key1 = cql_db::add_key::<TinyText>(
+    cql_db::link_dimensions::<TinyText>(
         DATABASE_LOCATION,
-        point1[0],
-        point1[1],
-        &axis[0],
-        &axis[1]
+        &point1[0..3],
     );
 
-    let first_to_second_key2 = cql_db::add_key::<TinyText>(
+    cql_db::link_dimensions::<TinyText>(
         DATABASE_LOCATION,
-        point2[0],
-        point2[1],
-        &axis[0],
-        &axis[1]
+        &point2[0..3],
     );
 
-    let first_to_second_key3 = cql_db::add_key::<TinyText>(
+    cql_db::link_dimensions::<TinyText>(
         DATABASE_LOCATION,
-        point3[0],
-        point3[1],
-        &axis[0],
-        &axis[1]
-    );
-
-    cql_db::add_key::<TinyText>(
-        DATABASE_LOCATION,
-        first_to_second_key1,
-        point1[2],
-        &axis[1],
-        &axis[2]
-    );
-
-    cql_db::add_key::<TinyText>(
-        DATABASE_LOCATION,
-        first_to_second_key2,
-        point2[2],
-        &axis[1],
-        &axis[2]
-    );
-
-    cql_db::add_key::<TinyText>(
-        DATABASE_LOCATION,
-        first_to_second_key3,
-        point3[2],
-        &axis[1],
-        &axis[2]
+        &point3[0..3],
     );
 
     cql_db::write_value::<TinyText>(
