@@ -253,6 +253,71 @@ pub fn read_value<TStore: CqlReadable>(db_location: &str, location: &[u64]) -> T
 	TStore::read_from_db(&db_key_location, position)
 }
 
+/// Reads `n_values` from the given location onward into the given stream.
+///
+/// Does not offer any protection against reading more values than exist in the selected location.
+///
+/// # Examples
+/// ```
+/// # use std::io::{ Cursor, SeekFrom, Seek };
+/// # const DATABASE_LOCATION: &str = "./.test_db";
+/// #
+/// use cql_u64::{ U64, unpack_stream };
+///
+/// let base_point = [1, 1, 1, 2];
+/// const N_VALUES_TO_READ: usize = 3;
+/// let value1 = 42;
+/// let value2 = 16;
+/// let value3 = 80;
+///
+/// cql_db::create_db::<U64>(
+///     DATABASE_LOCATION,
+///     &[1, 1, 1, 10]
+/// );
+///
+/// cql_db::link_dimensions::<U64>(
+///     DATABASE_LOCATION,
+///     &base_point[0..3]
+/// );
+///
+/// cql_db::write_value::<U64>(
+///     DATABASE_LOCATION,
+///     &base_point,
+///     value1
+/// );
+///
+/// cql_db::write_value::<U64>(
+///     DATABASE_LOCATION,
+///     &[1, 1, 1, base_point[3] + 1],
+///     value2
+/// );
+///
+/// cql_db::write_value::<U64>(
+///     DATABASE_LOCATION,
+///     &[1, 1, 1, base_point[3] + 2],
+///     value3
+/// );
+///
+/// let mut result = [0; N_VALUES_TO_READ];
+/// let mut stream = Cursor::new(Vec::new());
+///
+/// cql_db::read_to_stream::<U64>(
+///     DATABASE_LOCATION,
+///     &mut stream,
+///     &base_point,
+///     N_VALUES_TO_READ as u64
+/// );
+///
+/// stream.seek(SeekFrom::Start(0)).unwrap();
+///
+/// unpack_stream(&mut stream, N_VALUES_TO_READ, |idx, value| {
+///     result[idx] = value
+/// });
+///
+/// assert_eq!(result[0], value1);
+/// assert_eq!(result[1], value2);
+/// assert_eq!(result[2], value3);
+/// ```
 pub fn read_to_stream<TStore: CqlStreamReadable>(db_location: &str, stream: &mut dyn Write, location: &[u64], n_values: u64) {
 	let db_key_location = format!("{}{}", db_location, DB_FILE_NAME);
 
