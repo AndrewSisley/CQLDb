@@ -11,7 +11,7 @@ Elements in the array can be writen to [one by one](fn.write_value.html), and re
 
 # Storage space consumption
 
-This crate will eagerly allocate file space as soon as it knows it its required, so before starting you should be aware of the disk space requirements.
+This crate will eagerly allocate file space as soon as it knows it it's required, so before starting you should be aware of the disk space requirements.
 
 Given a database with dimensions of max size `[N1..Nn]`, calling [create_db](fn.create_db.html) will allocate the following (in bytes):
 ```ignore
@@ -96,6 +96,7 @@ const AXIS_FILE_NAME: &str = "/ax";
 const KEY_FILE_NAME: &str = "/key";
 const DB_FILE_NAME: &str = "/db";
 
+/// Creates an CQL database in the provided directory, overwriting existing files.
 pub fn create_db<TStore: CqlType>(db_location: &str, array_size: &[u64]) {
     let db_key_location = format!("{}{}", db_location, DB_FILE_NAME);
     create_file(&db_key_location, 0);
