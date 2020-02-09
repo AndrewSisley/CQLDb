@@ -168,6 +168,31 @@ pub fn link_dimensions<TStore: CqlType>(db_location: &str, location: &[u64]) {
     }
 }
 
+/// Writes the given value to the given location in the database.
+///
+/// # Examples
+/// ```
+/// # use cql_u64::U64;
+/// # const DATABASE_LOCATION: &str = "./.test_db";
+/// #
+/// cql_db::create_db::<U64>(
+///     DATABASE_LOCATION,
+///     &[2, 5, 3, 2]
+/// );
+///
+/// // higher order elements must be linked before they can be writen to
+/// cql_db::link_dimensions::<U64>(
+///     DATABASE_LOCATION,
+///     &[2, 4, 3],
+/// );
+///
+/// // Write `5` to location `[2, 4, 3, 1]`
+/// cql_db::write_value::<U64>(
+///     DATABASE_LOCATION,
+///     &[2, 4, 3, 1],
+///     5
+/// );
+/// ```
 pub fn write_value<TStore: CqlWritable>(db_location: &str, location: &[u64], value: TStore::ValueType) {
 	let db_key_location = format!("{}{}", db_location, DB_FILE_NAME);
 
