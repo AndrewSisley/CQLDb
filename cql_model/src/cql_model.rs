@@ -1,13 +1,12 @@
-use std::fs::{File};
 use std::io::{Write};
+use std::fs::OpenOptions;
 
 pub trait CqlType {
     type ValueType;
     const VALUE_SIZE: usize;
 
     fn create_db(db_location: &str) {
-        let file = File::create(db_location).unwrap();
-        file.set_len(0).unwrap();
+        OpenOptions::new().write(true).create(true).truncate(true).open(db_location).unwrap();
     }
 }
 
