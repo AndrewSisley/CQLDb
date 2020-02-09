@@ -38,7 +38,7 @@ pub fn create_db<TStore: CqlType>(db_location: &str, array_size: &[u64]) {
 pub fn link_dimensions<TStore: CqlType>(db_location: &str, location: &[u64]) {
     let mut x_position = location[0];
 
-    for x_axis_id in 1..(location.len()) {
+    for x_axis_id in 1..location.len() {
         let y_axis_id = x_axis_id as u64 + 1;
         let y_position = location[x_axis_id];
         let y_axis_definition = get_axis_definition(db_location, y_axis_id);
