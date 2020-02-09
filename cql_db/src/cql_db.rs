@@ -98,7 +98,7 @@ const DB_FILE_NAME: &str = "/db";
 
 pub fn create_db<TStore: CqlType>(db_location: &str, array_size: &[u64]) {
     let db_key_location = format!("{}{}", db_location, DB_FILE_NAME);
-    TStore::create_db(&db_key_location);
+    create_file(&db_key_location, 0);
 
     let mut axis_definitions = Vec::with_capacity(array_size.len());
     for index in 0..array_size.len() {
@@ -170,12 +170,16 @@ pub fn read_to_stream<TStore: CqlStreamReadable>(db_location: &str, stream: &mut
 	TStore::read_to_stream(&db_key_location, stream, position, n_values)
 }
 
+fn create_file(db_location: &str, size: u64) {
+    let file = OpenOptions::new().write(true).create(true).truncate(true).open(db_location).unwrap();
+    file.set_len(size).unwrap();
+}
+
 // The axis definitions are stored in the axis library.  The first block contains how many dimensions exist.
 // The subsequent blocks contain the max size of each dimension.
 fn create_axis_library(db_location: &str, axis_definitions: &[AxisDefinition]) {
 	let library_axis_location = format!("{}{}", db_location, AXIS_FILE_NAME);
-    U64::create_db(&library_axis_location);
-    grow_database(&library_axis_location, 1 + axis_definitions.len() as u64, U64::VALUE_SIZE);
+    create_file(&library_axis_location, (1 + axis_definitions.len() as u64) * U64::VALUE_SIZE as u64);
 
     U64::write_to_db(&library_axis_location, 0, axis_definitions.len() as u64);
 
@@ -190,8 +194,7 @@ fn create_axis_library(db_location: &str, axis_definitions: &[AxisDefinition]) {
 // it is the penultimate dimension (N - 1).
 fn create_key_library(db_location: &str, x_axis: &AxisDefinition, y_axis: &AxisDefinition) {
 	let library_key_location = format!("{}{}{}_{}", db_location, KEY_FILE_NAME, x_axis.id, y_axis.id);
-	U64::create_db(&library_key_location);
-    grow_database(&library_key_location, 1 + (x_axis.max * y_axis.max), U64::VALUE_SIZE);
+	create_file(&library_key_location, (1 + (x_axis.max * y_axis.max)) * U64::VALUE_SIZE as u64);
 }
 
 fn grow_database(db_location: &str, size_to_grow: u64, value_size: usize) {
