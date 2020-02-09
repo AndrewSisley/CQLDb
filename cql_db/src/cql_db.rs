@@ -1,3 +1,86 @@
+/*!
+This crate contains the core CQL Database functionality, orchestrating implementors of the [CqlType](../cql_model/trait.CqlType.html)
+trait allowing the system to act as an array-based database.
+
+The library allows the consumers to provide a path to a local directory which will be used to store array based data as defined by the user.
+The number of dimensions in the array, and their maximum sizes must be stated on create of the database, however it will only allocate storage
+space for elements in the final (Nth) dimension upon [linking](fn.link_dimensions.html) of higher level dimensions.
+
+Elements in the array can be writen to [one by one](fn.write_value.html), and read either as [single points](fn.read_value.html) or to a
+[stream](fn.read_to_stream.html).
+
+# Storage space consumption
+
+This crate will eagerly allocate file space as soon as it knows it its required, so before starting you should be aware of the disk space requirements.
+
+Given a database with dimensions of max size `[N1..Nn]`, calling [create_db](fn.create_db.html) will allocate the following (in bytes):
+```ignore
+const u64_size = 8;
+let axis_library_size = (1 + N) * u64_size;
+
+let mut total_key_library_size = 0;
+// for each pair of dimensions, excluding the last (Nn)
+for (Ni, Ni+1) in N1..(Nn-2) {
+    let key_library_size = 1 + (Ni * Ni+1) * u64_size;
+    total_key_library_size += key_library_size;
+}
+```
+Meaning that for a database with dimensions `[2, 3, 4, 5]`, the allocated space would equal:
+```ignore
+const u64_size = 8;
+let axis_library_size = (1 + 4) * u64_size; // 40
+
+// for each pair of dimensions, excluding the last (Nn)
+let total_key_library_size = (
+    1 + (2 * 3) * u64_size; // 56
+    1 + (3 * 4) * u64_size; // 104
+); // 160
+
+let total_allocation = axis_library_size + total_key_library_size; // 200 bytes
+```
+Additional space will be allocated for each penultimate dimenion `(Nn-1)` linked using the [link_dimensions](fn.link_dimensions.html) function, this is
+equal to the maximum size of the final dimension multiplied by the [VALUE_SIZE](../cql_model/trait.CqlType.html#associatedconstant.VALUE_SIZE) of the stored struct.
+
+# Examples
+
+The following example creates a 4 dimensional database of unsigned 64 bit integers, links a chain of elements, writes a value, and then reads it:
+```
+use cql_u64::U64;
+
+# const DATABASE_LOCATION: &str = "./.test_db";
+let point = [2, 4, 3, 1];
+let value = 5;
+
+// Create a database with a maximum capacity of `[2, 5, 3, 2]`
+cql_db::create_db::<U64>(
+    DATABASE_LOCATION,
+    &[2, 5, 3, 2]
+);
+
+// Link the 2nd element of the 1st dimension with the 4th element of the 2nd dimension, and
+// the 4th of the 2nd with the 3rd of the 3rd - for example:
+// Turbine 2 has data for Signal 4 for Year 3
+cql_db::link_dimensions::<U64>(
+    DATABASE_LOCATION,
+    &[2, 4, 3], // don't link the Nth dimension, can also be expressed as `&point[0..3]`
+);
+
+// Write value `value` to point `point`
+cql_db::write_value::<U64>(
+    DATABASE_LOCATION,
+    &point,
+    value
+);
+
+// Read the stored value from point `point`
+let result = cql_db::read_value::<U64>(
+    DATABASE_LOCATION,
+    &point
+);
+
+assert_eq!(result, value);
+```
+*/
 use std::io::Write;
 use std::fs::OpenOptions;
 
