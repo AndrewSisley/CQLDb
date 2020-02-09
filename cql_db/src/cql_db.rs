@@ -117,8 +117,29 @@ pub fn create_db<TStore: CqlType>(db_location: &str, array_size: &[u64]) {
 }
 
 /// Links dimension indexs together if they are not already linked.
+///
 /// This is required before read-writing to a location, and allocates the file space required to store the Nth dimension data.
 /// The last (Nth) dimension should not be linked.
+///
+/// # Examples
+/// ```
+/// # use cql_u64::U64;
+/// # const DATABASE_LOCATION: &str = "./.test_db";
+/// #
+/// // Create a database with a maximum capacity of `[2, 5, 3, 2]`
+/// cql_db::create_db::<U64>(
+///     DATABASE_LOCATION,
+///     &[2, 5, 3, 2]
+/// );
+///
+/// // Link the 2nd element of the 1st dimension with the 4th element of the 2nd dimension, and
+/// // the 4th of the 2nd with the 3rd of the 3rd - for example:
+/// // Turbine 2 has data for Signal 4 for Year 3
+/// cql_db::link_dimensions::<U64>(
+///     DATABASE_LOCATION,
+///     &[2, 4, 3], // don't link the Nth dimension
+/// );
+/// ```
 pub fn link_dimensions<TStore: CqlType>(db_location: &str, location: &[u64]) {
     let mut x_position = location[0];
 
