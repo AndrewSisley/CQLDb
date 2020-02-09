@@ -115,9 +115,9 @@ pub fn create_db<TStore: CqlType>(db_location: &str, array_size: &[u64]) {
     }
 }
 
-// Links dimension indexs together if they are not already linked.
-// This is required before read-writing to a location, and allocates the file space required to store the Nth dimension data.
-// The last (Nth) dimension should not be linked.
+/// Links dimension indexs together if they are not already linked.
+/// This is required before read-writing to a location, and allocates the file space required to store the Nth dimension data.
+/// The last (Nth) dimension should not be linked.
 pub fn link_dimensions<TStore: CqlType>(db_location: &str, location: &[u64]) {
     let mut x_position = location[0];
 
