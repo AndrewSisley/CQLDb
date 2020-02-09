@@ -201,6 +201,50 @@ pub fn write_value<TStore: CqlWritable>(db_location: &str, location: &[u64], val
 	TStore::write_to_db(&db_key_location, position, value)
 }
 
+/// Reads the value at the given location from the database.
+///
+/// # Examples
+/// ```
+/// # use cql_u64::U64;
+/// # const DATABASE_LOCATION: &str = "./.test_db";
+/// #
+/// let point = [2, 4, 3, 1];
+/// let value = 5;
+///
+/// cql_db::create_db::<U64>(
+///     DATABASE_LOCATION,
+///     &[2, 5, 3, 2]
+/// );
+///
+/// // higher order elements must be linked before they can be read from
+/// cql_db::link_dimensions::<U64>(
+///     DATABASE_LOCATION,
+///     &point[0..3],
+/// );
+///
+/// // Read the default value from point `point`
+/// let result1 = cql_db::read_value::<U64>(
+///     DATABASE_LOCATION,
+///     &point
+/// );
+///
+/// assert_eq!(0, result1);
+///
+/// // Write `value` to location `[2, 4, 3, 1]`
+/// cql_db::write_value::<U64>(
+///     DATABASE_LOCATION,
+///     &point,
+///     value
+/// );
+///
+/// // Read the now-populated value from point `point`
+/// let result2 = cql_db::read_value::<U64>(
+///     DATABASE_LOCATION,
+///     &point
+/// );
+///
+/// assert_eq!(value, result2);
+/// ```
 pub fn read_value<TStore: CqlReadable>(db_location: &str, location: &[u64]) -> TStore::ValueType {
 	let db_key_location = format!("{}{}", db_location, DB_FILE_NAME);
 
