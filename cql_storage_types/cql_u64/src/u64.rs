@@ -12,7 +12,7 @@ impl CqlType for U64 {
 }
 
 impl CqlWritable for U64 {
-    fn write_to_db(db_location: &str, value_location: u64, value: u64) {
+    fn write_to_db(db_location: &str, value_location: u64, value: Self::ValueType) {
         let mut file = OpenOptions::new().write(true).open(db_location).unwrap();
 
         file.seek(SeekFrom::Start(value_location * Self::VALUE_SIZE as u64)).unwrap();
@@ -24,7 +24,7 @@ impl CqlWritable for U64 {
 }
 
 impl CqlReadable for U64 {
-    fn read_from_db(db_location: &str, value_location: u64) -> u64 {
+    fn read_from_db(db_location: &str, value_location: u64) -> Self::ValueType {
         let mut file = File::open(&db_location).unwrap();
 
         file.seek(SeekFrom::Start(value_location * Self::VALUE_SIZE as u64)).unwrap();
