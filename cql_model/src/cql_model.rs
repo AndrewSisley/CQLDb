@@ -5,8 +5,24 @@ It does not contain any implementations.
 */
 use std::io::{ Write };
 
+/// The base CQL Value Type
+///
+/// All read/writable types to a CQL Database should derive from this.
+///
+/// # Examples
+/// This declares a CQL Type to read/write Strings of a maximum length of 255 bytes from the database:
+/// ```
+/// pub struct TinyText;
+///
+/// impl CqlType for TinyText {
+///     type ValueType = String;
+///     const VALUE_SIZE: usize = 255;
+/// }
+/// ```
 pub trait CqlType {
+    /// The type of value to read/write from the database.
     type ValueType;
+    /// The (maximum) size of the value to read/write from the database.
     const VALUE_SIZE: usize;
 }
 
