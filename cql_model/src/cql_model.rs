@@ -34,7 +34,11 @@ pub trait CqlWritable: CqlType {
     fn write_to_db(db_location: &str, value_location: u64, input_value: Self::ValueType);
 }
 
+/// A CQL Value Type with single point read capability.
+///
+/// Allows the implementing type's [Self::ValueType](trait.CqlType.html#associatedtype.ValueType) to be read point-by-point from a CQL database.
 pub trait CqlReadable: CqlType {
+    /// Reads the value stored in the given `value_location` in the given `db_location` (file path).
     fn read_from_db(db_location: &str, value_location: u64) -> Self::ValueType;
 }
 
