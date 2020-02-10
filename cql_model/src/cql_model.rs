@@ -26,7 +26,11 @@ pub trait CqlType {
     const VALUE_SIZE: usize;
 }
 
+/// A CQL Value Type with single point write capability.
+///
+/// Allows the implementing type's [Self::ValueType](trait.CqlType.html#associatedtype.ValueType) to be written to a CQL database.
 pub trait CqlWritable: CqlType {
+    /// Writes the given `input_value` to the given `value_location` in the given `db_location` (file path).
     fn write_to_db(db_location: &str, value_location: u64, input_value: Self::ValueType);
 }
 
