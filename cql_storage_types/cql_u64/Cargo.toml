@@ -18,5 +18,5 @@ cql_db = { path = "../../cql_db" }
 serial_test = "*"
 
 [dependencies]
-cql_model = { path = "../../cql_model" }
+cql_model = "0.1.*"
 byteorder = "1"
