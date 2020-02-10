@@ -2,6 +2,7 @@
 name = "cql_db"
 description = "Core CQL Database functionality - a lightweight array-based database"
 version = "0.1.0"
+repository = "https://github.com/AndrewSisley/CQLDb/tree/master/cql_db"
 authors = ["Andrew Sisley"]
 edition = "2018"
 license = "MIT OR Apache-2.0"
