@@ -50,3 +50,20 @@ Database size | Some/None | Start location | N points | Mean read time (ns) | Me
 [1, 1, 1, 1] | Some | [1, 1, 1, 1] | 1 | 11 276 (+/- 3 574) | 11 276
 [1, 1, 1, 100 000] | None | [1, 1, 1, 50 000] | 50 000 | 18 802 770 (+/- 33 520) | 376
 [1, 1, 1, 100 000] | Some | [1, 1, 1, 50 000] | 50 000 | 18 796 934 (+/- 71 134) | 376
+
+## License
+
+Licensed under either of
+
+ * Apache License, Version 2.0
+   ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
+ * MIT license
+   ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
+
+at your option.
+
+## Contribution
+
+Unless you explicitly state otherwise, any contribution intentionally submitted
+for inclusion in the work by you, as defined in the Apache-2.0 license, shall be
+dual licensed as above, without any additional terms or conditions.
