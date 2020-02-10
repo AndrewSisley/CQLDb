@@ -1,5 +1,6 @@
 [package]
 name = "cql_nullable_f64"
+description = "Nullable f64 storage support for CQL Database - a lightweight array-based database"
 version = "0.1.0"
 authors = ["Andrew Sisley"]
 edition = "2018"
