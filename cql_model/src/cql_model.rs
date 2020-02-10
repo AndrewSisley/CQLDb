@@ -1,3 +1,8 @@
+/*!
+This crate contains the core models/interfaces used by CQL Database.
+
+It does not contain any implementations.
+*/
 use std::io::{ Write };
 
 pub trait CqlType {
