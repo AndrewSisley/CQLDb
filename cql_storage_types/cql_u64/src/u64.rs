@@ -69,6 +69,7 @@ assert_eq!(result[1], 0);
 assert_eq!(result[2], value3);
 ```
 */
+#![doc(html_root_url = "https://docs.rs/cql_u64/0.1.0")]
 use std::fs::{ File, OpenOptions };
 use std::io::{ Read, Write, Cursor, SeekFrom, Seek };
 use byteorder::{ ReadBytesExt, WriteBytesExt, LittleEndian };

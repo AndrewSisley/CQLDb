@@ -81,6 +81,7 @@ let result = cql_db::read_value::<U64>(
 assert_eq!(result, value);
 ```
 */
+#![doc(html_root_url = "https://docs.rs/cql_db/0.1.0")]
 use std::io::Write;
 use std::fs::OpenOptions;
 
