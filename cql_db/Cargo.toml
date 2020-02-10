@@ -15,4 +15,4 @@ path = "src/cql_db.rs"
 
 [dependencies]
 cql_model = "0.1.0"
-cql_u64 = { path = "../cql_storage_types/cql_u64" }
+cql_u64 = "0.1.0"
