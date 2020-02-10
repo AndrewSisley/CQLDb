@@ -82,6 +82,9 @@ const NULL_FLAG: u8 = 0;
 const CONTENT_SIZE: usize = 8;
 const HAS_VALUE_SIZE: usize = 1;
 
+/// Static struct for declaring that you want to work with `Option<f64>` values in a CQL database.
+///
+/// Stateless - used for type information only.
 pub struct NullableF64;
 
 impl CqlType for NullableF64 {
