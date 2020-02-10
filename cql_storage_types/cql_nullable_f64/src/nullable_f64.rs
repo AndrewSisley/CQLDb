@@ -1,3 +1,74 @@
+/*!
+This crate implements various [CqlType](../cql_model/trait.CqlType.html) derivatives for storing `Option<f64>` values in a CQL database.
+
+Will allocate 9 bytes per value [linked](https://docs.rs/cql_db/0.1.0/cql_db/fn.link_dimensions.html).
+
+# Benchmarks
+Benchmarks supplied below are fairly rudimentary (and rounded) and are there to give a rough idea of relative costs.
+Full benchmark code can be found in [github](https://github.com/AndrewSisley/CQLDb/tree/master/cql_storage_types/cql_nullable_f64) and can be run with
+`rustup run nightly cargo bench`.
+
+Operation | Database dimensions | Mean time (ns)
+--- | --- | ---
+Single point read | 1 | 2 200 (+/- 400)
+Single point read | 4 | 11 600 (+/- 2 000)
+Single point write | 1 | 3 200 (+/- 550)
+Single point write | 4 | 12 700 (+/- 2 500)
+Stream read 1 point | 1 | 1 800 (+/- 300)
+Stream read 1 point | 4 | 11 100 (+/- 1 800)
+Stream read 50 000 points | 1 | 18 900 900 (+/- 70 000)
+Stream read 50 000 points | 4 | 18 800 000 (+/- 70 000)
+
+# Examples
+The following creates a 1D database, writes 2 values to it, and then streams them into an array.
+```
+# use std::io::{ Cursor, SeekFrom, Seek };
+# use cql_nullable_f64::{ NullableF64, unpack_stream };
+#
+# const DATABASE_LOCATION: &str = "./.test_db";
+const N_VALUES_TO_READ: usize = 3;
+
+let base_point = [0];
+let value1 = Some(-1.6);
+let value3 = Some(5.4);
+
+cql_db::create_db::<NullableF64>(
+    DATABASE_LOCATION,
+    &[3]
+);
+
+cql_db::write_value::<NullableF64>(
+    DATABASE_LOCATION,
+    &base_point,
+    value1
+);
+
+cql_db::write_value::<NullableF64>(
+    DATABASE_LOCATION,
+    &[base_point[0] + 2],
+    value3
+);
+
+let mut result: [Option<f64>; N_VALUES_TO_READ] = [None; N_VALUES_TO_READ];
+let mut stream = Cursor::new(Vec::new());
+
+cql_db::read_to_stream::<NullableF64>(
+    DATABASE_LOCATION,
+    &mut stream,
+    &base_point,
+    N_VALUES_TO_READ as u64
+);
+
+stream.seek(SeekFrom::Start(0)).unwrap();
+unpack_stream(&mut stream, N_VALUES_TO_READ, |idx, value| {
+    result[idx] = value
+});
+
+assert_eq!(result[0], value1);
+assert_eq!(result[1], None);
+assert_eq!(result[2], value3);
+```
+*/
 #![doc(html_root_url = "https://docs.rs/cql_nullable_f64/0.1.0")]
 use std::fs::{ File, OpenOptions };
 use std::io::{ Read, Write, Cursor, SeekFrom, Seek };
