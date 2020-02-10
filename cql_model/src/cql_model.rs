@@ -42,6 +42,10 @@ pub trait CqlReadable: CqlType {
     fn read_from_db(db_location: &str, value_location: u64) -> Self::ValueType;
 }
 
+/// A CQL Value Type with stream read capability.
+///
+/// Allows a range of the implementing type's [Self::ValueType](trait.CqlType.html#associatedtype.ValueType) to be read to stream from a CQL database.
 pub trait CqlStreamReadable: CqlType {
+    /// Reads `n_values` from the `value_location` in the given `db_location` (file path) to the given `stream`.
     fn read_to_stream(db_location: &str, stream: &mut dyn Write, value_location: u64, n_values: u64);
 }
