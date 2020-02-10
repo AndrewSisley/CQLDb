@@ -77,24 +77,20 @@ impl CqlStreamReadable for NullableF64 {
 pub fn unpack_stream<F>(stream: &mut Cursor<Vec<u8>>, n_values: usize, mut res: F) where F: FnMut(usize, Option<f64>) {
     for index in 0..n_values {
         let mut null_buffer = [0; HAS_VALUE_SIZE];
+
+        let n_bytes_read = stream.read(&mut null_buffer).unwrap();
+        if n_bytes_read == 0 {
+            break;
+        }
+
         let mut value_buffer = [0; CONTENT_SIZE];
+        stream.read(&mut value_buffer).unwrap();
 
-        match stream.read(&mut null_buffer) {
-            Ok(n) => {
-                if n == 0 { break; }
-                else if null_buffer[0] == NULL_FLAG {
-                    stream.read(&mut value_buffer).unwrap();
-                    res(index, None);
-                }
-                else {
-                    let mut value_buffer = [0; CONTENT_SIZE];
-                    stream.read(&mut value_buffer).unwrap();
-
-                    let mut rdr = Cursor::new(value_buffer);
-                    res(index, Some(rdr.read_f64::<LittleEndian>().unwrap()));
-                }
-            },
-            Err(_) => panic!()
+        if null_buffer[0] == NULL_FLAG {
+            res(index, None);
+        } else {
+            let mut rdr = Cursor::new(value_buffer);
+            res(index, Some(rdr.read_f64::<LittleEndian>().unwrap()));
         }
     }
 }
