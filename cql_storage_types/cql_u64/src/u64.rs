@@ -1,6 +1,6 @@
-use std::fs::{File, OpenOptions};
-use std::io::{Read, Write, Cursor, SeekFrom, Seek};
-use byteorder::{ReadBytesExt, WriteBytesExt, LittleEndian};
+use std::fs::{ File, OpenOptions };
+use std::io::{ Read, Write, Cursor, SeekFrom, Seek };
+use byteorder::{ ReadBytesExt, WriteBytesExt, LittleEndian };
 
 use cql_model::{ CqlType, CqlWritable, CqlReadable, CqlStreamReadable };
 
