@@ -1,6 +1,10 @@
 [package]
 name = "cql_model"
+description = "Core models/interfaces for CQL Database - a lightweight array-based database"
+keywords = ["cql", "database", "array", "storage", "nosql"]
+categories = ["database", "database-implementations", "filesystem", "caching"]
 version = "0.1.0"
+repository = "https://github.com/AndrewSisley/CQLDb/tree/master/cql_model"
 authors = ["Andrew Sisley"]
 edition = "2018"
 license = "MIT OR Apache-2.0"

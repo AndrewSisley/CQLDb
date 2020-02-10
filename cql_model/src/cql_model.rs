@@ -3,6 +3,7 @@ This crate contains the core models/interfaces used by CQL Database.
 
 It does not contain any implementations.
 */
+#![doc(html_root_url = "https://docs.rs/cql_model/0.1.0")]
 use std::io::{ Write };
 
 /// The base CQL Value Type
