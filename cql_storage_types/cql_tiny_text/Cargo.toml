@@ -3,6 +3,7 @@ name = "cql_tiny_text"
 version = "0.1.0"
 authors = ["Andrew Sisley"]
 edition = "2018"
+license = "MIT"
 
 [lib]
 name = "cql_tiny_text"
