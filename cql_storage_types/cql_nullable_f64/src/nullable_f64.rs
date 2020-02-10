@@ -1,7 +1,7 @@
 #![doc(html_root_url = "https://docs.rs/cql_nullable_f64/0.1.0")]
-use std::fs::{File, OpenOptions};
-use std::io::{Read, Write, Cursor, SeekFrom, Seek};
-use byteorder::{ReadBytesExt, WriteBytesExt, LittleEndian};
+use std::fs::{ File, OpenOptions };
+use std::io::{ Read, Write, Cursor, SeekFrom, Seek };
+use byteorder::{ ReadBytesExt, WriteBytesExt, LittleEndian };
 
 use cql_model::{ CqlType, CqlWritable, CqlReadable, CqlStreamReadable };
 
