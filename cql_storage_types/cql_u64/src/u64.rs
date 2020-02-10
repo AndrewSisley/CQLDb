@@ -75,6 +75,9 @@ use byteorder::{ ReadBytesExt, WriteBytesExt, LittleEndian };
 
 use cql_model::{ CqlType, CqlWritable, CqlReadable, CqlStreamReadable };
 
+/// Static struct for declaring that you want to work with `u64` values in a CQL database.
+///
+/// Stateless - used for type information only.
 pub struct U64;
 
 impl CqlType for U64 {
