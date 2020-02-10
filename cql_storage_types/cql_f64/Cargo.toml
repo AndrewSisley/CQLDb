@@ -14,5 +14,5 @@ name = "cql_f64"
 path = "src/f64.rs"
 
 [dependencies]
-cql_model = "0.1.*"
+cql_model = "0.1.0"
 byteorder = "1"
