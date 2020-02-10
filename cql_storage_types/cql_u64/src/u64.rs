@@ -1,3 +1,74 @@
+/*!
+This crate implements various [CqlType](../cql_model/trait.CqlType.html) derivatives for storing `u64` values in a CQL database.
+
+Will allocate 8 bytes per value [linked](../cql_db/fn.link_dimensions.html).
+
+# Benchmarks
+Benchmarks supplied below are fairly rudimentary (and rounded) and are there to give a rough idea of relative costs.
+Full benchmark code can be found in [github](https://github.com/AndrewSisley/CQLDb/tree/master/cql_storage_types/cql_u64) and can be run with
+`rustup run nightly cargo bench`.
+
+Operation | Database dimensions | Mean time (ns)
+--- | --- | ---
+Single point read | 1 | 1 830 (+/- 300)
+Single point read | 4 | 11 130 (+/- 1 700)
+Single point write | 1 | 2 385 (+/- 600)
+Single point write | 4 | 12 500 (+/- 2 200)
+Stream read 1 point | 1 | 1 800 (+/- 300)
+Stream read 1 point | 4 | 11 050 (+/- 1 700)
+Stream read 50 000 points | 1 | 16 150 900 (+/- 200 000)
+Stream read 50 000 points | 4 | 18 900 000 (+/- 160 000)
+
+# Examples
+The following creates a 1D database, writes 2 values to it, and then streams them into an array.
+```
+# use std::io::{ Cursor, SeekFrom, Seek };
+# use cql_u64::{ U64, unpack_stream };
+#
+# const DATABASE_LOCATION: &str = "./.test_db";
+const N_VALUES_TO_READ: usize = 3;
+
+let base_point = [0];
+let value1 = 1;
+let value3 = 5;
+
+cql_db::create_db::<U64>(
+    DATABASE_LOCATION,
+    &[3]
+);
+
+cql_db::write_value::<U64>(
+    DATABASE_LOCATION,
+    &base_point,
+    value1
+);
+
+cql_db::write_value::<U64>(
+    DATABASE_LOCATION,
+    &[base_point[0] + 2],
+    value3
+);
+
+let mut result = [0; N_VALUES_TO_READ];
+let mut stream = Cursor::new(Vec::new());
+
+cql_db::read_to_stream::<U64>(
+    DATABASE_LOCATION,
+    &mut stream,
+    &base_point,
+    N_VALUES_TO_READ as u64
+);
+
+stream.seek(SeekFrom::Start(0)).unwrap();
+unpack_stream(&mut stream, N_VALUES_TO_READ, |idx, value| {
+    result[idx] = value
+});
+
+assert_eq!(result[0], value1);
+assert_eq!(result[1], 0);
+assert_eq!(result[2], value3);
+```
+*/
 use std::fs::{ File, OpenOptions };
 use std::io::{ Read, Write, Cursor, SeekFrom, Seek };
 use byteorder::{ ReadBytesExt, WriteBytesExt, LittleEndian };
