@@ -127,6 +127,22 @@ impl CqlStreamReadable for U64 {
     }
 }
 
+/// Unpacks `n_values` of u64 from a stream, calling `res` with each value and it's index.
+/// # Examples
+/// ```ignore
+/// cql_db::read_to_stream::<U64>(
+///     DATABASE_LOCATION,
+///     &mut stream,
+///     &base_point,
+///     N_VALUES_TO_READ as u64
+/// );
+///
+/// stream.seek(SeekFrom::Start(0)).unwrap();
+///
+/// unpack_stream(&mut stream, N_VALUES_TO_READ, |idx, value| {
+///     result[idx] = value
+/// });
+/// ```
 pub fn unpack_stream<F>(stream: &mut Cursor<Vec<u8>>, n_values: usize, mut res: F) where F: FnMut(usize, u64) {
     for index in 0..n_values {
         let mut value_buffer = [0; U64::VALUE_SIZE];
