@@ -15,7 +15,7 @@ path = "src/tiny_text.rs"
 
 [dev-dependencies]
 cql_db = { path = "../../cql_db" }
-serial_test = "*"
+serial_test = "0.3.2"
 
 [dependencies]
 cql_model = "0.1.0"
