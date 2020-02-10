@@ -1,6 +1,7 @@
 [package]
 name = "cql_db"
 description = "Core CQL Database functionality - a lightweight array-based database"
+keywords = ["cql", "database", "array", "storage", "nosql"]
 version = "0.1.0"
 repository = "https://github.com/AndrewSisley/CQLDb/tree/master/cql_db"
 authors = ["Andrew Sisley"]
