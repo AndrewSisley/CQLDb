@@ -308,7 +308,7 @@ pub fn read_value<TStore: CqlReadable>(db_location: &str, location: &[u64]) -> T
 ///     N_VALUES_TO_READ as u64
 /// );
 ///
-/// stream.seek(SeekFrom::Start(0)).unwrap();
+/// stream.seek(SeekFrom::Start(0));
 ///
 /// unpack_stream(&mut stream, N_VALUES_TO_READ, |idx, value| {
 ///     result[idx] = value
