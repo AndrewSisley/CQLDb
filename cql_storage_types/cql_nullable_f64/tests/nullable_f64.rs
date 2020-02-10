@@ -7,16 +7,12 @@ use cql_nullable_f64::NullableF64;
 #[test]
 #[serial]
 fn _1d_f64_nullable_database_allows_for_single_point_read_writes() {
-    let axis = [
-        2,
-    ];
-
     let point1 = [2];
     let value1 = Some(42.87);
 
     cql_db::create_db::<NullableF64>(
         DATABASE_LOCATION,
-        &axis
+        &[2]
     );
 
     cql_db::write_value::<NullableF64>(
@@ -36,19 +32,12 @@ fn _1d_f64_nullable_database_allows_for_single_point_read_writes() {
 #[test]
 #[serial]
 fn _4d_f64_nullable_database_allows_for_single_point_read_writes() {
-    let axis = [
-        2,
-        5,
-        3,
-        2,
-    ];
-
     let point1 = [2, 4, 3, 1];
     let value1 = Some(-5.6);
 
     cql_db::create_db::<NullableF64>(
         DATABASE_LOCATION,
-        &axis
+        &[2, 5, 3, 2]
     );
 
     cql_db::link_dimensions::<NullableF64>(
@@ -73,13 +62,6 @@ fn _4d_f64_nullable_database_allows_for_single_point_read_writes() {
 #[test]
 #[serial]
 fn _4d_f64_nullable_database_allows_for_single_point_read_writes_given_multiple_values_and_overwrites() {
-    let axis = [
-        2,
-        5,
-        3,
-        4,
-    ];
-
     let point1 = [2, 4, 3, 1];
     let point2 = [1, 4, 3, 1];
     let point3 = [2, 1, 3, 1];
@@ -91,7 +73,7 @@ fn _4d_f64_nullable_database_allows_for_single_point_read_writes_given_multiple_
 
     cql_db::create_db::<NullableF64>(
         DATABASE_LOCATION,
-        &axis
+        &[2, 5, 3, 4]
     );
 
     cql_db::link_dimensions::<NullableF64>(
