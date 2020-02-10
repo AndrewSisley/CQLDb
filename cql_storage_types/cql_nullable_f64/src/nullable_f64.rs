@@ -7,11 +7,14 @@ use cql_model::{ CqlType, CqlWritable, CqlReadable, CqlStreamReadable };
 const HAS_VALUE_FLAG: u8 = 1;
 const NULL_FLAG: u8 = 0;
 
+const CONTENT_SIZE: usize = 8;
+const HAS_VALUE_SIZE: usize = 1;
+
 pub struct NullableF64;
 
 impl CqlType for NullableF64 {
     type ValueType = Option<f64>;
-    const VALUE_SIZE: usize = 9;
+    const VALUE_SIZE: usize = HAS_VALUE_SIZE + CONTENT_SIZE;
 }
 
 impl CqlWritable for NullableF64 {
@@ -22,10 +25,10 @@ impl CqlWritable for NullableF64 {
 
         match input_value {
             None => {
-                file.write(&[NULL_FLAG; 1]).unwrap();
+                file.write(&[NULL_FLAG; HAS_VALUE_SIZE]).unwrap();
             }
             Some(value) => {
-                file.write(&[HAS_VALUE_FLAG; 1]).unwrap();
+                file.write(&[HAS_VALUE_FLAG; HAS_VALUE_SIZE]).unwrap();
                 let mut wtr = vec![];
                 wtr.write_f64::<LittleEndian>(value).unwrap();
                 file.write(&wtr).unwrap();
@@ -40,13 +43,13 @@ impl CqlReadable for NullableF64 {
 
         file.seek(SeekFrom::Start(value_location * Self::VALUE_SIZE as u64)).unwrap();
 
-        let mut null_buffer = [0; 1];
+        let mut null_buffer = [0; HAS_VALUE_SIZE];
         file.read(&mut null_buffer).unwrap();
-        if null_buffer[0] == 0 {
+        if null_buffer[0] == NULL_FLAG {
             return None
         }
 
-        let mut value_buffer = [0; 8];
+        let mut value_buffer = [0; CONTENT_SIZE];
         file.read(&mut value_buffer).unwrap();
 
         let mut rdr = Cursor::new(value_buffer);
@@ -61,7 +64,7 @@ impl CqlStreamReadable for NullableF64 {
         file.seek(SeekFrom::Start(value_location * Self::VALUE_SIZE as u64)).unwrap();
 
         for _i in 0..n_values {
-            let mut buffer = [0; 9];
+            let mut buffer = [0; Self::VALUE_SIZE];
             file.read(&mut buffer).unwrap();
             stream.write(&mut buffer).unwrap();
         }
@@ -72,18 +75,18 @@ impl CqlStreamReadable for NullableF64 {
 
 pub fn unpack_stream<F>(stream: &mut Cursor<Vec<u8>>, n_values: usize, mut res: F) where F: FnMut(usize, Option<f64>) {
     for index in 0..n_values {
-        let mut null_buffer = [0; 1];
-        let mut value_buffer = [0; 8];
+        let mut null_buffer = [0; HAS_VALUE_SIZE];
+        let mut value_buffer = [0; CONTENT_SIZE];
 
         match stream.read(&mut null_buffer) {
             Ok(n) => {
                 if n == 0 { break; }
-                else if null_buffer[0] == 0 {
+                else if null_buffer[0] == NULL_FLAG {
                     stream.read(&mut value_buffer).unwrap();
                     res(index, None);
                 }
                 else {
-                    let mut value_buffer = [0; 8];
+                    let mut value_buffer = [0; CONTENT_SIZE];
                     stream.read(&mut value_buffer).unwrap();
 
                     let mut rdr = Cursor::new(value_buffer);
