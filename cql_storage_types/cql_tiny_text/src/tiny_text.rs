@@ -87,6 +87,9 @@ use cql_model::{ CqlType, CqlWritable, CqlReadable, CqlStreamReadable };
 const CONTENT_SIZE: usize = (255 * 4);
 const LENGTH_SIZE: usize = 2;
 
+/// Static struct for declaring that you want to work with `TinyText` values in a [CQL database](https://docs.rs/cql_db/0.1.0/cql_db/).
+///
+/// Stateless - used for type information only.
 pub struct TinyText;
 
 impl CqlType for TinyText {
