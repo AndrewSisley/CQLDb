@@ -80,7 +80,7 @@ impl CqlStreamReadable for TinyText {
 }
 
 pub fn unpack_stream<F>(stream: &mut Cursor<Vec<u8>>, n_values: usize, mut res: F) where F: FnMut(usize, String) {
-    let mut size_buffer = [0; 2];
+    let mut size_buffer = [0; LENGTH_SIZE];
 
     for index in 0..n_values {
         let n_bytes_read = stream.read(&mut size_buffer).unwrap();
