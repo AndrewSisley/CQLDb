@@ -83,22 +83,20 @@ pub fn unpack_stream<F>(stream: &mut Cursor<Vec<u8>>, n_values: usize, mut res: 
     let mut size_buffer = [0; 2];
 
     for index in 0..n_values {
-        match stream.read(&mut size_buffer) {
-            Ok(n) => {
-                if n == 0 { break; }
-                let mut size_rdr = Cursor::new(size_buffer);
-                let size = usize::from(size_rdr.read_u16::<LittleEndian>().unwrap());
+        let n_bytes_read = stream.read(&mut size_buffer).unwrap();
+        if n_bytes_read == 0 {
+            break;
+        }
 
-                if size == 0 {
-                    res(index, String::new());
-                }
-                else {
-                    let mut value_buffer = vec![0; size];
-                    stream.read_exact(&mut value_buffer).unwrap();
-                    res(index, String::from_utf8(value_buffer).unwrap());
-                }
-            },
-            Err(_) => panic!()
+        let mut size_rdr = Cursor::new(size_buffer);
+        let size = usize::from(size_rdr.read_u16::<LittleEndian>().unwrap());
+
+        if size == 0 {
+            res(index, String::new());
+        } else {
+            let mut value_buffer = vec![0; size];
+            stream.read_exact(&mut value_buffer).unwrap();
+            res(index, String::from_utf8(value_buffer).unwrap());
         }
     }
 }
