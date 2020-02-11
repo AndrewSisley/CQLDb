@@ -161,6 +161,22 @@ impl CqlStreamReadable for TinyText {
     }
 }
 
+/// Unpacks `n_values` of `String` from a stream, calling `res` with each value and it's index.
+/// # Examples
+/// ```ignore
+/// cql_db::read_to_stream::<TinyText>(
+///     DATABASE_LOCATION,
+///     &mut stream,
+///     &base_point,
+///     N_VALUES_TO_READ as u64
+/// );
+///
+/// stream.seek(SeekFrom::Start(0));
+///
+/// unpack_stream(&mut stream, N_VALUES_TO_READ, |idx, value| {
+///     result[idx] = value
+/// });
+/// ```
 pub fn unpack_stream<F>(stream: &mut Cursor<Vec<u8>>, n_values: usize, mut res: F) where F: FnMut(usize, String) {
     let mut size_buffer = [0; LENGTH_SIZE];
 
