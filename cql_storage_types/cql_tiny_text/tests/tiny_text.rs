@@ -36,6 +36,56 @@ fn _1d_tiny_text_database_allows_for_single_point_read_writes() {
 
 #[test]
 #[serial]
+fn _1d_tiny_text_database_allows_for_single_point_255_char_read_writes() {
+    let point1 = [1];
+    let value1 = "1";
+
+    cql_db::create_db::<TinyText>(
+        DATABASE_LOCATION,
+        &[1]
+    );
+
+    cql_db::write_value::<TinyText>(
+        DATABASE_LOCATION,
+        &point1,
+        value1.repeat(255)
+    );
+
+    let result1 = cql_db::read_value::<TinyText>(
+        DATABASE_LOCATION,
+        &point1
+    );
+
+    assert_eq!(result1, value1.repeat(255));
+}
+
+#[test]
+#[serial]
+fn _1d_tiny_text_database_allows_for_single_point_0_char_read_writes() {
+    let point1 = [1];
+    let value1 = "";
+
+    cql_db::create_db::<TinyText>(
+        DATABASE_LOCATION,
+        &[1]
+    );
+
+    cql_db::write_value::<TinyText>(
+        DATABASE_LOCATION,
+        &point1,
+        value1.to_string()
+    );
+
+    let result1 = cql_db::read_value::<TinyText>(
+        DATABASE_LOCATION,
+        &point1
+    );
+
+    assert_eq!(result1, value1.to_string());
+}
+
+#[test]
+#[serial]
 fn _4d_tiny_text_database_allows_for_single_point_read_writes() {
     let axis = [
         2,
