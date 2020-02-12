@@ -22,6 +22,17 @@ The [storage type](cql_storage_types) specific projects contains type specific c
 
 To use this project you'll need to import the [cql_db](cql_db) sub-project and either each of the [storage types](cql_storage_types) that you with to use, or the [cql_model](cql_model) and you own implementations of the traits within - should you wish to use other types.
 
+Rustdocs (with examples) and crates for all published components can be found in the table below:
+
+Repo link |Crate | Documentation | Description
+--- | --- | --- | ---
+[CQL Db](cql_db) | [crates.io](https://crates.io/crates/cql_db) | [docs.rs](https://docs.rs/cql_db) | Core CQL database engine
+[CQL Model](cql_model) | [crates.io](https://crates.io/crates/cql_model) | [docs.rs](https://docs.rs/cql_model) | Core CQL database models/interfaces
+[U64](cql_storage_types/cql_u64) | [crates.io](https://crates.io/crates/cql_u64) | [docs.rs](https://docs.rs/cql_u64) | Unsigned 64-bit interger storage support
+[F64](cql_storage_types/cql_f64) | *unpublished* | *unpublished* | 64-bit floating point storage support
+[NullableF64](cql_storage_types/cql_nullable_f64) | [crates.io](https://crates.io/crates/cql_nullable_f64) | [docs.rs](https://docs.rs/cql_nullable_f64) | Nullable 64-bit floating point storage support
+[TinyText](cql_storage_types/cql_tiny_text) | [crates.io](https://crates.io/crates/cql_tiny_text) | [docs.rs](https://docs.rs/cql_tiny_text) | 255 char utf-8 string storage support
+
 
 ## Benchmarks
 
