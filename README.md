@@ -111,7 +111,7 @@ More examples can be found in the [rustdocs](https://docs.rs/cql_db).
 
 ## Benchmarks
 
-Benchmarks (like everywhere else) are still very much a WIP, however you can find a quick and very rough summary in the table below (run on an 8th gen Intel i5 with SSD). You can run them locally from the [NullableF64](cql_storage_types/cql_nullable_f64) folder with the following command `rustup run nightly cargo bench` if/after you have installed the rust nightly build, it will use about 900 kB of disk space.
+Benchmarks (like everywhere else) are still very much a WIP, however you can find a quick and very rough summary in the table below (run on an 8th gen Intel i5 with SSD). You can run them locally from the [NullableF64](cql_storage_types/cql_nullable_f64) folder with the following command `rustup run nightly cargo bench` if/after you have installed the rust nightly build, it will use about 900 kB of disk space.  Other benchmarks are available in their respective storage type's directory.
 
 ### Single point read - NullableF64
 
