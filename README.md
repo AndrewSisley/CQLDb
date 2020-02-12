@@ -34,6 +34,11 @@ Repo link |Crate | Documentation | Description
 [TinyText](cql_storage_types/cql_tiny_text) | [crates.io](https://crates.io/crates/cql_tiny_text) | [docs.rs](https://docs.rs/cql_tiny_text) | 255 char utf-8 string storage support
 
 
+## Quick note on safety
+
+CQL Db currently performs next to no parameter checking, and has very little deliberate error handling.  For example, calling create_db with the directory of an existing database will replace the existing one, and read_to_stream will happily wrap itself around the bounds of it's requested location if you ask it to read more points than are available.  I plan on improving this soon (probably preserving the unsafe methods if the benchmarks take a hit), but have not yet done so yet, so take care.
+
+
 ## Getting started
 
 To get started, pick a storage type(s) (examples use NullableF64), and add it as a dependency to your Cargo.toml, along with the core cql_db crate:
