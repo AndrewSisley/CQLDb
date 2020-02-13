@@ -21,7 +21,7 @@ let axis_library_size = (1 + N) * u64_size;
 let mut total_key_library_size = 0;
 // for each pair of dimensions, excluding the last (Nn)
 for (Ni, Ni+1) in N1..(Nn-2) {
-    let key_library_size = 1 + (Ni * Ni+1) * u64_size;
+    let key_library_size = (1 + (Ni * Ni+1)) * u64_size;
     total_key_library_size += key_library_size;
 }
 ```
@@ -32,8 +32,8 @@ let axis_library_size = (1 + 4) * u64_size; // 40
 
 // for each pair of dimensions, excluding the last (Nn)
 let total_key_library_size = (
-    1 + (2 * 3) * u64_size; // 56
-    1 + (3 * 4) * u64_size; // 104
+    (1 + (2 * 3)) * u64_size; // 56
+    (1 + (3 * 4)) * u64_size; // 104
 ); // 160
 
 let total_allocation = axis_library_size + total_key_library_size; // 200 bytes
