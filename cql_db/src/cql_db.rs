@@ -99,7 +99,7 @@ let result = cql_db::read_value::<U64>(
 assert_eq!(result, value);
 ```
 */
-#![doc(html_root_url = "https://docs.rs/cql_db/0.1.0")]
+#![doc(html_root_url = "https://docs.rs/cql_db/0.2.0")]
 use std::io::Write;
 use std::fs::OpenOptions;
 
@@ -392,7 +392,7 @@ fn add_key<TStore: CqlType>(db_location: &str, x: u64, y: u64, x_axis: &AxisDefi
     }
 
     U64::write_to_db(&library_key_location, 0, new_key);
-	U64::write_to_db(&library_key_location, 1 + key_index, new_key);
+	U64::write_to_db(&library_key_location, key_index, new_key);
 
     new_key
 }
@@ -428,7 +428,7 @@ fn get_key(db_location: &str, x: &AxisPoint, y: &AxisPoint, y_axis: &AxisDefinit
 	let library_key_location = format!("{}{}{}_{}", db_location, KEY_FILE_NAME, x.axis_id, y.axis_id);
 	let key_location = calc_index(x.position, y.position, y_axis.max);
 
-    U64::read_from_db(&library_key_location, 1 + key_location)
+    U64::read_from_db(&library_key_location, key_location)
 }
 
 fn get_number_of_axis(db_location: &str) -> u64 {

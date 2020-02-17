@@ -1,8 +1,8 @@
 /*!
 This crate implements various [CqlType](../cql_model/trait.CqlType.html) derivatives for storing String values of up to (and including) 255 chars in a
-[CQL database](https://docs.rs/cql_db/0.1.0/cql_db/).
+[CQL database](https://docs.rs/cql_db/0.2.0/cql_db/).
 
-Will allocate 1020 bytes per value [linked](https://docs.rs/cql_db/0.1.0/cql_db/fn.link_dimensions.html).
+Will allocate 1020 bytes per value [linked](https://docs.rs/cql_db/0.2.0/cql_db/fn.link_dimensions.html).
 
 # Benchmarks
 Benchmarks supplied below are fairly rudimentary (and rounded) and are there to give a rough idea of relative costs.
@@ -87,7 +87,7 @@ use cql_model::{ CqlType, CqlWritable, CqlReadable, CqlStreamReadable };
 const CONTENT_SIZE: usize = (255 * 4);
 const LENGTH_SIZE: usize = 2;
 
-/// Static struct for declaring that you want to work with `TinyText` values in a [CQL database](https://docs.rs/cql_db/0.1.0/cql_db/).
+/// Static struct for declaring that you want to work with `TinyText` values in a [CQL database](https://docs.rs/cql_db/0.2.0/cql_db/).
 ///
 /// Stateless - used for type information only.
 pub struct TinyText;

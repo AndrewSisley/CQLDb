@@ -1,7 +1,7 @@
 /*!
 This crate implements various [CqlType](../cql_model/trait.CqlType.html) derivatives for storing `Option<f64>` values in a CQL database.
 
-Will allocate 9 bytes per value [linked](https://docs.rs/cql_db/0.1.0/cql_db/fn.link_dimensions.html).
+Will allocate 9 bytes per value [linked](https://docs.rs/cql_db/0.2.0/cql_db/fn.link_dimensions.html).
 
 # Benchmarks
 Benchmarks supplied below are fairly rudimentary (and rounded) and are there to give a rough idea of relative costs.
