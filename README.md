@@ -9,6 +9,8 @@ The project works by treating the file system as an N dimensional array, removin
 
 The project was originally built with an eye on storing large volumes of relational time series data, however I am looking to explore other uses in my other projects.
 
+Database is one indexed.
+
 
 ## Project structure
 
