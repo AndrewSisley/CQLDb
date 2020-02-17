@@ -13,6 +13,9 @@ license = "MIT OR Apache-2.0"
 name = "cql_db"
 path = "src/cql_db.rs"
 
+[dev-dependencies]
+serial_test = "0.3.2"
+
 [dependencies]
 cql_model = "0.1.0"
 cql_u64 = "0.1.0"

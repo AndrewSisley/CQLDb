@@ -11,10 +11,11 @@ Elements in the array can be writen to [one by one](fn.write_value.html), and re
 
 # Storage space consumption
 
-This crate will eagerly allocate file space as soon as it knows it it's required, so before starting you should be aware of the disk space requirements.
+This crate will allocate file space upon linking of dimensions, as well as a small amount on create of a database, so before starting you
+should be aware of the disk space requirements.
 
-Given a database with `N` dimensions of max size `[N1..Nn]`, calling [create_db](fn.create_db.html) will allocate `(1 + N) * 8` bytes.
-[Linking](fn.link_dimensions.html) a set of dimensions, will then expand the maximum file sizes according to the function below:
+Given a database with `N` dimensions, calling [create_db](fn.create_db.html) will allocate `(1 + N) * 8` bytes. Thereafter,
+[linking](fn.link_dimensions.html) a set of dimensions, will then expand the maximum file sizes according to the function below:
 ```
 # const DATABASE_LOCATION: &str = "./.test_db";
 # use cql_u64::U64;
