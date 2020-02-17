@@ -1,5 +1,5 @@
 # CQLDb
-Lightweight, growable, array-based storage solution, currently with the out-of-the-box storage types (custom types also possible):
+Lightweight, growable, array-based storage solution, currently with the out-of-the-box storage types below (custom types also possible):
 - [U64](cql_storage_types/cql_u64) (unsigned 64 integers)
 - [F64](cql_storage_types/cql_f64) (64-bit floating point)
 - [NullableF64](cql_storage_types/cql_nullable_f64) (nullable 64-bit floating point)
@@ -8,6 +8,8 @@ Lightweight, growable, array-based storage solution, currently with the out-of-t
 The project works by treating the file system as an N dimensional array, removing the need to scan for items in order to find them. Currently the number of dimensions must be specified on create of the database, however each dimension (bar the last) may grow on demand.
 
 The project was originally built with an eye on storing large volumes of relational time series data, however I am looking to explore other uses in my other projects.
+
+Database is one indexed.
 
 
 ## Project structure
