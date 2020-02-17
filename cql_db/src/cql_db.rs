@@ -13,31 +13,48 @@ Elements in the array can be writen to [one by one](fn.write_value.html), and re
 
 This crate will eagerly allocate file space as soon as it knows it it's required, so before starting you should be aware of the disk space requirements.
 
-Given a database with dimensions of max size `[N1..Nn]`, calling [create_db](fn.create_db.html) will allocate the following (in bytes):
-```ignore
-const u64_size = 8;
-let axis_library_size = (1 + N) * u64_size;
-
-let mut total_key_library_size = 0;
-// for each pair of dimensions, excluding the last (Nn)
-for (Ni, Ni+1) in N1..(Nn-2) {
-    let key_library_size = (1 + (Ni * Ni+1)) * u64_size;
-    total_key_library_size += key_library_size;
-}
+Given a database with `N` dimensions of max size `[N1..Nn]`, calling [create_db](fn.create_db.html) will allocate `(1 + N) * 8` bytes.
+[Linking](fn.link_dimensions.html) a set of dimensions, will then expand the maximum file sizes according to the function below:
 ```
-Meaning that for a database with dimensions `[2, 3, 4, 5]`, the allocated space would equal:
-```ignore
-const u64_size = 8;
-let axis_library_size = (1 + 4) * u64_size; // 40
+# const DATABASE_LOCATION: &str = "./.test_db";
+# use cql_u64::U64;
+# use std::fs::OpenOptions;
+#
+let database_definition = [6, 7, 8, 9, 10];
+let link = [2, 3, 4, 5];
 
-// for each pair of dimensions, excluding the last (Nn)
-let total_key_library_size = (
-    (1 + (2 * 3)) * u64_size; // 56
-    (1 + (3 * 4)) * u64_size; // 104
-); // 160
+# cql_db::create_db::<U64>(
+#    DATABASE_LOCATION,
+#    &database_definition
+# );
+#
+cql_db::link_dimensions::<U64>(
+    DATABASE_LOCATION,
+    &link,
+);
 
-let total_allocation = axis_library_size + total_key_library_size; // 200 bytes
+let mut key_file_size = 176; // total size of the key files in bytes
+# key_file_size = OpenOptions::new().read(true).open("./.test_db/key1_2").unwrap().metadata().unwrap().len();
+# key_file_size = key_file_size + OpenOptions::new().read(true).open("./.test_db/key2_3").unwrap().metadata().unwrap().len();
+# key_file_size = key_file_size + OpenOptions::new().read(true).open("./.test_db/key3_4").unwrap().metadata().unwrap().len();
+
+let n_dimensions_linked = 3; // +1 per key file
+let n_elements_linked_between_second_and_third_dimension = 1; // includes this link
+let n_elements_linked_between_third_and_fourth_dimension = 1; // includes this link
+
+assert_eq!(
+    (n_dimensions_linked +
+        (
+            (((link[0] - 1) * database_definition[1]) + link[1]) +
+            (((n_elements_linked_between_second_and_third_dimension - 1) * database_definition[2]) + link[2]) +
+            (((n_elements_linked_between_third_and_fourth_dimension - 1) * database_definition[3]) + link[3])
+        )
+    ) * 8,
+    key_file_size
+);
 ```
+Should additional elements be linked, the key libraries will expand accordingly.
+
 Additional space will be allocated for each penultimate dimenion `(Nn-1)` linked using the [link_dimensions](fn.link_dimensions.html) function, this is
 equal to the maximum size of the final dimension multiplied by the [VALUE_SIZE](../cql_model/trait.CqlType.html#associatedconstant.VALUE_SIZE) of the stored struct.
 
@@ -113,7 +130,7 @@ pub fn create_db<TStore: CqlType>(db_location: &str, array_size: &[u64]) {
     create_axis_library(db_location, &axis_definitions);
 
     for index in 1..axis_definitions.len() - 1 {
-        create_key_library(db_location, &axis_definitions[index - 1], &axis_definitions[index]);
+        create_key_library(db_location, axis_definitions[index - 1].id, axis_definitions[index].id);
     }
 }
 
@@ -349,9 +366,9 @@ fn create_axis_library(db_location: &str, axis_definitions: &[AxisDefinition]) {
 // reducing the storage space required.  Each key library contains the id of the last key added in the first block, and then acts like an 1D array
 // for every point thereafter, with each entry pointing at the location of it's data in the next key library, or the start of the actual data if
 // it is the penultimate dimension (N - 1).
-fn create_key_library(db_location: &str, x_axis: &AxisDefinition, y_axis: &AxisDefinition) {
-	let library_key_location = format!("{}{}{}_{}", db_location, KEY_FILE_NAME, x_axis.id, y_axis.id);
-	create_file(&library_key_location, (1 + (x_axis.max * y_axis.max)) * U64::VALUE_SIZE as u64);
+fn create_key_library(db_location: &str, x_axis_id: u64, y_axis_id: u64) {
+	let library_key_location = format!("{}{}{}_{}", db_location, KEY_FILE_NAME, x_axis_id, y_axis_id);
+	create_file(&library_key_location, 0);
 }
 
 fn grow_database(db_location: &str, size_to_grow: u64, value_size: usize) {
