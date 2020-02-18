@@ -119,8 +119,6 @@ use vectors::calculate_index;
 
 /// Creates an CQL database in the provided directory, overwriting existing files.
 pub fn create_db<TStore: CqlType>(db_location: &str, array_size: &[u64]) {
-    database::create::<TStore>(&db_location);
-
     let mut axis_definitions = Vec::with_capacity(array_size.len());
     for index in 0..array_size.len() {
         axis_definitions.push(AxisDefinition {
@@ -129,6 +127,7 @@ pub fn create_db<TStore: CqlType>(db_location: &str, array_size: &[u64]) {
         });
     }
 
+    database::create::<TStore>(&db_location);
     axis_library::create(db_location, &axis_definitions);
     key_library::create(db_location, &axis_definitions);
 }
