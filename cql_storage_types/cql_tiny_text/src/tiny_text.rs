@@ -30,8 +30,12 @@ Stream read 50 000 points | 255 | 4 | 43 600 000 (+/- 1 787 000)
 # Examples
 The following creates a 1D database, writes 2 values to it, and then streams them into an array.
 ```
+# use std::convert::TryFrom;
 # use std::io::{ Cursor, SeekFrom, Seek };
 # use cql_tiny_text::{ TinyText, unpack_stream };
+#
+# use std::error::Error;
+# fn main() -> Result<(), Box<dyn Error>> {
 #
 # const DATABASE_LOCATION: &str = "./.test_db";
 const N_VALUES_TO_READ: usize = 3;
@@ -48,13 +52,13 @@ cql_db::create_db::<TinyText>(
 cql_db::write_value::<TinyText>(
     DATABASE_LOCATION,
     &base_point,
-    value1.to_string()
+    TinyText::try_from(value1)?
 );
 
 cql_db::write_value::<TinyText>(
     DATABASE_LOCATION,
     &[base_point[0] + 2],
-    value3.to_string()
+    TinyText::try_from(value3)?
 );
 
 let mut result = Vec::with_capacity(N_VALUES_TO_READ);
@@ -72,12 +76,18 @@ unpack_stream(&mut stream, N_VALUES_TO_READ, |_, value| {
     result.push(value)
 });
 
-assert_eq!(result[0], value1.to_string());
-assert_eq!(result[1], String::new());
-assert_eq!(result[2], value3.to_string());
+assert_eq!(result[0], TinyText::try_from(value1)?);
+assert_eq!(result[1], TinyText::new());
+assert_eq!(result[2], TinyText::try_from(value3)?);
+# Ok(())
+# }
 ```
 */
-#![doc(html_root_url = "https://docs.rs/cql_tiny_text/0.1.0")]
+#![doc(html_root_url = "https://docs.rs/cql_tiny_text/0.2.0")]
+
+pub mod errors;
+pub mod interop;
+
 use std::fs::{ File, OpenOptions };
 use std::io::{ Read, Write, Cursor, SeekFrom, Seek };
 use byteorder::{ ReadBytesExt, WriteBytesExt, LittleEndian };
@@ -87,14 +97,21 @@ use cql_model::{ CqlType, CqlWritable, CqlReadable, CqlStreamReadable };
 const CONTENT_SIZE: usize = (255 * 4);
 const LENGTH_SIZE: usize = 2;
 
-/// Static struct for declaring that you want to work with `TinyText` values in a [CQL database](https://docs.rs/cql_db/0.2.0/cql_db/).
+/// Tuple wrapping `String` for working with `TinyText` values in a [CQL database](https://docs.rs/cql_db/0.2.0/cql_db/).
 ///
-/// Stateless - used for type information only.
-pub struct TinyText;
+/// Limited in size to `255 * 4 = 1020` bytes.
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Default, Hash)]
+pub struct TinyText(String);
 
 impl CqlType for TinyText {
-    type ValueType = String;
+    type ValueType = Self;
     const VALUE_SIZE: usize = CONTENT_SIZE + LENGTH_SIZE;
+}
+
+impl TinyText {
+    pub fn new() -> Self {
+        TinyText(String::new())
+    }
 }
 
 impl CqlWritable for TinyText {
@@ -103,12 +120,12 @@ impl CqlWritable for TinyText {
 
         file.seek(SeekFrom::Start(value_location * Self::VALUE_SIZE as u64)).unwrap();
 
-        let input_length: u16 = input_value.len() as u16;
+        let input_length: u16 = input_value.0.len() as u16;
         let mut length_wtr = vec![];
         length_wtr.write_u16::<LittleEndian>(input_length).unwrap();
         file.write(&length_wtr).unwrap();
 
-        file.write(&input_value.into_bytes()).unwrap();
+        file.write(&input_value.0.into_bytes()).unwrap();
     }
 }
 
@@ -125,14 +142,14 @@ impl CqlReadable for TinyText {
         let size = usize::from(size_rdr.read_u16::<LittleEndian>().unwrap());
 
         if size == 0 {
-            return String::new()
+            return TinyText::new()
         }
 
         let mut value_buffer = [0; CONTENT_SIZE];
         file.read(&mut value_buffer).unwrap();
 
         let string_bytes = value_buffer[0..size].to_vec();
-        String::from_utf8(string_bytes).unwrap()
+        TinyText(String::from_utf8(string_bytes).unwrap())
     }
 }
 
@@ -161,7 +178,7 @@ impl CqlStreamReadable for TinyText {
     }
 }
 
-/// Unpacks `n_values` of `String` from a stream, calling `res` with each value and it's index.
+/// Unpacks `n_values` of `TinyText` from a stream, calling `res` with each value and it's index.
 /// # Examples
 /// ```ignore
 /// cql_db::read_to_stream::<TinyText>(
@@ -177,7 +194,7 @@ impl CqlStreamReadable for TinyText {
 ///     result[idx] = value
 /// });
 /// ```
-pub fn unpack_stream<F>(stream: &mut Cursor<Vec<u8>>, n_values: usize, mut res: F) where F: FnMut(usize, String) {
+pub fn unpack_stream<F>(stream: &mut Cursor<Vec<u8>>, n_values: usize, mut res: F) where F: FnMut(usize, TinyText) {
     let mut size_buffer = [0; LENGTH_SIZE];
 
     for index in 0..n_values {
@@ -190,11 +207,11 @@ pub fn unpack_stream<F>(stream: &mut Cursor<Vec<u8>>, n_values: usize, mut res: 
         let size = usize::from(size_rdr.read_u16::<LittleEndian>().unwrap());
 
         if size == 0 {
-            res(index, String::new());
+            res(index, TinyText::new());
         } else {
             let mut value_buffer = vec![0; size];
             stream.read_exact(&mut value_buffer).unwrap();
-            res(index, String::from_utf8(value_buffer).unwrap());
+            res(index, TinyText(String::from_utf8(value_buffer).unwrap()));
         }
     }
 }

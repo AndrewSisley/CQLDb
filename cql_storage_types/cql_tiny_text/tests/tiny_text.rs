@@ -2,6 +2,7 @@ mod constants;
 
 use std::io::{ Cursor, SeekFrom, Seek };
 use serial_test::serial;
+use std::convert::TryFrom;
 use cql_tiny_text::{ TinyText, unpack_stream };
 use constants::DATABASE_LOCATION;
 
@@ -23,7 +24,7 @@ fn _1d_tiny_text_database_allows_for_single_point_read_writes() {
     cql_db::write_value::<TinyText>(
         DATABASE_LOCATION,
         &point1,
-        value1.to_string()
+        TinyText::try_from(value1).unwrap()
     );
 
     let result1 = cql_db::read_value::<TinyText>(
@@ -31,7 +32,7 @@ fn _1d_tiny_text_database_allows_for_single_point_read_writes() {
         &point1
     );
 
-    assert_eq!(result1, value1.to_string());
+    assert_eq!(String::from(result1), value1);
 }
 
 #[test]
@@ -48,7 +49,7 @@ fn _1d_tiny_text_database_allows_for_single_point_255_char_read_writes() {
     cql_db::write_value::<TinyText>(
         DATABASE_LOCATION,
         &point1,
-        value1.repeat(255)
+        TinyText::try_from(value1.repeat(255)).unwrap()
     );
 
     let result1 = cql_db::read_value::<TinyText>(
@@ -56,14 +57,13 @@ fn _1d_tiny_text_database_allows_for_single_point_255_char_read_writes() {
         &point1
     );
 
-    assert_eq!(result1, value1.repeat(255));
+    assert_eq!(String::from(result1), value1.repeat(255));
 }
 
 #[test]
 #[serial]
-fn _1d_tiny_text_database_allows_for_single_point_0_char_read_writes() {
+fn _1d_tiny_text_database_allows_for_single_point_empty_read_writes() {
     let point1 = [1];
-    let value1 = "";
 
     cql_db::create_db::<TinyText>(
         DATABASE_LOCATION,
@@ -73,7 +73,7 @@ fn _1d_tiny_text_database_allows_for_single_point_0_char_read_writes() {
     cql_db::write_value::<TinyText>(
         DATABASE_LOCATION,
         &point1,
-        value1.to_string()
+        TinyText::new()
     );
 
     let result1 = cql_db::read_value::<TinyText>(
@@ -81,7 +81,7 @@ fn _1d_tiny_text_database_allows_for_single_point_0_char_read_writes() {
         &point1
     );
 
-    assert_eq!(result1, value1.to_string());
+    assert_eq!(String::from(result1), String::new());
 }
 
 #[test]
@@ -110,7 +110,7 @@ fn _4d_tiny_text_database_allows_for_single_point_read_writes() {
     cql_db::write_value::<TinyText>(
         DATABASE_LOCATION,
         &point1,
-        value1.to_string()
+        TinyText::try_from(value1).unwrap()
     );
 
     let result1 = cql_db::read_value::<TinyText>(
@@ -118,7 +118,7 @@ fn _4d_tiny_text_database_allows_for_single_point_read_writes() {
         &point1
     );
 
-    assert_eq!(result1, value1.to_string());
+    assert_eq!(String::from(result1), value1);
 }
 
 #[test]
@@ -163,19 +163,19 @@ fn _4d_tiny_text_database_allows_for_single_point_read_writes_given_multiple_val
     cql_db::write_value::<TinyText>(
         DATABASE_LOCATION,
         &point1,
-        value1.to_string()
+        TinyText::try_from(value1).unwrap()
     );
 
     cql_db::write_value::<TinyText>(
         DATABASE_LOCATION,
         &point2,
-        value2.to_string()
+        TinyText::try_from(value2).unwrap()
     );
 
     cql_db::write_value::<TinyText>(
         DATABASE_LOCATION,
         &point3,
-        value3.to_string()
+        TinyText::try_from(value3).unwrap()
     );
 
     let result1 = cql_db::read_value::<TinyText>(
@@ -198,15 +198,15 @@ fn _4d_tiny_text_database_allows_for_single_point_read_writes_given_multiple_val
         &point4
     );
 
-    assert_eq!(result1, value1.to_string());
-    assert_eq!(result2, value2.to_string());
-    assert_eq!(result3, value3.to_string());
-    assert_eq!(result4, String::new());
+    assert_eq!(String::from(result1), value1);
+    assert_eq!(String::from(result2), value2);
+    assert_eq!(String::from(result3), value3);
+    assert_eq!(String::from(result4), String::new());
 
     cql_db::write_value::<TinyText>(
         DATABASE_LOCATION,
         &point2,
-        value5.to_string()
+        TinyText::try_from(value5).unwrap()
     );
 
     let result5 = cql_db::read_value::<TinyText>(
@@ -214,7 +214,7 @@ fn _4d_tiny_text_database_allows_for_single_point_read_writes_given_multiple_val
         &point2
     );
 
-    assert_eq!(result5, value5.to_string());
+    assert_eq!(String::from(result5), value5);
 }
 
 #[test]
@@ -236,10 +236,10 @@ fn _1d_tiny_text_database_allows_for_single_point_populated_stream_reads() {
     cql_db::write_value::<TinyText>(
         DATABASE_LOCATION,
         &point1,
-        value1.to_string()
+        TinyText::try_from(value1).unwrap()
     );
 
-    let mut result: [String; 1] = [String::new(); 1];
+    let mut result: [TinyText; 1] = [TinyText::new(); 1];
     let mut stream = Cursor::new(Vec::new());
 
     cql_db::read_to_stream::<TinyText>(
@@ -255,7 +255,7 @@ fn _1d_tiny_text_database_allows_for_single_point_populated_stream_reads() {
         result[idx] = value
     });
 
-    assert_eq!(result[0], value1.to_string());
+    assert_eq!(String::from(result[0].clone()), value1);
 }
 
 #[test]
@@ -273,7 +273,7 @@ fn _1d_tiny_text_database_allows_for_single_point_empty_stream_reads() {
         &axis
     );
 
-    let mut result: [String; 1] = [String::new(); 1];
+    let mut result: [TinyText; 1] = [TinyText::new(); 1];
     let mut stream = Cursor::new(Vec::new());
 
     cql_db::read_to_stream::<TinyText>(
@@ -289,7 +289,7 @@ fn _1d_tiny_text_database_allows_for_single_point_empty_stream_reads() {
         result[idx] = value
     });
 
-    assert_eq!(result[0], String::new());
+    assert_eq!(String::from(result[0].clone()), String::new());
 }
 
 #[test]
@@ -315,27 +315,27 @@ fn _1d_tiny_text_database_allows_for_multi_point_stream_reads() {
     cql_db::write_value::<TinyText>(
         DATABASE_LOCATION,
         &point1,
-        value1.to_string()
+        TinyText::try_from(value1).unwrap()
     );
 
     cql_db::write_value::<TinyText>(
         DATABASE_LOCATION,
         &point2,
-        value2.to_string()
+        TinyText::try_from(value2).unwrap()
     );
 
     cql_db::write_value::<TinyText>(
         DATABASE_LOCATION,
         &point4,
-        value4.to_string()
+        TinyText::try_from(value4).unwrap()
     );
 
-    let mut result: [String; N_VALUES_TO_READ] = [
-        String::new(),
-        String::new(),
-        String::new(),
-        String::new(),
-        String::new(),
+    let mut result: [TinyText; N_VALUES_TO_READ] = [
+        TinyText::new(),
+        TinyText::new(),
+        TinyText::new(),
+        TinyText::new(),
+        TinyText::new(),
     ];
     let mut stream = Cursor::new(Vec::new());
 
@@ -352,9 +352,9 @@ fn _1d_tiny_text_database_allows_for_multi_point_stream_reads() {
         result[idx] = value
     });
 
-    assert_eq!(result[0], value1.to_string());
-    assert_eq!(result[1], value2.to_string());
-    assert_eq!(result[2], String::new());
-    assert_eq!(result[3], value4.to_string());
-    assert_eq!(result[4], String::new());
+    assert_eq!(String::from(result[0].clone()), value1);
+    assert_eq!(String::from(result[1].clone()), value2);
+    assert_eq!(String::from(result[2].clone()), String::new());
+    assert_eq!(String::from(result[3].clone()), value4);
+    assert_eq!(String::from(result[4].clone()), String::new());
 }
