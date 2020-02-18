@@ -9,10 +9,6 @@ authors = ["Andrew Sisley"]
 edition = "2018"
 license = "MIT OR Apache-2.0"
 
-[lib]
-name = "cql_db"
-path = "src/cql_db.rs"
-
 [dev-dependencies]
 serial_test = "0.3.2"
 
