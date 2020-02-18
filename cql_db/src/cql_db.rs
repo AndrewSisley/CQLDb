@@ -392,14 +392,14 @@ fn add_key<TStore: CqlType>(db_location: &str, x: u64, y: u64, x_axis: &AxisDefi
     }
 
     U64::write_to_db(&library_key_location, 0, new_key);
-	U64::write_to_db(&library_key_location, key_index, new_key);
+	U64::write_to_db(&library_key_location, 1 + key_index, new_key);
 
     new_key
 }
 
 fn calculate_position(db_location: &str, location: &[u64]) -> u64 {
     if location.len() == 1 {
-        return location[0]
+        return location[0] - 1
     }
 
     let last_index = location.len() as u64 - 1;
@@ -428,7 +428,7 @@ fn get_key(db_location: &str, x: &AxisPoint, y: &AxisPoint, y_axis: &AxisDefinit
 	let library_key_location = format!("{}{}{}_{}", db_location, KEY_FILE_NAME, x.axis_id, y.axis_id);
 	let key_location = calc_index(x.position, y.position, y_axis.max);
 
-    U64::read_from_db(&library_key_location, key_location)
+    U64::read_from_db(&library_key_location, 1 + key_location)
 }
 
 fn get_number_of_axis(db_location: &str) -> u64 {
@@ -444,7 +444,7 @@ fn get_axis_definition(db_location: &str, axis_id: u64) -> AxisDefinition {
 }
 
 fn calc_index(x: u64, y: u64, y_max: u64) -> u64 {
-	((x - 1) * y_max) + y//overflow check on -1!! happens if axis are not linked
+	((x - 1) * y_max) + (y - 1)//overflow check on -1!! happens if axis are not linked
 }
 
 struct AxisDefinition {
