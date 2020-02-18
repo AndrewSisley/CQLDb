@@ -6,8 +6,6 @@ use cql_model::{
     CqlReadable,
 };
 
-use crate::database;
-use crate::axis_library;
 use crate::axis_library::AxisDefinition;
 use crate::vectors::calculate_index;
 
@@ -38,11 +36,6 @@ pub fn add<TStore: CqlType>(db_location: &str, x: u64, y: u64, x_axis: &AxisDefi
 
 	let new_key = last_key + 1 as u64;
 	let key_index = calculate_index(x, y, y_axis.max);
-
-    let last_axis_id = axis_library::count(db_location);
-    if y_axis.id == last_axis_id - 1 {
-        database::grow::<TStore>(&db_location, y_axis.max);
-    }
 
     U64::write_to_db(&library_key_location, 0, new_key);
 	U64::write_to_db(&library_key_location, 1 + key_index, new_key);

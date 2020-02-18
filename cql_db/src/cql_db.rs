@@ -183,6 +183,11 @@ pub fn link_dimensions<TStore: CqlType>(db_location: &str, location: &[u64]) {
                 &axis_library::get_by_id(db_location, x_axis_id as u64),
                 &y_axis_definition
             );
+
+            let last_axis_id = axis_library::count(db_location);
+            if y_axis_id == last_axis_id - 1 {
+                database::grow::<TStore>(&db_location, y_axis_definition.max);
+            }
         };
         x_position = key;
     }
