@@ -41,8 +41,7 @@ pub fn add<TStore: CqlType>(db_location: &str, x: u64, y: u64, x_axis: &AxisDefi
 
     let last_axis_id = axis_library::count(db_location);
     if y_axis.id == last_axis_id - 1 {
-        let last_axis = axis_library::get_by_id(db_location, last_axis_id);
-        database::grow::<TStore>(&db_location, last_axis.max);
+        database::grow::<TStore>(&db_location, y_axis.max);
     }
 
     U64::write_to_db(&library_key_location, 0, new_key);
