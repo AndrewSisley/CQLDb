@@ -340,6 +340,7 @@ pub fn read_to_stream<TStore: CqlStreamReadable>(db_location: &str, stream: &mut
 
 fn calculate_position(db_location: &str, location: &[u64]) -> u64 {
     if location.len() == 1 {
+        // minus one to handle the one-indexing
         return location[0] - 1
     }
 
