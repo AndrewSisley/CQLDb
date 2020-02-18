@@ -399,7 +399,7 @@ fn add_key<TStore: CqlType>(db_location: &str, x: u64, y: u64, x_axis: &AxisDefi
 
 fn calculate_position(db_location: &str, location: &[u64]) -> u64 {
     if location.len() == 1 {
-        return location[0]
+        return location[0] - 1
     }
 
     let last_index = location.len() as u64 - 1;
