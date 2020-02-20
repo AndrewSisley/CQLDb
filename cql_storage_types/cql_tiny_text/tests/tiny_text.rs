@@ -16,21 +16,21 @@ fn _1d_tiny_text_database_allows_for_single_point_read_writes() {
     let point1 = [2];
     let value1 = "test";
 
-    cql_db::create_db::<TinyText>(
+    cql_db::create_db_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &axis
-    );
+    ).unwrap();
 
-    cql_db::write_value::<TinyText>(
+    cql_db::write_value_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &point1,
         TinyText::try_from(value1).unwrap()
-    );
+    ).unwrap();
 
-    let result1 = cql_db::read_value::<TinyText>(
+    let result1 = cql_db::read_value_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &point1
-    );
+    ).unwrap();
 
     assert_eq!(String::from(result1), value1);
 }
@@ -41,21 +41,21 @@ fn _1d_tiny_text_database_allows_for_single_point_255_char_read_writes() {
     let point1 = [1];
     let value1 = "1";
 
-    cql_db::create_db::<TinyText>(
+    cql_db::create_db_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &[1]
-    );
+    ).unwrap();
 
-    cql_db::write_value::<TinyText>(
+    cql_db::write_value_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &point1,
         TinyText::try_from(value1.repeat(255)).unwrap()
-    );
+    ).unwrap();
 
-    let result1 = cql_db::read_value::<TinyText>(
+    let result1 = cql_db::read_value_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &point1
-    );
+    ).unwrap();
 
     assert_eq!(String::from(result1), value1.repeat(255));
 }
@@ -65,21 +65,21 @@ fn _1d_tiny_text_database_allows_for_single_point_255_char_read_writes() {
 fn _1d_tiny_text_database_allows_for_single_point_empty_read_writes() {
     let point1 = [1];
 
-    cql_db::create_db::<TinyText>(
+    cql_db::create_db_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &[1]
-    );
+    ).unwrap();
 
-    cql_db::write_value::<TinyText>(
+    cql_db::write_value_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &point1,
         TinyText::new()
-    );
+    ).unwrap();
 
-    let result1 = cql_db::read_value::<TinyText>(
+    let result1 = cql_db::read_value_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &point1
-    );
+    ).unwrap();
 
     assert_eq!(String::from(result1), String::new());
 }
@@ -97,26 +97,26 @@ fn _4d_tiny_text_database_allows_for_single_point_read_writes() {
     let point1 = [2, 4, 3, 1];
     let value1 = "test 1";
 
-    cql_db::create_db::<TinyText>(
+    cql_db::create_db_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &axis
-    );
+    ).unwrap();
 
-    cql_db::link_dimensions::<TinyText>(
+    cql_db::link_dimensions_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &point1[0..3],
-    );
+    ).unwrap();
 
-    cql_db::write_value::<TinyText>(
+    cql_db::write_value_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &point1,
         TinyText::try_from(value1).unwrap()
-    );
+    ).unwrap();
 
-    let result1 = cql_db::read_value::<TinyText>(
+    let result1 = cql_db::read_value_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &point1
-    );
+    ).unwrap();
 
     assert_eq!(String::from(result1), value1);
 }
@@ -140,79 +140,79 @@ fn _4d_tiny_text_database_allows_for_single_point_read_writes_given_multiple_val
     let value3 = "Test 3";
     let value5 = "Test 5";
 
-    cql_db::create_db::<TinyText>(
+    cql_db::create_db_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &axis
-    );
+    ).unwrap();
 
-    cql_db::link_dimensions::<TinyText>(
+    cql_db::link_dimensions_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &point1[0..3],
-    );
+    ).unwrap();
 
-    cql_db::link_dimensions::<TinyText>(
+    cql_db::link_dimensions_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &point2[0..3],
-    );
+    ).unwrap();
 
-    cql_db::link_dimensions::<TinyText>(
+    cql_db::link_dimensions_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &point3[0..3],
-    );
+    ).unwrap();
 
-    cql_db::write_value::<TinyText>(
+    cql_db::write_value_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &point1,
         TinyText::try_from(value1).unwrap()
-    );
+    ).unwrap();
 
-    cql_db::write_value::<TinyText>(
+    cql_db::write_value_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &point2,
         TinyText::try_from(value2).unwrap()
-    );
+    ).unwrap();
 
-    cql_db::write_value::<TinyText>(
+    cql_db::write_value_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &point3,
         TinyText::try_from(value3).unwrap()
-    );
+    ).unwrap();
 
-    let result1 = cql_db::read_value::<TinyText>(
+    let result1 = cql_db::read_value_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &point1
-    );
+    ).unwrap();
 
-    let result2 = cql_db::read_value::<TinyText>(
+    let result2 = cql_db::read_value_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &point2
-    );
+    ).unwrap();
 
-    let result3 = cql_db::read_value::<TinyText>(
+    let result3 = cql_db::read_value_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &point3
-    );
+    ).unwrap();
 
-    let result4 = cql_db::read_value::<TinyText>(
+    let result4 = cql_db::read_value_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &point4
-    );
+    ).unwrap();
 
     assert_eq!(String::from(result1), value1);
     assert_eq!(String::from(result2), value2);
     assert_eq!(String::from(result3), value3);
     assert_eq!(String::from(result4), String::new());
 
-    cql_db::write_value::<TinyText>(
+    cql_db::write_value_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &point2,
         TinyText::try_from(value5).unwrap()
-    );
+    ).unwrap();
 
-    let result5 = cql_db::read_value::<TinyText>(
+    let result5 = cql_db::read_value_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &point2
-    );
+    ).unwrap();
 
     assert_eq!(String::from(result5), value5);
 }
@@ -228,26 +228,26 @@ fn _1d_tiny_text_database_allows_for_single_point_populated_stream_reads() {
     let point1 = [2];
     let value1 = "test";
 
-    cql_db::create_db::<TinyText>(
+    cql_db::create_db_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &axis
-    );
+    ).unwrap();
 
-    cql_db::write_value::<TinyText>(
+    cql_db::write_value_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &point1,
         TinyText::try_from(value1).unwrap()
-    );
+    ).unwrap();
 
     let mut result: [TinyText; 1] = [TinyText::new(); 1];
     let mut stream = Cursor::new(Vec::new());
 
-    cql_db::read_to_stream::<TinyText>(
+    cql_db::read_to_stream_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &mut stream,
         &point1,
         n_values_to_read as u64
-    );
+    ).unwrap();
 
     stream.seek(SeekFrom::Start(0)).unwrap();
 
@@ -268,20 +268,20 @@ fn _1d_tiny_text_database_allows_for_single_point_empty_stream_reads() {
     let n_values_to_read = 1;
     let point1 = [2];
 
-    cql_db::create_db::<TinyText>(
+    cql_db::create_db_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &axis
-    );
+    ).unwrap();
 
     let mut result: [TinyText; 1] = [TinyText::new(); 1];
     let mut stream = Cursor::new(Vec::new());
 
-    cql_db::read_to_stream::<TinyText>(
+    cql_db::read_to_stream_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &mut stream,
         &point1,
         n_values_to_read as u64
-    );
+    ).unwrap();
 
     stream.seek(SeekFrom::Start(0)).unwrap();
 
@@ -307,28 +307,28 @@ fn _1d_tiny_text_database_allows_for_multi_point_stream_reads() {
     let value2 = "test2";
     let value4 = "test4";
 
-    cql_db::create_db::<TinyText>(
+    cql_db::create_db_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &axis
-    );
+    ).unwrap();
 
-    cql_db::write_value::<TinyText>(
+    cql_db::write_value_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &point1,
         TinyText::try_from(value1).unwrap()
-    );
+    ).unwrap();
 
-    cql_db::write_value::<TinyText>(
+    cql_db::write_value_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &point2,
         TinyText::try_from(value2).unwrap()
-    );
+    ).unwrap();
 
-    cql_db::write_value::<TinyText>(
+    cql_db::write_value_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &point4,
         TinyText::try_from(value4).unwrap()
-    );
+    ).unwrap();
 
     let mut result: [TinyText; N_VALUES_TO_READ] = [
         TinyText::new(),
@@ -339,12 +339,12 @@ fn _1d_tiny_text_database_allows_for_multi_point_stream_reads() {
     ];
     let mut stream = Cursor::new(Vec::new());
 
-    cql_db::read_to_stream::<TinyText>(
+    cql_db::read_to_stream_unchecked::<TinyText>(
         DATABASE_LOCATION,
         &mut stream,
         &point1,
         N_VALUES_TO_READ as u64
-    );
+    ).unwrap();
 
     stream.seek(SeekFrom::Start(0)).unwrap();
 

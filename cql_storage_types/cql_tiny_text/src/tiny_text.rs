@@ -2,7 +2,7 @@
 This crate implements various [CqlType](../cql_model/trait.CqlType.html) derivatives for storing String values of up to (and including) 255 chars in a
 [CQL database](https://docs.rs/cql_db/0.2.0/cql_db/).
 
-Will allocate 1020 bytes per value [linked](https://docs.rs/cql_db/0.2.0/cql_db/fn.link_dimensions.html).
+Will allocate 1020 bytes per value [linked](https://docs.rs/cql_db/0.2.0/cql_db/fn.link_dimensions_unchecked.html).
 
 # Benchmarks
 Benchmarks supplied below are fairly rudimentary (and rounded) and are there to give a rough idea of relative costs.
@@ -13,7 +13,7 @@ other [CqlType](../cql_model/trait.CqlType.html) derivatives as they stream into
 Operation | Chars in String | Database dimensions | Mean time (ns)
 --- | --- | --- | ---
 Single point read | 1 | 1 | 2 240 (+/- 185)
-Single point read | 255 | 1 | 2 290 (+/- 350)
+Single point read | 255 | 1 | 2 250 (+/- 350)
 Single point read | 1 | 4 | 11 600 (+/- 2 000)
 Single point read | 255 | 4 | 11 670 (+/- 4 400)
 Single point write | 1 | 1 | 2 450 (+/- 500)
@@ -22,10 +22,10 @@ Single point write | 1 | 4 | 12 500 (+/- 2 200)
 Stream read 1 point | 1 | 1 | 2 300 (+/- 500)
 Stream read 1 point | 255 | 1 | 2 300 (+/- 500)
 Stream read 1 point | 1 | 4 | 11 550 (+/- 2 400)
-Stream read 50 000 points | 1 | 1 | 33 524 000 (+/- 540 000)
-Stream read 50 000 points | 255 | 1 | 33 527 000 (+/- 650 000)
-Stream read 50 000 points | 1 | 4 | 43 082 000 (+/- 867 000)
-Stream read 50 000 points | 255 | 4 | 43 600 000 (+/- 1 787 000)
+Stream read 50 000 points | 1 | 1 | 42 000 000 (+/- 230 000)
+Stream read 50 000 points | 255 | 1 | 42 000 000 (+/- 200 000)
+Stream read 50 000 points | 1 | 4 | 42 000 000 (+/- 500 000)
+Stream read 50 000 points | 255 | 4 | 42 000 000 (+/- 1 400 000)
 
 # Examples
 The following creates a 1D database, writes 2 values to it, and then streams them into an array.
@@ -40,36 +40,36 @@ The following creates a 1D database, writes 2 values to it, and then streams the
 # const DATABASE_LOCATION: &str = "./.test_db";
 const N_VALUES_TO_READ: usize = 3;
 
-let base_point = [0];
+let base_point = [1];
 let value1 = "item one";
 let value3 = "شماره ۳";
 
-cql_db::create_db::<TinyText>(
+cql_db::create_db_unchecked::<TinyText>(
     DATABASE_LOCATION,
     &[3]
 );
 
-cql_db::write_value::<TinyText>(
+cql_db::write_value_unchecked::<TinyText>(
     DATABASE_LOCATION,
     &base_point,
     TinyText::try_from(value1)?
-);
+)?;
 
-cql_db::write_value::<TinyText>(
+cql_db::write_value_unchecked::<TinyText>(
     DATABASE_LOCATION,
     &[base_point[0] + 2],
     TinyText::try_from(value3)?
-);
+)?;
 
 let mut result = Vec::with_capacity(N_VALUES_TO_READ);
 let mut stream = Cursor::new(Vec::new());
 
-cql_db::read_to_stream::<TinyText>(
+cql_db::read_to_stream_unchecked::<TinyText>(
     DATABASE_LOCATION,
     &mut stream,
     &base_point,
     N_VALUES_TO_READ as u64
-);
+)?;
 
 stream.seek(SeekFrom::Start(0));
 unpack_stream(&mut stream, N_VALUES_TO_READ, |_, value| {
@@ -89,6 +89,7 @@ pub mod errors;
 pub mod interop;
 
 use std::fs::{ File, OpenOptions };
+use std::io;
 use std::io::{ Read, Write, Cursor, SeekFrom, Seek };
 use byteorder::{ ReadBytesExt, WriteBytesExt, LittleEndian };
 
@@ -115,48 +116,56 @@ impl TinyText {
 }
 
 impl CqlWritable for TinyText {
-    fn write_to_db(db_location: &str, value_location: u64, input_value: Self::ValueType) {
-        let mut file = OpenOptions::new().write(true).open(db_location).unwrap();
+    fn write_to_db(db_location: &str, value_location: u64, input_value: Self::ValueType) -> io::Result<()> {
+        let mut file = OpenOptions::new().write(true).open(db_location)?;
 
+        // unwrap should be considered safe by this point, with earlier checks in the cql_db crate (if not deliberately unchecked)
         file.seek(SeekFrom::Start(value_location * Self::VALUE_SIZE as u64)).unwrap();
 
         let input_length: u16 = input_value.0.len() as u16;
         let mut buffer = vec![];
-        buffer.write_u16::<LittleEndian>(input_length).unwrap();
+        buffer.write_u16::<LittleEndian>(input_length)?;
         buffer.extend(&input_value.0.into_bytes());
 
-        file.write(&buffer).unwrap();
+        file.write_all(&buffer)
     }
 }
 
 impl CqlReadable for TinyText {
-    fn read_from_db(db_location: &str, value_location: u64) -> Self::ValueType {
-        let mut file = File::open(&db_location).unwrap();
+    fn read_from_db(db_location: &str, value_location: u64) -> io::Result<Self::ValueType> {
+        let mut file = File::open(&db_location)?;
 
+        // unwrap should be considered safe by this point, with earlier checks in the cql_db crate (if not deliberately unchecked)
         file.seek(SeekFrom::Start(value_location * Self::VALUE_SIZE as u64)).unwrap();
 
         let mut size_buffer = [0; LENGTH_SIZE];
-        file.read(&mut size_buffer).unwrap();
+        file.read_exact(&mut size_buffer)?;
 
         let mut size_rdr = Cursor::new(size_buffer);
-        let size = usize::from(size_rdr.read_u16::<LittleEndian>().unwrap());
+        let size = usize::from(size_rdr.read_u16::<LittleEndian>()?);
 
         if size == 0 {
-            return TinyText::new()
+            return Ok(TinyText::new())
         }
 
-        let mut value_buffer = [0; CONTENT_SIZE];
-        file.read(&mut value_buffer).unwrap();
+        let mut value_buffer = Vec::with_capacity(size);
+        file.take(size as u64).read_to_end(&mut value_buffer)?;
 
-        let string_bytes = value_buffer[0..size].to_vec();
-        TinyText(String::from_utf8(string_bytes).unwrap())
+        Ok(
+            TinyText(
+                // unwrap should be safe here, as we assume we are the only ones writing to the file, however low performance cost plus the fact that someone else `could`
+                // write to the file discourages the use of the unsafe method that skips the checks
+                String::from_utf8(value_buffer).unwrap()
+            )
+        )
     }
 }
 
 impl CqlStreamReadable for TinyText {
-    fn read_to_stream(db_location: &str, stream: &mut dyn Write, value_location: u64, n_values: u64) {
-        let mut file = File::open(&db_location).unwrap();
+    fn read_to_stream(db_location: &str, stream: &mut dyn Write, value_location: u64, n_values: u64) -> io::Result<()> {
+        let mut file = File::open(&db_location)?;
 
+        // unwrap should be considered safe by this point, with earlier checks in the cql_db crate (if not deliberately unchecked)
         file.seek(SeekFrom::Start(value_location * Self::VALUE_SIZE as u64)).unwrap();
         let mut value_buffer = [0; CONTENT_SIZE];
 
@@ -164,29 +173,50 @@ impl CqlStreamReadable for TinyText {
             // must have value cleared for each value read or previous value will be quietly retained and re-written to the (out) stream
             let mut size_buffer = [0; LENGTH_SIZE];
 
-            file.read(&mut size_buffer).unwrap();
+            match file.read_exact(&mut size_buffer) {
+                Err(e) => {
+                    // ignore io::ErrorKind::UnexpectedEof and continue
+                    if e.kind() != io::ErrorKind::UnexpectedEof {
+                        return Err(e)
+                    }
+                }
+                _ => { }
+            }
             let mut size_rdr = Cursor::new(size_buffer);
-            let size = usize::from(size_rdr.read_u16::<LittleEndian>().unwrap());
+            let size = usize::from(size_rdr.read_u16::<LittleEndian>()?);
 
-            file.read(&mut value_buffer).unwrap();
+            match file.read_exact(&mut value_buffer) {
+                Err(e) => {
+                    // ignore io::ErrorKind::UnexpectedEof and continue
+                    if e.kind() != io::ErrorKind::UnexpectedEof {
+                        return Err(e)
+                    }
+                }
+                _ => { }
+            }
 
-            stream.write(&mut size_buffer).unwrap();
-            stream.write(&mut value_buffer[0..size]).unwrap();
+            let mut write_buffer = Vec::with_capacity(LENGTH_SIZE + size);
+            write_buffer.extend(&size_buffer);
+            for i in 0..size {
+                write_buffer.push(value_buffer[i]);
+            }
+
+            stream.write_all(&mut write_buffer)?;
         }
 
-        stream.flush().unwrap();
+        stream.flush()
     }
 }
 
 /// Unpacks `n_values` of `TinyText` from a stream, calling `res` with each value and it's index.
 /// # Examples
 /// ```ignore
-/// cql_db::read_to_stream::<TinyText>(
+/// cql_db::read_to_stream_unchecked::<TinyText>(
 ///     DATABASE_LOCATION,
 ///     &mut stream,
 ///     &base_point,
 ///     N_VALUES_TO_READ as u64
-/// );
+/// )?;
 ///
 /// stream.seek(SeekFrom::Start(0));
 ///
