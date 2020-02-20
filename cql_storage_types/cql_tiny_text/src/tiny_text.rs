@@ -16,9 +16,9 @@ Single point read | 1 | 1 | 2 240 (+/- 185)
 Single point read | 255 | 1 | 2 290 (+/- 350)
 Single point read | 1 | 4 | 11 600 (+/- 2 000)
 Single point read | 255 | 4 | 11 670 (+/- 4 400)
-Single point write | 1 | 1 | 4 070 (+/- 300)
-Single point write | 255 | 1 | 4 180 (+/- 350)
-Single point write | 1 | 4 | 15 100 (+/- 2 200)
+Single point write | 1 | 1 | 2 450 (+/- 500)
+Single point write | 255 | 1 | 2 570 (+/- 300)
+Single point write | 1 | 4 | 12 500 (+/- 2 200)
 Stream read 1 point | 1 | 1 | 2 300 (+/- 500)
 Stream read 1 point | 255 | 1 | 2 300 (+/- 500)
 Stream read 1 point | 1 | 4 | 11 550 (+/- 2 400)
@@ -121,11 +121,11 @@ impl CqlWritable for TinyText {
         file.seek(SeekFrom::Start(value_location * Self::VALUE_SIZE as u64)).unwrap();
 
         let input_length: u16 = input_value.0.len() as u16;
-        let mut length_wtr = vec![];
-        length_wtr.write_u16::<LittleEndian>(input_length).unwrap();
-        file.write(&length_wtr).unwrap();
+        let mut buffer = vec![];
+        buffer.write_u16::<LittleEndian>(input_length).unwrap();
+        buffer.extend(&input_value.0.into_bytes());
 
-        file.write(&input_value.0.into_bytes()).unwrap();
+        file.write(&buffer).unwrap();
     }
 }
 
