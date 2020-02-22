@@ -11,13 +11,13 @@ Full benchmark code can be found in [github](https://github.com/AndrewSisley/CQL
 Operation | Database dimensions | Mean time (ns)
 --- | --- | ---
 Single point read | 1 | 1 830 (+/- 300)
-Single point read | 4 | 11 130 (+/- 1 700)
-Single point write | 1 | 2 385 (+/- 600)
-Single point write | 4 | 12 500 (+/- 2 200)
-Stream read 1 point | 1 | 1 800 (+/- 300)
-Stream read 1 point | 4 | 11 050 (+/- 1 700)
-Stream read 50 000 points | 1 | 16 150 900 (+/- 200 000)
-Stream read 50 000 points | 4 | 18 900 000 (+/- 160 000)
+Single point read | 4 | 11 050 (+/- 1 700)
+Single point write | 1 | 2 400 (+/- 600)
+Single point write | 4 | 12 500 (+/- 2 500)
+Stream read 1 point | 1 | 1 940 (+/- 300)
+Stream read 1 point | 4 | 11 400 (+/- 1 300)
+Stream read 50 000 points | 1 | 20 200 900 (+/- 300 000)
+Stream read 50 000 points | 4 | 20 200 000 (+/- 100 000)
 
 # Examples
 The following creates a 1D database, writes 2 values to it, and then streams them into an array.
@@ -28,7 +28,7 @@ The following creates a 1D database, writes 2 values to it, and then streams the
 # const DATABASE_LOCATION: &str = "./.test_db";
 const N_VALUES_TO_READ: usize = 3;
 
-let base_point = [0];
+let base_point = [1];
 let value1 = 1;
 let value3 = 5;
 
@@ -69,8 +69,9 @@ assert_eq!(result[1], 0);
 assert_eq!(result[2], value3);
 ```
 */
-#![doc(html_root_url = "https://docs.rs/cql_u64/0.1.0")]
+#![doc(html_root_url = "https://docs.rs/cql_u64/0.2.0")]
 use std::fs::{ File, OpenOptions };
+use std::io;
 use std::io::{ Read, Write, Cursor, SeekFrom, Seek };
 use byteorder::{ ReadBytesExt, WriteBytesExt, LittleEndian };
 
@@ -87,44 +88,63 @@ impl CqlType for U64 {
 }
 
 impl CqlWritable for U64 {
-    fn write_to_db(db_location: &str, value_location: u64, value: Self::ValueType) {
-        let mut file = OpenOptions::new().write(true).open(db_location).unwrap();
+    fn write_to_db(db_location: &str, value_location: u64, value: Self::ValueType) -> io::Result<()> {
+        let mut file = OpenOptions::new().write(true).open(db_location)?;
 
+        // unwrap should be considered safe by this point, with earlier checks in the cql_db crate (if not deliberately unchecked)
         file.seek(SeekFrom::Start(value_location * Self::VALUE_SIZE as u64)).unwrap();
 
         let mut wtr = vec![];
-        wtr.write_u64::<LittleEndian>(value).unwrap();
-        file.write(&wtr).unwrap();
+        wtr.write_u64::<LittleEndian>(value)?;
+        file.write_all(&wtr)
     }
 }
 
 impl CqlReadable for U64 {
-    fn read_from_db(db_location: &str, value_location: u64) -> Self::ValueType {
-        let mut file = File::open(&db_location).unwrap();
+    fn read_from_db(db_location: &str, value_location: u64) -> io::Result<Self::ValueType> {
+        let mut file = File::open(&db_location)?;
 
+        // unwrap should be considered safe by this point, with earlier checks in the cql_db crate (if not deliberately unchecked)
         file.seek(SeekFrom::Start(value_location * Self::VALUE_SIZE as u64)).unwrap();
 
         let mut buffer = [0; Self::VALUE_SIZE];
-        file.read(&mut buffer).unwrap();
+        match file.read_exact(&mut buffer) {
+            Err(e) => {
+                // ignore io::ErrorKind::UnexpectedEof and continue
+                if e.kind() != io::ErrorKind::UnexpectedEof {
+                    return Err(e)
+                }
+            }
+            _ => { }
+        }
 
         let mut rdr = Cursor::new(buffer);
-        rdr.read_u64::<LittleEndian>().unwrap()
+        rdr.read_u64::<LittleEndian>()
     }
 }
 
 impl CqlStreamReadable for U64 {
-    fn read_to_stream(db_location: &str, stream: &mut dyn Write, value_location: u64, n_values: u64) {
-        let mut file = File::open(&db_location).unwrap();
+    fn read_to_stream(db_location: &str, stream: &mut dyn Write, value_location: u64, n_values: u64) -> io::Result<()> {
+        let mut file = File::open(&db_location)?;
 
+        // unwrap should be considered safe by this point, with earlier checks in the cql_db crate (if not deliberately unchecked)
         file.seek(SeekFrom::Start(value_location * Self::VALUE_SIZE as u64)).unwrap();
 
         for _i in 0..n_values {
             let mut buffer = [0; Self::VALUE_SIZE];
-            file.read(&mut buffer).unwrap();
-            stream.write(&mut buffer).unwrap();
+            match file.read_exact(&mut buffer) {
+                Err(e) => {
+                    // ignore io::ErrorKind::UnexpectedEof and continue (to write '0' bytes to the writer)
+                    if e.kind() != io::ErrorKind::UnexpectedEof {
+                        return Err(e)
+                    }
+                }
+                _ => { }
+            }
+            stream.write_all(&mut buffer)?;
         }
 
-        stream.flush().unwrap();
+        stream.flush()
     }
 }
 

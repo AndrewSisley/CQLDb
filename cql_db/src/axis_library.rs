@@ -29,21 +29,21 @@ pub fn create(db_location: &str, axis_definitions: &[AxisDefinition]) {
         )
         .unwrap();
 
-    U64::write_to_db(&library_axis_location, 0, axis_definitions.len() as u64);
+    U64::write_to_db(&library_axis_location, 0, axis_definitions.len() as u64).unwrap();
 
 	for axis_definition in axis_definitions {
-		U64::write_to_db(&library_axis_location, axis_definition.id, axis_definition.max);
+		U64::write_to_db(&library_axis_location, axis_definition.id, axis_definition.max).unwrap();
 	}
 }
 
 pub fn count(db_location: &str) -> u64 {
     let library_axis_location = format!("{}{}", db_location, AXIS_FILE_NAME);
-    U64::read_from_db(&library_axis_location, 0)
+    U64::read_from_db(&library_axis_location, 0).unwrap()
 }
 
 pub fn get_by_id(db_location: &str, axis_id: u64) -> AxisDefinition {
 	let library_axis_location = format!("{}{}", db_location, AXIS_FILE_NAME);
-	let max_value = U64::read_from_db(&library_axis_location, axis_id);
+	let max_value = U64::read_from_db(&library_axis_location, axis_id).unwrap();
 
 	AxisDefinition { id: axis_id, max: max_value }
 }
