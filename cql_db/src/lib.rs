@@ -178,7 +178,7 @@ pub fn link_dimensions<TStore: CqlType>(db_location: &str, location: &[u64]) {
                 y_position,
                 &axis_library::get_by_id(db_location, x_axis_id as u64).unwrap(),
                 &y_axis_definition
-            );
+            ).unwrap();
 
             let last_axis_id = axis_library::count(db_location).unwrap();
             if y_axis_id == last_axis_id - 1 {

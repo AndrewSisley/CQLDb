@@ -35,17 +35,17 @@ pub fn create(db_location: &str, axis_definitions: &[AxisDefinition]) -> io::Res
     Ok(())
 }
 
-pub fn add<TStore: CqlType>(db_location: &str, x: u64, y: u64, x_axis: &AxisDefinition, y_axis: &AxisDefinition) -> u64 {
+pub fn add<TStore: CqlType>(db_location: &str, x: u64, y: u64, x_axis: &AxisDefinition, y_axis: &AxisDefinition) -> Result<u64, io::Error> {
 	let library_key_location = format!("{}{}{}_{}", db_location, KEY_FILE_NAME, x_axis.id, y_axis.id);
-	let last_key = U64::read_from_db(&library_key_location, 0).unwrap();
+	let last_key = U64::read_from_db(&library_key_location, 0)?;
 
 	let new_key = last_key + 1 as u64;
 	let key_index = calculate_index(x, y, y_axis.max);
 
-    U64::write_to_db(&library_key_location, 0, new_key).unwrap();
-	U64::write_to_db(&library_key_location, 1 + key_index, new_key).unwrap();
+    U64::write_to_db(&library_key_location, 0, new_key)?;
+	U64::write_to_db(&library_key_location, 1 + key_index, new_key)?;
 
-    new_key
+    Ok(new_key)
 }
 
 pub fn get(db_location: &str, x: &AxisPoint, y: &AxisPoint, y_axis: &AxisDefinition) -> Result<u64, io::Error> {
