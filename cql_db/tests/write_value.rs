@@ -14,7 +14,7 @@ fn _1d_u64_database_panics_given_one_zero_index() {
     cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1]
-    );
+    ).unwrap();
 
     cql_db::write_value::<U64>(
         DATABASE_LOCATION,
@@ -30,7 +30,7 @@ fn _2d_u64_database_panics_given_one_zero_index() {
     cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1, 1]
-    );
+    ).unwrap();
 
     cql_db::write_value::<U64>(
         DATABASE_LOCATION,
@@ -46,7 +46,7 @@ fn _2d_u64_database_panics_given_zero_one_index() {
     cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1, 1]
-    );
+    ).unwrap();
 
     cql_db::write_value::<U64>(
         DATABASE_LOCATION,
@@ -64,7 +64,7 @@ fn _1d_u64_database_allows_for_first_item_to_be_written() {
     cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1]
-    );
+    ).unwrap();
 
     cql_db::write_value::<U64>(
         DATABASE_LOCATION,
@@ -89,7 +89,7 @@ fn _2d_u64_database_allows_for_first_item_to_be_written() {
     cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1, 1]
-    );
+    ).unwrap();
 
     cql_db::write_value::<U64>(
         DATABASE_LOCATION,
@@ -112,7 +112,7 @@ fn _3d_u64_database_panics_writing_first_item_without_link() {
     cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1, 1, 1]
-    );
+    ).unwrap();
 
     cql_db::write_value::<U64>(
         DATABASE_LOCATION,
@@ -130,7 +130,7 @@ fn _3d_u64_database_allows_for_first_item_to_be_written_after_axis_linked() {
     cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[5, 5, 5]
-    );
+    ).unwrap();
 
     cql_db::link_dimensions::<U64>(
         DATABASE_LOCATION,
@@ -160,7 +160,7 @@ fn _3d_u64_database_allows_for_last_item_to_be_written_after_axis_linked() {
     cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[5, 5, 5]
-    );
+    ).unwrap();
 
     cql_db::link_dimensions::<U64>(
         DATABASE_LOCATION,
@@ -187,7 +187,7 @@ fn _1d_u64_database_expands_size_as_items_written() {
     cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[5]
-    );
+    ).unwrap();
 
     let initial_size = get_file_length(&format!("{}/db", DATABASE_LOCATION));
     assert_eq!(initial_size, 0);
@@ -217,7 +217,7 @@ fn _1d_u64_database_maintains_size_as_first_item_written_after_last_item_written
     cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[5]
-    );
+    ).unwrap();
 
     cql_db::write_value::<U64>(
         DATABASE_LOCATION,
@@ -244,7 +244,7 @@ fn _2d_u64_database_maintains_size_as_first_item_written_after_last_item_written
     cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[5, 5]
-    );
+    ).unwrap();
 
     cql_db::write_value::<U64>(
         DATABASE_LOCATION,
@@ -273,7 +273,7 @@ fn _3d_u64_database_maintains_size_as_last_item_written_after_axis_linked() {
     cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[5, 5, 5]
-    );
+    ).unwrap();
 
     cql_db::link_dimensions::<U64>(
         DATABASE_LOCATION,

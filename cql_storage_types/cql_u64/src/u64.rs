@@ -28,6 +28,8 @@ The following creates a 1D database, writes 2 values to it, and then streams the
 # const DATABASE_LOCATION: &str = "./.test_db";
 const N_VALUES_TO_READ: usize = 3;
 
+# use std::error::Error;
+# fn main() -> Result<(), Box<dyn Error>> {
 let base_point = [1];
 let value1 = 1;
 let value3 = 5;
@@ -35,7 +37,7 @@ let value3 = 5;
 cql_db::create_db_unchecked::<U64>(
     DATABASE_LOCATION,
     &[3]
-);
+)?;
 
 cql_db::write_value::<U64>(
     DATABASE_LOCATION,
@@ -67,6 +69,8 @@ unpack_stream(&mut stream, N_VALUES_TO_READ, |idx, value| {
 assert_eq!(result[0], value1);
 assert_eq!(result[1], 0);
 assert_eq!(result[2], value3);
+# Ok(())
+# }
 ```
 */
 #![doc(html_root_url = "https://docs.rs/cql_u64/0.2.0")]

@@ -27,7 +27,7 @@ let link = [2, 3, 4, 5];
 # cql_db::create_db_unchecked::<U64>(
 #    DATABASE_LOCATION,
 #    &database_definition
-# );
+# ).unwrap();
 #
 cql_db::link_dimensions::<U64>(
     DATABASE_LOCATION,
@@ -65,6 +65,9 @@ The following example creates a 4 dimensional database of unsigned 64 bit intege
 ```
 use cql_u64::U64;
 
+# use std::error::Error;
+# fn main() -> Result<(), Box<dyn Error>> {
+#
 # const DATABASE_LOCATION: &str = "./.test_db";
 let point = [2, 4, 3, 1];
 let value = 5;
@@ -73,7 +76,7 @@ let value = 5;
 cql_db::create_db_unchecked::<U64>(
     DATABASE_LOCATION,
     &[2, 5, 3, 2]
-);
+)?;
 
 // Link the 2nd element of the 1st dimension with the 4th element of the 2nd dimension, and
 // the 4th of the 2nd with the 3rd of the 3rd - for example:
@@ -97,9 +100,12 @@ let result = cql_db::read_value::<U64>(
 );
 
 assert_eq!(result, value);
+# Ok(())
+# }
 ```
 */
 #![doc(html_root_url = "https://docs.rs/cql_db/0.2.0")]
+use std::io;
 use std::io::Write;
 
 use cql_model::{
@@ -118,7 +124,7 @@ use axis_library::AxisDefinition;
 use vectors::calculate_index;
 
 /// Creates an CQL database in the provided directory, overwriting existing files.
-pub fn create_db_unchecked<TStore: CqlType>(db_location: &str, array_size: &[u64]) {
+pub fn create_db_unchecked<TStore: CqlType>(db_location: &str, array_size: &[u64]) -> io::Result<()> {
     let mut axis_definitions = Vec::with_capacity(array_size.len());
     for index in 0..array_size.len() {
         axis_definitions.push(AxisDefinition {
@@ -127,9 +133,9 @@ pub fn create_db_unchecked<TStore: CqlType>(db_location: &str, array_size: &[u64
         });
     }
 
-    database::create::<TStore>(&db_location).unwrap();
-    axis_library::create(db_location, &axis_definitions).unwrap();
-    key_library::create(db_location, &axis_definitions).unwrap();
+    database::create::<TStore>(&db_location)?;
+    axis_library::create(db_location, &axis_definitions)?;
+    key_library::create(db_location, &axis_definitions)
 }
 
 /// Links dimension indexs together if they are not already linked.
@@ -142,11 +148,13 @@ pub fn create_db_unchecked<TStore: CqlType>(db_location: &str, array_size: &[u64
 /// # use cql_u64::U64;
 /// # const DATABASE_LOCATION: &str = "./.test_db";
 /// #
+/// # use std::error::Error;
+/// # fn main() -> Result<(), Box<dyn Error>> {
 /// // Create a database with a maximum capacity of `[2, 5, 3, 2]`
 /// cql_db::create_db_unchecked::<U64>(
 ///     DATABASE_LOCATION,
 ///     &[2, 5, 3, 2]
-/// );
+/// )?;
 ///
 /// // Link the 2nd element of the 1st dimension with the 4th element of the 2nd dimension, and
 /// // the 4th of the 2nd with the 3rd of the 3rd - for example:
@@ -155,6 +163,8 @@ pub fn create_db_unchecked<TStore: CqlType>(db_location: &str, array_size: &[u64
 ///     DATABASE_LOCATION,
 ///     &[2, 4, 3], // don't link the Nth dimension
 /// );
+/// # Ok(())
+/// # }
 /// ```
 pub fn link_dimensions<TStore: CqlType>(db_location: &str, location: &[u64]) {
     let mut x_position = location[0];
@@ -196,10 +206,12 @@ pub fn link_dimensions<TStore: CqlType>(db_location: &str, location: &[u64]) {
 /// # use cql_u64::U64;
 /// # const DATABASE_LOCATION: &str = "./.test_db";
 /// #
+/// # use std::error::Error;
+/// # fn main() -> Result<(), Box<dyn Error>> {
 /// cql_db::create_db_unchecked::<U64>(
 ///     DATABASE_LOCATION,
 ///     &[2, 5, 3, 2]
-/// );
+/// )?;
 ///
 /// // higher order elements must be linked before they can be writen to
 /// cql_db::link_dimensions::<U64>(
@@ -213,6 +225,8 @@ pub fn link_dimensions<TStore: CqlType>(db_location: &str, location: &[u64]) {
 ///     &[2, 4, 3, 1],
 ///     5
 /// );
+/// # Ok(())
+/// # }
 /// ```
 pub fn write_value<TStore: CqlWritable>(db_location: &str, location: &[u64], value: TStore::ValueType) {
 	let position = calculate_position(db_location, location);
@@ -226,13 +240,15 @@ pub fn write_value<TStore: CqlWritable>(db_location: &str, location: &[u64], val
 /// # use cql_u64::U64;
 /// # const DATABASE_LOCATION: &str = "./.test_db";
 /// #
+/// # use std::error::Error;
+/// # fn main() -> Result<(), Box<dyn Error>> {
 /// let point = [2, 4, 3, 1];
 /// let value = 5;
 ///
 /// cql_db::create_db_unchecked::<U64>(
 ///     DATABASE_LOCATION,
 ///     &[2, 5, 3, 2]
-/// );
+/// )?;
 ///
 /// // higher order elements must be linked before they can be read from
 /// cql_db::link_dimensions::<U64>(
@@ -262,6 +278,8 @@ pub fn write_value<TStore: CqlWritable>(db_location: &str, location: &[u64], val
 /// );
 ///
 /// assert_eq!(value, result2);
+/// # Ok(())
+/// # }
 /// ```
 pub fn read_value<TStore: CqlReadable>(db_location: &str, location: &[u64]) -> TStore::ValueType {
 	let position = calculate_position(db_location, location);
@@ -279,6 +297,8 @@ pub fn read_value<TStore: CqlReadable>(db_location: &str, location: &[u64]) -> T
 /// #
 /// use cql_u64::{ U64, unpack_stream };
 ///
+/// # use std::error::Error;
+/// # fn main() -> Result<(), Box<dyn Error>> {
 /// let base_point = [1, 1, 1, 2];
 /// const N_VALUES_TO_READ: usize = 3;
 /// let value1 = 42;
@@ -288,7 +308,7 @@ pub fn read_value<TStore: CqlReadable>(db_location: &str, location: &[u64]) -> T
 /// cql_db::create_db_unchecked::<U64>(
 ///     DATABASE_LOCATION,
 ///     &[1, 1, 1, 10]
-/// );
+/// )?;
 ///
 /// cql_db::link_dimensions::<U64>(
 ///     DATABASE_LOCATION,
@@ -332,6 +352,8 @@ pub fn read_value<TStore: CqlReadable>(db_location: &str, location: &[u64]) -> T
 /// assert_eq!(result[0], value1);
 /// assert_eq!(result[1], value2);
 /// assert_eq!(result[2], value3);
+/// # Ok(())
+/// # }
 /// ```
 pub fn read_to_stream<TStore: CqlStreamReadable>(db_location: &str, stream: &mut dyn Write, location: &[u64], n_values: u64) {
 	let position = calculate_position(db_location, location);
