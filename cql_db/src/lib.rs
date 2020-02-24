@@ -265,7 +265,7 @@ pub fn write_value<TStore: CqlWritable>(db_location: &str, location: &[u64], val
 /// ```
 pub fn read_value<TStore: CqlReadable>(db_location: &str, location: &[u64]) -> TStore::ValueType {
 	let position = calculate_position(db_location, location);
-	database::read_value::<TStore>(&db_location, position)
+	database::read_value::<TStore>(&db_location, position).unwrap()
 }
 
 /// Reads `n_values` from the given location onward into the given stream.
