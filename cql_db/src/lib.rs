@@ -335,7 +335,7 @@ pub fn read_value<TStore: CqlReadable>(db_location: &str, location: &[u64]) -> T
 /// ```
 pub fn read_to_stream<TStore: CqlStreamReadable>(db_location: &str, stream: &mut dyn Write, location: &[u64], n_values: u64) {
 	let position = calculate_position(db_location, location);
-	database::read_to_stream::<TStore>(&db_location, stream, position, n_values)
+	database::read_to_stream::<TStore>(&db_location, stream, position, n_values).unwrap()
 }
 
 fn calculate_position(db_location: &str, location: &[u64]) -> u64 {

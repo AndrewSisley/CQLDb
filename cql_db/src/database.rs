@@ -35,7 +35,7 @@ pub fn read_value<TStore: CqlReadable>(db_location: &str, value_location: u64) -
 	TStore::read_from_db(&db_key_location, value_location)
 }
 
-pub fn read_to_stream<TStore: CqlStreamReadable>(db_location: &str, stream: &mut dyn Write, start_location: u64, n_values: u64) {
+pub fn read_to_stream<TStore: CqlStreamReadable>(db_location: &str, stream: &mut dyn Write, start_location: u64, n_values: u64) -> io::Result<()> {
 	let db_key_location = format!("{}{}", db_location, DB_FILE_NAME);
-	TStore::read_to_stream(&db_key_location, stream, start_location, n_values).unwrap()
+	TStore::read_to_stream(&db_key_location, stream, start_location, n_values)
 }
