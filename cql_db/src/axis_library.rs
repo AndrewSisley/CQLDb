@@ -46,9 +46,11 @@ pub fn count(db_location: &str) -> Result<u64, io::Error> {
     U64::read_from_db(&library_axis_location, 0)
 }
 
-pub fn get_by_id(db_location: &str, axis_id: u64) -> AxisDefinition {
-	let library_axis_location = format!("{}{}", db_location, AXIS_FILE_NAME);
-	let max_value = U64::read_from_db(&library_axis_location, axis_id).unwrap();
+pub fn get_by_id(db_location: &str, axis_id: u64) -> Result<AxisDefinition, io::Error> {
+    let library_axis_location = format!("{}{}", db_location, AXIS_FILE_NAME);
 
-	AxisDefinition { id: axis_id, max: max_value }
+    match U64::read_from_db(&library_axis_location, axis_id) {
+        Ok(max_value) => Ok(AxisDefinition { id: axis_id, max: max_value }),
+        Err(e) => Err(e),
+    }
 }

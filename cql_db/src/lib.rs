@@ -162,7 +162,7 @@ pub fn link_dimensions<TStore: CqlType>(db_location: &str, location: &[u64]) {
     for x_axis_id in 1..location.len() {
         let y_axis_id = x_axis_id as u64 + 1;
         let y_position = location[x_axis_id];
-        let y_axis_definition = axis_library::get_by_id(db_location, y_axis_id);
+        let y_axis_definition = axis_library::get_by_id(db_location, y_axis_id).unwrap();
 
         let mut key = key_library::get(
             db_location,
@@ -176,7 +176,7 @@ pub fn link_dimensions<TStore: CqlType>(db_location: &str, location: &[u64]) {
                 db_location,
                 x_position,
                 y_position,
-                &axis_library::get_by_id(db_location, x_axis_id as u64),
+                &axis_library::get_by_id(db_location, x_axis_id as u64).unwrap(),
                 &y_axis_definition
             );
 
@@ -350,7 +350,7 @@ fn calculate_position(db_location: &str, location: &[u64]) -> u64 {
     for x_axis_id in 1..last_index {
         let y_axis_id = x_axis_id + 1;
         let y_position = location[x_axis_id as usize];
-        let y_axis_definition = axis_library::get_by_id(db_location, y_axis_id);
+        let y_axis_definition = axis_library::get_by_id(db_location, y_axis_id).unwrap();
 
         let key = key_library::get(
             db_location,
@@ -362,6 +362,6 @@ fn calculate_position(db_location: &str, location: &[u64]) -> u64 {
         x_position = key;
     }
 
-    let last_axis_definition = axis_library::get_by_id(db_location, last_index + 1);
+    let last_axis_definition = axis_library::get_by_id(db_location, last_index + 1).unwrap();
     calculate_index(x_position, location[last_index as usize], last_axis_definition.max)
 }
