@@ -32,7 +32,7 @@ let base_point = [1];
 let value1 = 1;
 let value3 = 5;
 
-cql_db::create_db::<U64>(
+cql_db::create_db_unchecked::<U64>(
     DATABASE_LOCATION,
     &[3]
 );

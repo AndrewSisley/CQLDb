@@ -12,7 +12,7 @@ fn _1d_u64_stream_read_location_1_to_1(b: &mut Bencher) {
     let n_values_to_read = 1usize;
     let point1 = [1];
 
-    cql_db::create_db::<U64>(
+    cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1]
     );
@@ -41,7 +41,7 @@ fn _1d_u64_stream_read_location_50000_to_100000(b: &mut Bencher) {
     let n_values_to_read = 50000usize;
     let base_point = [50000u64];
 
-    cql_db::create_db::<U64>(
+    cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[100000]
     );
@@ -70,7 +70,7 @@ fn _4d_u64_stream_read_location_1_1_1_1_to_1_1_1_1(b: &mut Bencher) {
     let n_values_to_read = 1usize;
     let base_point = [1, 1, 1, 1];
 
-    cql_db::create_db::<U64>(
+    cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1, 1, 1, 1]
     );
@@ -104,7 +104,7 @@ fn _4d_u64_stream_read_location_1_1_1_50000_to_1_1_1_100000(b: &mut Bencher) {
     let n_values_to_read = 50000usize;
     let base_point = [1, 1, 1, 50000];
 
-    cql_db::create_db::<U64>(
+    cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1, 1, 1, 100000]
     );

@@ -15,7 +15,7 @@ fn _1d_u64_database_allows_for_single_point_read_writes() {
     let point1 = [2];
     let value1 = 42;
 
-    cql_db::create_db::<U64>(
+    cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &axis
     );
@@ -47,7 +47,7 @@ fn _4d_u64_database_allows_for_single_point_read_writes() {
     let point1 = [2, 4, 3, 1];
     let value1 = 5;
 
-    cql_db::create_db::<U64>(
+    cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &axis
     );
@@ -90,7 +90,7 @@ fn _4d_u64_database_allows_for_single_point_read_writes_given_multiple_values_an
     let value3 = 0;
     let value5 = 9999999999999;
 
-    cql_db::create_db::<U64>(
+    cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &axis
     );
@@ -176,7 +176,7 @@ fn _1d_u64_database_allows_for_stream_reads() {
     let value2 = 16;
     let value3 = 80;
 
-    cql_db::create_db::<U64>(
+    cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[10]
     );
@@ -229,7 +229,7 @@ fn _4d_u64_database_allows_for_stream_reads() {
     let value2 = 16;
     let value3 = 80;
 
-    cql_db::create_db::<U64>(
+    cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1, 1, 1, 10]
     );

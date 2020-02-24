@@ -11,7 +11,7 @@ use cql_u64::{ U64 };
 #[serial]
 #[should_panic]
 fn _1d_u64_database_panics_given_one_zero_index() {
-    cql_db::create_db::<U64>(
+    cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1]
     );
@@ -27,7 +27,7 @@ fn _1d_u64_database_panics_given_one_zero_index() {
 #[serial]
 #[should_panic]
 fn _2d_u64_database_panics_given_one_zero_index() {
-    cql_db::create_db::<U64>(
+    cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1, 1]
     );
@@ -43,7 +43,7 @@ fn _2d_u64_database_panics_given_one_zero_index() {
 #[serial]
 #[should_panic]
 fn _2d_u64_database_panics_given_zero_one_index() {
-    cql_db::create_db::<U64>(
+    cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1, 1]
     );
@@ -61,7 +61,7 @@ fn _1d_u64_database_allows_for_first_item_to_be_written() {
     let point1 = [1];
     let value1 = 42;
 
-    cql_db::create_db::<U64>(
+    cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1]
     );
@@ -86,7 +86,7 @@ fn _2d_u64_database_allows_for_first_item_to_be_written() {
     let point1 = [1, 1];
     let value1 = 42;
 
-    cql_db::create_db::<U64>(
+    cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1, 1]
     );
@@ -109,7 +109,7 @@ fn _2d_u64_database_allows_for_first_item_to_be_written() {
 #[serial]
 #[should_panic]
 fn _3d_u64_database_panics_writing_first_item_without_link() {
-    cql_db::create_db::<U64>(
+    cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1, 1, 1]
     );
@@ -127,7 +127,7 @@ fn _3d_u64_database_allows_for_first_item_to_be_written_after_axis_linked() {
     let point1 = [1, 1, 1];
     let value1 = 42;
 
-    cql_db::create_db::<U64>(
+    cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[5, 5, 5]
     );
@@ -157,7 +157,7 @@ fn _3d_u64_database_allows_for_last_item_to_be_written_after_axis_linked() {
     let point1 = [5, 5, 5];
     let value1 = 42;
 
-    cql_db::create_db::<U64>(
+    cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[5, 5, 5]
     );
@@ -184,7 +184,7 @@ fn _3d_u64_database_allows_for_last_item_to_be_written_after_axis_linked() {
 #[test]
 #[serial]
 fn _1d_u64_database_expands_size_as_items_written() {
-    cql_db::create_db::<U64>(
+    cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[5]
     );
@@ -214,7 +214,7 @@ fn _1d_u64_database_expands_size_as_items_written() {
 #[test]
 #[serial]
 fn _1d_u64_database_maintains_size_as_first_item_written_after_last_item_written() {
-    cql_db::create_db::<U64>(
+    cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[5]
     );
@@ -241,7 +241,7 @@ fn _1d_u64_database_maintains_size_as_first_item_written_after_last_item_written
 #[test]
 #[serial]
 fn _2d_u64_database_maintains_size_as_first_item_written_after_last_item_written() {
-    cql_db::create_db::<U64>(
+    cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[5, 5]
     );
@@ -270,7 +270,7 @@ fn _2d_u64_database_maintains_size_as_first_item_written_after_last_item_written
 fn _3d_u64_database_maintains_size_as_last_item_written_after_axis_linked() {
     let point1 = [5, 5, 5];
 
-    cql_db::create_db::<U64>(
+    cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[5, 5, 5]
     );

@@ -14,7 +14,7 @@ Elements in the array can be writen to [one by one](fn.write_value.html), and re
 This crate will allocate file space upon linking of dimensions, as well as a small amount on create of a database, so before starting you
 should be aware of the disk space requirements.
 
-Given a database with `N` dimensions, calling [create_db](fn.create_db.html) will allocate `(1 + N) * 8` bytes. Thereafter,
+Given a database with `N` dimensions, calling [create_db_unchecked](fn.create_db_unchecked.html) will allocate `(1 + N) * 8` bytes. Thereafter,
 [linking](fn.link_dimensions.html) a set of dimensions, will then expand the maximum file sizes according to the function below:
 ```
 # const DATABASE_LOCATION: &str = "./.test_db";
@@ -24,7 +24,7 @@ Given a database with `N` dimensions, calling [create_db](fn.create_db.html) wil
 let database_definition = [6, 7, 8, 9, 10];
 let link = [2, 3, 4, 5];
 
-# cql_db::create_db::<U64>(
+# cql_db::create_db_unchecked::<U64>(
 #    DATABASE_LOCATION,
 #    &database_definition
 # );
@@ -70,7 +70,7 @@ let point = [2, 4, 3, 1];
 let value = 5;
 
 // Create a database with a maximum capacity of `[2, 5, 3, 2]`
-cql_db::create_db::<U64>(
+cql_db::create_db_unchecked::<U64>(
     DATABASE_LOCATION,
     &[2, 5, 3, 2]
 );
@@ -118,7 +118,7 @@ use axis_library::AxisDefinition;
 use vectors::calculate_index;
 
 /// Creates an CQL database in the provided directory, overwriting existing files.
-pub fn create_db<TStore: CqlType>(db_location: &str, array_size: &[u64]) {
+pub fn create_db_unchecked<TStore: CqlType>(db_location: &str, array_size: &[u64]) {
     let mut axis_definitions = Vec::with_capacity(array_size.len());
     for index in 0..array_size.len() {
         axis_definitions.push(AxisDefinition {
@@ -143,7 +143,7 @@ pub fn create_db<TStore: CqlType>(db_location: &str, array_size: &[u64]) {
 /// # const DATABASE_LOCATION: &str = "./.test_db";
 /// #
 /// // Create a database with a maximum capacity of `[2, 5, 3, 2]`
-/// cql_db::create_db::<U64>(
+/// cql_db::create_db_unchecked::<U64>(
 ///     DATABASE_LOCATION,
 ///     &[2, 5, 3, 2]
 /// );
@@ -196,7 +196,7 @@ pub fn link_dimensions<TStore: CqlType>(db_location: &str, location: &[u64]) {
 /// # use cql_u64::U64;
 /// # const DATABASE_LOCATION: &str = "./.test_db";
 /// #
-/// cql_db::create_db::<U64>(
+/// cql_db::create_db_unchecked::<U64>(
 ///     DATABASE_LOCATION,
 ///     &[2, 5, 3, 2]
 /// );
@@ -229,7 +229,7 @@ pub fn write_value<TStore: CqlWritable>(db_location: &str, location: &[u64], val
 /// let point = [2, 4, 3, 1];
 /// let value = 5;
 ///
-/// cql_db::create_db::<U64>(
+/// cql_db::create_db_unchecked::<U64>(
 ///     DATABASE_LOCATION,
 ///     &[2, 5, 3, 2]
 /// );
@@ -285,7 +285,7 @@ pub fn read_value<TStore: CqlReadable>(db_location: &str, location: &[u64]) -> T
 /// let value2 = 16;
 /// let value3 = 80;
 ///
-/// cql_db::create_db::<U64>(
+/// cql_db::create_db_unchecked::<U64>(
 ///     DATABASE_LOCATION,
 ///     &[1, 1, 1, 10]
 /// );
