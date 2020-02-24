@@ -127,7 +127,7 @@ pub fn create_db<TStore: CqlType>(db_location: &str, array_size: &[u64]) {
         });
     }
 
-    database::create::<TStore>(&db_location);
+    database::create::<TStore>(&db_location).unwrap();
     axis_library::create(db_location, &axis_definitions).unwrap();
     key_library::create(db_location, &axis_definitions);
 }

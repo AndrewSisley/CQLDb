@@ -1,3 +1,4 @@
+use std::io;
 use std::io::Write;
 use std::fs::OpenOptions;
 use cql_model::{
@@ -9,9 +10,12 @@ use cql_model::{
 
 const DB_FILE_NAME: &str = "/db";
 
-pub fn create<TStore: CqlType>(db_location: &str) {
+pub fn create<TStore: CqlType>(db_location: &str) -> io::Result<()> {
     let db_key_location = format!("{}{}", db_location, DB_FILE_NAME);
-    OpenOptions::new().write(true).create(true).truncate(true).open(db_key_location).unwrap();
+    match OpenOptions::new().write(true).create(true).truncate(true).open(db_key_location) {
+        Ok(_) => Ok(()),
+        Err(e) => Err(e),
+    }
 }
 
 pub fn grow<TStore: CqlType>(db_location: &str, size_to_grow: u64) {
