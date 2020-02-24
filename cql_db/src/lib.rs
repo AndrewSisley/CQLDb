@@ -129,7 +129,7 @@ pub fn create_db<TStore: CqlType>(db_location: &str, array_size: &[u64]) {
 
     database::create::<TStore>(&db_location).unwrap();
     axis_library::create(db_location, &axis_definitions).unwrap();
-    key_library::create(db_location, &axis_definitions);
+    key_library::create(db_location, &axis_definitions).unwrap();
 }
 
 /// Links dimension indexs together if they are not already linked.
