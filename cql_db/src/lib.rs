@@ -216,7 +216,7 @@ pub fn link_dimensions<TStore: CqlType>(db_location: &str, location: &[u64]) {
 /// ```
 pub fn write_value<TStore: CqlWritable>(db_location: &str, location: &[u64], value: TStore::ValueType) {
 	let position = calculate_position(db_location, location);
-	database::write_value::<TStore>(&db_location, position, value)
+	database::write_value::<TStore>(&db_location, position, value).unwrap()
 }
 
 /// Reads the value at the given location from the database.
