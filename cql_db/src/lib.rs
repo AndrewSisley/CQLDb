@@ -169,7 +169,7 @@ pub fn link_dimensions<TStore: CqlType>(db_location: &str, location: &[u64]) {
             &key_library::AxisPoint { axis_id: x_axis_id as u64, position: x_position },
             &key_library::AxisPoint { axis_id: y_axis_id, position: y_position },
             &y_axis_definition
-        );
+        ).unwrap();
 
         if key == 0 {
             key = key_library::add::<TStore>(
@@ -357,7 +357,7 @@ fn calculate_position(db_location: &str, location: &[u64]) -> u64 {
             &key_library::AxisPoint { axis_id: x_axis_id, position: x_position },
             &key_library::AxisPoint { axis_id: y_axis_id, position: y_position },
             &y_axis_definition
-        );
+        ).unwrap();
 
         x_position = key;
     }

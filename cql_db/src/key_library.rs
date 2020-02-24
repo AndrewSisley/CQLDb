@@ -48,9 +48,9 @@ pub fn add<TStore: CqlType>(db_location: &str, x: u64, y: u64, x_axis: &AxisDefi
     new_key
 }
 
-pub fn get(db_location: &str, x: &AxisPoint, y: &AxisPoint, y_axis: &AxisDefinition) -> u64 {
+pub fn get(db_location: &str, x: &AxisPoint, y: &AxisPoint, y_axis: &AxisDefinition) -> Result<u64, io::Error> {
 	let library_key_location = format!("{}{}{}_{}", db_location, KEY_FILE_NAME, x.axis_id, y.axis_id);
 	let key_location = calculate_index(x.position, y.position, y_axis.max);
 
-    U64::read_from_db(&library_key_location, 1 + key_location).unwrap()
+    U64::read_from_db(&library_key_location, 1 + key_location)
 }
