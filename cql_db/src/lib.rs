@@ -180,7 +180,7 @@ pub fn link_dimensions<TStore: CqlType>(db_location: &str, location: &[u64]) {
                 &y_axis_definition
             );
 
-            let last_axis_id = axis_library::count(db_location);
+            let last_axis_id = axis_library::count(db_location).unwrap();
             if y_axis_id == last_axis_id - 1 {
                 database::grow::<TStore>(&db_location, y_axis_definition.max);
             }

@@ -40,9 +40,10 @@ pub fn create(db_location: &str, axis_definitions: &[AxisDefinition]) -> io::Res
     Ok(())
 }
 
-pub fn count(db_location: &str) -> u64 {
+pub fn count(db_location: &str) -> Result<u64, io::Error> {
     let library_axis_location = format!("{}{}", db_location, AXIS_FILE_NAME);
-    U64::read_from_db(&library_axis_location, 0).unwrap()
+
+    U64::read_from_db(&library_axis_location, 0)
 }
 
 pub fn get_by_id(db_location: &str, axis_id: u64) -> AxisDefinition {
