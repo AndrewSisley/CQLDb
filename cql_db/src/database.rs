@@ -18,10 +18,11 @@ pub fn create<TStore: CqlType>(db_location: &str) -> io::Result<()> {
     }
 }
 
-pub fn grow<TStore: CqlType>(db_location: &str, size_to_grow: u64) {
+pub fn grow<TStore: CqlType>(db_location: &str, size_to_grow: u64) -> io::Result<()> {
     let db_key_location = format!("{}{}", db_location, DB_FILE_NAME);
-    let file = OpenOptions::new().write(true).open(db_key_location).unwrap();
-    file.set_len(file.metadata().unwrap().len() + size_to_grow * TStore::VALUE_SIZE as u64).unwrap();
+    let file = OpenOptions::new().write(true).open(db_key_location)?;
+
+    file.set_len(file.metadata()?.len() + size_to_grow * TStore::VALUE_SIZE as u64)
 }
 
 pub fn write_value<TStore: CqlWritable>(db_location: &str, value_location: u64, value: TStore::ValueType) {
