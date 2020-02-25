@@ -1,7 +1,7 @@
 /*!
-This crate implements various [CqlType](../cql_model/trait.CqlType.html) derivatives for storing `u64` values in a CQL database.
+This crate implements various [CqlType](https://docs.rs/cql_model/0.2/cql_model/trait.CqlType.html) derivatives for storing `u64` values in a CQL database.
 
-Will allocate 8 bytes per value [linked](../cql_db/fn.link_dimensions_unchecked.html).
+Will allocate 8 bytes per value [linked](https://docs.rs/cql_db/0.2/cql_db/fn.link_dimensions_unchecked.html).
 
 # Benchmarks
 Benchmarks supplied below are fairly rudimentary (and rounded) and are there to give a rough idea of relative costs.
@@ -73,7 +73,7 @@ assert_eq!(result[2], value3);
 # }
 ```
 */
-#![doc(html_root_url = "https://docs.rs/cql_u64/0.2.1")]
+#![doc(html_root_url = "https://docs.rs/cql_u64/0.2.2")]
 use std::fs::{ File, OpenOptions };
 use std::io;
 use std::io::{ Read, Write, Cursor, SeekFrom, Seek };
