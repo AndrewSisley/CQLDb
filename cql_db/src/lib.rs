@@ -6,7 +6,7 @@ The library allows the consumers to provide a path to a local directory which wi
 The number of dimensions in the array, and their maximum sizes must be stated on create of the database, however it will only allocate storage
 space for elements in the final (Nth) dimension upon [linking](fn.link_dimensions_unchecked.html) of higher level dimensions.
 
-Elements in the array can be writen to [one by one](fn.write_value_unchecked.html), and read either as [single points](fn.read_value.html) or to a
+Elements in the array can be writen to [one by one](fn.write_value_unchecked.html), and read either as [single points](fn.read_value_unchecked.html) or to a
 [stream](fn.read_to_stream.html).
 
 # Storage space consumption
@@ -99,7 +99,7 @@ cql_db::write_value_unchecked::<U64>(
 )?;
 
 // Read the stored value from point `point`
-let result = cql_db::read_value::<U64>(
+let result = cql_db::read_value_unchecked::<U64>(
     DATABASE_LOCATION,
     &point
 );
@@ -362,7 +362,7 @@ pub fn write_value_unchecked<TStore: CqlWritable>(db_location: &str, location: &
 /// )?;
 ///
 /// // Read the default value from point `point`
-/// let result1 = cql_db::read_value::<U64>(
+/// let result1 = cql_db::read_value_unchecked::<U64>(
 ///     DATABASE_LOCATION,
 ///     &point
 /// );
@@ -377,7 +377,7 @@ pub fn write_value_unchecked<TStore: CqlWritable>(db_location: &str, location: &
 /// )?;
 ///
 /// // Read the now-populated value from point `point`
-/// let result2 = cql_db::read_value::<U64>(
+/// let result2 = cql_db::read_value_unchecked::<U64>(
 ///     DATABASE_LOCATION,
 ///     &point
 /// );
@@ -386,7 +386,7 @@ pub fn write_value_unchecked<TStore: CqlWritable>(db_location: &str, location: &
 /// # Ok(())
 /// # }
 /// ```
-pub fn read_value<TStore: CqlReadable>(db_location: &str, location: &[u64]) -> TStore::ValueType {
+pub fn read_value_unchecked<TStore: CqlReadable>(db_location: &str, location: &[u64]) -> TStore::ValueType {
 	let position = calculate_position(db_location, location);
 	database::read_value::<TStore>(&db_location, position).unwrap()
 }

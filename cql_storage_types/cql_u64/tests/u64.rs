@@ -26,7 +26,7 @@ fn _1d_u64_database_allows_for_single_point_read_writes() {
         value1
     ).unwrap();
 
-    let result1 = cql_db::read_value::<U64>(
+    let result1 = cql_db::read_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1
     );
@@ -63,7 +63,7 @@ fn _4d_u64_database_allows_for_single_point_read_writes() {
         value1
     ).unwrap();
 
-    let result1 = cql_db::read_value::<U64>(
+    let result1 = cql_db::read_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1
     );
@@ -128,22 +128,22 @@ fn _4d_u64_database_allows_for_single_point_read_writes_given_multiple_values_an
         value3
     ).unwrap();
 
-    let result1 = cql_db::read_value::<U64>(
+    let result1 = cql_db::read_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1
     );
 
-    let result2 = cql_db::read_value::<U64>(
+    let result2 = cql_db::read_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &point2
     );
 
-    let result3 = cql_db::read_value::<U64>(
+    let result3 = cql_db::read_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &point3
     );
 
-    let result4 = cql_db::read_value::<U64>(
+    let result4 = cql_db::read_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &point4
     );
@@ -159,7 +159,7 @@ fn _4d_u64_database_allows_for_single_point_read_writes_given_multiple_values_an
         value5
     ).unwrap();
 
-    let result5 = cql_db::read_value::<U64>(
+    let result5 = cql_db::read_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &point2
     );
