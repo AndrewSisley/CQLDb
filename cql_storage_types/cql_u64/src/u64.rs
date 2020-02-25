@@ -59,7 +59,7 @@ cql_db::read_to_stream_unchecked::<U64>(
     &mut stream,
     &base_point,
     N_VALUES_TO_READ as u64
-);
+)?;
 
 stream.seek(SeekFrom::Start(0)).unwrap();
 unpack_stream(&mut stream, N_VALUES_TO_READ, |idx, value| {
@@ -160,7 +160,7 @@ impl CqlStreamReadable for U64 {
 ///     &mut stream,
 ///     &base_point,
 ///     N_VALUES_TO_READ as u64
-/// );
+/// )?;
 ///
 /// stream.seek(SeekFrom::Start(0));
 ///

@@ -457,7 +457,7 @@ pub fn read_value_unchecked<TStore: CqlReadable>(db_location: &str, location: &[
 ///     &mut stream,
 ///     &base_point,
 ///     N_VALUES_TO_READ as u64
-/// );
+/// )?;
 ///
 /// stream.seek(SeekFrom::Start(0));
 ///
@@ -471,9 +471,9 @@ pub fn read_value_unchecked<TStore: CqlReadable>(db_location: &str, location: &[
 /// # Ok(())
 /// # }
 /// ```
-pub fn read_to_stream_unchecked<TStore: CqlStreamReadable>(db_location: &str, stream: &mut dyn Write, location: &[u64], n_values: u64) {
+pub fn read_to_stream_unchecked<TStore: CqlStreamReadable>(db_location: &str, stream: &mut dyn Write, location: &[u64], n_values: u64) -> io::Result<()> {
 	let position = calculate_position(db_location, location);
-	database::read_to_stream::<TStore>(&db_location, stream, position, n_values).unwrap()
+	database::read_to_stream::<TStore>(&db_location, stream, position, n_values)
 }
 
 fn calculate_position(db_location: &str, location: &[u64]) -> u64 {

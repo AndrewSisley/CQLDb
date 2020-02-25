@@ -207,7 +207,7 @@ fn _1d_u64_database_allows_for_stream_reads() {
         &mut stream,
         &base_point,
         N_VALUES_TO_READ as u64
-    );
+    ).unwrap();
 
     stream.seek(SeekFrom::Start(0)).unwrap();
 
@@ -265,7 +265,7 @@ fn _4d_u64_database_allows_for_stream_reads() {
         &mut stream,
         &base_point,
         N_VALUES_TO_READ as u64
-    );
+    ).unwrap();
 
     stream.seek(SeekFrom::Start(0)).unwrap();
 

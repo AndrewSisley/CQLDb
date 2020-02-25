@@ -26,7 +26,7 @@ fn _1d_u64_stream_read_location_1_to_1(b: &mut Bencher) {
             &mut stream,
             &point1,
             n_values_to_read as u64
-        );
+        ).unwrap();
 
         stream.seek(SeekFrom::Start(0)).unwrap();
 
@@ -55,7 +55,7 @@ fn _1d_u64_stream_read_location_50000_to_100000(b: &mut Bencher) {
             &mut stream,
             &base_point,
             n_values_to_read as u64
-        );
+        ).unwrap();
 
         stream.seek(SeekFrom::Start(0)).unwrap();
 
@@ -89,7 +89,7 @@ fn _4d_u64_stream_read_location_1_1_1_1_to_1_1_1_1(b: &mut Bencher) {
             &mut stream,
             &base_point,
             n_values_to_read as u64
-        );
+        ).unwrap();
 
         stream.seek(SeekFrom::Start(0)).unwrap();
 
@@ -123,7 +123,7 @@ fn _4d_u64_stream_read_location_1_1_1_50000_to_1_1_1_100000(b: &mut Bencher) {
             &mut stream,
             &base_point,
             n_values_to_read as u64
-        );
+        ).unwrap();
 
         stream.seek(SeekFrom::Start(0)).unwrap();
 
