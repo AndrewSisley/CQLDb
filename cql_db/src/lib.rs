@@ -218,10 +218,20 @@ pub fn create_db_unchecked<TStore: CqlType>(db_location: &str, array_size: &[u64
     key_library::create(db_location, &axis_definitions)
 }
 
-/// Links dimension indexs together if they are not already linked.
+/// Links dimension indexs together if they are not already linked.  Does not validate given parameters.
 ///
 /// This is required before read-writing to a location, and allocates the file space required to store the Nth dimension data.
 /// The last (Nth) dimension should not be linked.
+///
+/// # Errors
+///
+/// Will return any [I/O errors](https://doc.rust-lang.org/nightly/std/io/enum.ErrorKind.html) encountered during the execution of the function.  Function may
+/// partially succeed resulting in changes to the file system.
+///
+/// # Panics
+///
+/// Function does not actively defend against panics, and may do so if given invalid parameters.  Function may partially succeed resulting in changes
+/// to the file system.
 ///
 /// # Examples
 /// ```
