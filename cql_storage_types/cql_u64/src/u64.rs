@@ -39,13 +39,13 @@ cql_db::create_db_unchecked::<U64>(
     &[3]
 )?;
 
-cql_db::write_value::<U64>(
+cql_db::write_value_unchecked::<U64>(
     DATABASE_LOCATION,
     &base_point,
     value1
 );
 
-cql_db::write_value::<U64>(
+cql_db::write_value_unchecked::<U64>(
     DATABASE_LOCATION,
     &[base_point[0] + 2],
     value3

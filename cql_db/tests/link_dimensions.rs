@@ -115,7 +115,7 @@ fn _4d_u64_database_allows_for_mins_to_be_linked() {
         &point1[0..3],
     ).unwrap();
 
-    cql_db::write_value::<U64>(
+    cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1,
         value1
@@ -145,7 +145,7 @@ fn _4d_u64_database_allows_for_maxes_to_be_linked() {
         &point1[0..3],
     ).unwrap();
 
-    cql_db::write_value::<U64>(
+    cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1,
         value1
@@ -224,7 +224,7 @@ fn _4d_u64_database_allows_for_all_points_to_be_linked() {
         for j in 1..4 {
             for k in 1..3 {
                 for l in 1..3 {
-                    cql_db::write_value::<U64>(
+                    cql_db::write_value_unchecked::<U64>(
                         DATABASE_LOCATION,
                         &[i, j, k, l],
                         i * j * k * l,

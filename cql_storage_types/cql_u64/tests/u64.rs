@@ -20,7 +20,7 @@ fn _1d_u64_database_allows_for_single_point_read_writes() {
         &axis
     ).unwrap();
 
-    cql_db::write_value::<U64>(
+    cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1,
         value1
@@ -57,7 +57,7 @@ fn _4d_u64_database_allows_for_single_point_read_writes() {
         &point1[0..3],
     ).unwrap();
 
-    cql_db::write_value::<U64>(
+    cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1,
         value1
@@ -110,19 +110,19 @@ fn _4d_u64_database_allows_for_single_point_read_writes_given_multiple_values_an
         &point3[0..3]
     ).unwrap();
 
-    cql_db::write_value::<U64>(
+    cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1,
         value1
     );
 
-    cql_db::write_value::<U64>(
+    cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &point2,
         value2
     );
 
-    cql_db::write_value::<U64>(
+    cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &point3,
         value3
@@ -153,7 +153,7 @@ fn _4d_u64_database_allows_for_single_point_read_writes_given_multiple_values_an
     assert_eq!(result3, value3);
     assert_eq!(result4, 0);
 
-    cql_db::write_value::<U64>(
+    cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &point2,
         value5
@@ -181,19 +181,19 @@ fn _1d_u64_database_allows_for_stream_reads() {
         &[10]
     ).unwrap();
 
-    cql_db::write_value::<U64>(
+    cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &base_point,
         value1
     );
 
-    cql_db::write_value::<U64>(
+    cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &[base_point[0] + 1],
         value2
     );
 
-    cql_db::write_value::<U64>(
+    cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &[base_point[0] + 2],
         value3
@@ -239,19 +239,19 @@ fn _4d_u64_database_allows_for_stream_reads() {
         &base_point[0..3]
     ).unwrap();
 
-    cql_db::write_value::<U64>(
+    cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &base_point,
         value1
     );
 
-    cql_db::write_value::<U64>(
+    cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1, 1, 1, base_point[3] + 1],
         value2
     );
 
-    cql_db::write_value::<U64>(
+    cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1, 1, 1, base_point[3] + 2],
         value3

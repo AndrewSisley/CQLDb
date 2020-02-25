@@ -16,7 +16,7 @@ fn _1d_u64_database_panics_given_one_zero_index() {
         &[1]
     ).unwrap();
 
-    cql_db::write_value::<U64>(
+    cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &[0],
         42
@@ -32,7 +32,7 @@ fn _2d_u64_database_panics_given_one_zero_index() {
         &[1, 1]
     ).unwrap();
 
-    cql_db::write_value::<U64>(
+    cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1, 0],
         42
@@ -48,7 +48,7 @@ fn _2d_u64_database_panics_given_zero_one_index() {
         &[1, 1]
     ).unwrap();
 
-    cql_db::write_value::<U64>(
+    cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &[0, 1],
         42
@@ -66,7 +66,7 @@ fn _1d_u64_database_allows_for_first_item_to_be_written() {
         &[1]
     ).unwrap();
 
-    cql_db::write_value::<U64>(
+    cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1,
         value1
@@ -91,7 +91,7 @@ fn _2d_u64_database_allows_for_first_item_to_be_written() {
         &[1, 1]
     ).unwrap();
 
-    cql_db::write_value::<U64>(
+    cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1,
         value1
@@ -114,7 +114,7 @@ fn _3d_u64_database_panics_writing_first_item_without_link() {
         &[1, 1, 1]
     ).unwrap();
 
-    cql_db::write_value::<U64>(
+    cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1, 1, 1],
         42
@@ -137,7 +137,7 @@ fn _3d_u64_database_allows_for_first_item_to_be_written_after_axis_linked() {
         &point1[0..3]
     ).unwrap();
 
-    cql_db::write_value::<U64>(
+    cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1,
         value1
@@ -167,7 +167,7 @@ fn _3d_u64_database_allows_for_last_item_to_be_written_after_axis_linked() {
         &point1[0..3]
     ).unwrap();
 
-    cql_db::write_value::<U64>(
+    cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1,
         value1
@@ -192,7 +192,7 @@ fn _1d_u64_database_expands_size_as_items_written() {
     let initial_size = get_file_length(&format!("{}/db", DATABASE_LOCATION));
     assert_eq!(initial_size, 0);
 
-    cql_db::write_value::<U64>(
+    cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1],
         42
@@ -201,7 +201,7 @@ fn _1d_u64_database_expands_size_as_items_written() {
     let post_write_one_size = get_file_length(&format!("{}/db", DATABASE_LOCATION));
     assert_eq!(post_write_one_size, 1 * U64::VALUE_SIZE as u64);
 
-    cql_db::write_value::<U64>(
+    cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &[3],
         42
@@ -219,7 +219,7 @@ fn _1d_u64_database_maintains_size_as_first_item_written_after_last_item_written
         &[5]
     ).unwrap();
 
-    cql_db::write_value::<U64>(
+    cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &[5],
         42
@@ -227,7 +227,7 @@ fn _1d_u64_database_maintains_size_as_first_item_written_after_last_item_written
 
     let post_write_to_last_point_size = get_file_length(&format!("{}/db", DATABASE_LOCATION));
 
-    cql_db::write_value::<U64>(
+    cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1],
         42
@@ -246,7 +246,7 @@ fn _2d_u64_database_maintains_size_as_first_item_written_after_last_item_written
         &[5, 5]
     ).unwrap();
 
-    cql_db::write_value::<U64>(
+    cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &[5, 5],
         42
@@ -254,7 +254,7 @@ fn _2d_u64_database_maintains_size_as_first_item_written_after_last_item_written
 
     let post_write_to_last_point_size = get_file_length(&format!("{}/db", DATABASE_LOCATION));
 
-    cql_db::write_value::<U64>(
+    cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1, 1],
         42
@@ -282,7 +282,7 @@ fn _3d_u64_database_maintains_size_as_last_item_written_after_axis_linked() {
 
     let post_link_db_size = get_file_length(&format!("{}/db", DATABASE_LOCATION));
 
-    cql_db::write_value::<U64>(
+    cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1,
         42

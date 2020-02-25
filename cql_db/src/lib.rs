@@ -6,7 +6,7 @@ The library allows the consumers to provide a path to a local directory which wi
 The number of dimensions in the array, and their maximum sizes must be stated on create of the database, however it will only allocate storage
 space for elements in the final (Nth) dimension upon [linking](fn.link_dimensions_unchecked.html) of higher level dimensions.
 
-Elements in the array can be writen to [one by one](fn.write_value.html), and read either as [single points](fn.read_value.html) or to a
+Elements in the array can be writen to [one by one](fn.write_value_unchecked.html), and read either as [single points](fn.read_value.html) or to a
 [stream](fn.read_to_stream.html).
 
 # Storage space consumption
@@ -92,7 +92,7 @@ cql_db::link_dimensions_unchecked::<U64>(
 )?;
 
 // Write value `value` to point `point`
-cql_db::write_value::<U64>(
+cql_db::write_value_unchecked::<U64>(
     DATABASE_LOCATION,
     &point,
     value
@@ -312,7 +312,7 @@ pub fn link_dimensions_unchecked<TStore: CqlType>(db_location: &str, location: &
 /// )?;
 ///
 /// // Write `5` to location `[2, 4, 3, 1]`
-/// cql_db::write_value::<U64>(
+/// cql_db::write_value_unchecked::<U64>(
 ///     DATABASE_LOCATION,
 ///     &[2, 4, 3, 1],
 ///     5
@@ -320,7 +320,7 @@ pub fn link_dimensions_unchecked<TStore: CqlType>(db_location: &str, location: &
 /// # Ok(())
 /// # }
 /// ```
-pub fn write_value<TStore: CqlWritable>(db_location: &str, location: &[u64], value: TStore::ValueType) {
+pub fn write_value_unchecked<TStore: CqlWritable>(db_location: &str, location: &[u64], value: TStore::ValueType) {
 	let position = calculate_position(db_location, location);
 	database::write_value::<TStore>(&db_location, position, value).unwrap()
 }
@@ -357,7 +357,7 @@ pub fn write_value<TStore: CqlWritable>(db_location: &str, location: &[u64], val
 /// assert_eq!(0, result1);
 ///
 /// // Write `value` to location `[2, 4, 3, 1]`
-/// cql_db::write_value::<U64>(
+/// cql_db::write_value_unchecked::<U64>(
 ///     DATABASE_LOCATION,
 ///     &point,
 ///     value
@@ -407,19 +407,19 @@ pub fn read_value<TStore: CqlReadable>(db_location: &str, location: &[u64]) -> T
 ///     &base_point[0..3]
 /// )?;
 ///
-/// cql_db::write_value::<U64>(
+/// cql_db::write_value_unchecked::<U64>(
 ///     DATABASE_LOCATION,
 ///     &base_point,
 ///     value1
 /// );
 ///
-/// cql_db::write_value::<U64>(
+/// cql_db::write_value_unchecked::<U64>(
 ///     DATABASE_LOCATION,
 ///     &[1, 1, 1, base_point[3] + 1],
 ///     value2
 /// );
 ///
-/// cql_db::write_value::<U64>(
+/// cql_db::write_value_unchecked::<U64>(
 ///     DATABASE_LOCATION,
 ///     &[1, 1, 1, base_point[3] + 2],
 ///     value3
