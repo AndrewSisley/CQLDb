@@ -1,5 +1,5 @@
 /*!
-This crate contains the core CQL Database functionality, orchestrating implementors of the [CqlType](../cql_model/trait.CqlType.html)
+This crate contains the core CQL Database functionality, orchestrating implementors of the [CqlType](https://docs.rs/cql_model/0.2/cql_model/trait.CqlType.html)
 trait allowing the system to act as an array-based database.
 
 The library allows the consumers to provide a path to a local directory which will be used to store array based data as defined by the user.
@@ -62,7 +62,7 @@ assert_eq!(
 Should additional elements be linked, the key libraries will expand accordingly.
 
 Additional space will be allocated for each penultimate dimenion `(Nn-1)` linked using the [link_dimensions_unchecked](fn.link_dimensions_unchecked.html) function, this is
-equal to the maximum size of the final dimension multiplied by the [VALUE_SIZE](../cql_model/trait.CqlType.html#associatedconstant.VALUE_SIZE) of the stored struct.
+equal to the maximum size of the final dimension multiplied by the [VALUE_SIZE](https://docs.rs/cql_model/0.2/cql_model/trait.CqlType.html#associatedconstant.VALUE_SIZE) of the stored struct.
 
 # Examples
 
@@ -109,7 +109,7 @@ assert_eq!(result, value);
 # }
 ```
 */
-#![doc(html_root_url = "https://docs.rs/cql_db/0.2.0")]
+#![doc(html_root_url = "https://docs.rs/cql_db/0.2.1")]
 use std::io;
 use std::io::Write;
 
