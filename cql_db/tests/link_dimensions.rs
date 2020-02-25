@@ -12,15 +12,15 @@ use cql_u64::{ U64 };
 fn _4d_u64_database_allows_for_first_dimension_pair_mins_to_be_linked() {
     let db_dimensions = [2, 3, 2, 2];
 
-    cql_db::create_db::<U64>(
+    cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &db_dimensions
-    );
+    ).unwrap();
 
-    cql_db::link_dimensions::<U64>(
+    cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1, 1],
-    );
+    ).unwrap();
 
     let key_file_size = get_file_length(&format!("{}/key1_2", DATABASE_LOCATION));
     let db_size = get_file_length(&format!("{}/db", DATABASE_LOCATION));
@@ -34,15 +34,15 @@ fn _4d_u64_database_allows_for_first_dimension_pair_mins_to_be_linked() {
 fn _4d_u64_database_allows_for_first_dimension_pair_maxes_to_be_linked() {
     let db_dimensions = [2, 3, 2, 2];
 
-    cql_db::create_db::<U64>(
+    cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &db_dimensions
-    );
+    ).unwrap();
 
-    cql_db::link_dimensions::<U64>(
+    cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &[2, 3],
-    );
+    ).unwrap();
 
     let key_file_size = get_file_length(&format!("{}/key1_2", DATABASE_LOCATION));
     let db_size = get_file_length(&format!("{}/db", DATABASE_LOCATION));
@@ -56,15 +56,15 @@ fn _4d_u64_database_allows_for_first_dimension_pair_maxes_to_be_linked() {
 fn _4d_u64_database_correctly_sizes_files_for_min_link() {
     let db_dimensions = [2, 3, 2, 2];
 
-    cql_db::create_db::<U64>(
+    cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &db_dimensions
-    );
+    ).unwrap();
 
-    cql_db::link_dimensions::<U64>(
+    cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1, 1, 1],
-    );
+    ).unwrap();
 
     let key_file_size1_2 = get_file_length(&format!("{}/key1_2", DATABASE_LOCATION));
     let key_file_size2_3 = get_file_length(&format!("{}/key2_3", DATABASE_LOCATION));
@@ -80,15 +80,15 @@ fn _4d_u64_database_correctly_sizes_files_for_min_link() {
 fn _4d_u64_database_correctly_sizes_files_for_max_link() {
     let db_dimensions = [2, 3, 2, 2];
 
-    cql_db::create_db::<U64>(
+    cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &db_dimensions
-    );
+    ).unwrap();
 
-    cql_db::link_dimensions::<U64>(
+    cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &[2, 3, 2],
-    );
+    ).unwrap();
 
     let key_file_size1_2 = get_file_length(&format!("{}/key1_2", DATABASE_LOCATION));
     let key_file_size2_3 = get_file_length(&format!("{}/key2_3", DATABASE_LOCATION));
@@ -105,26 +105,26 @@ fn _4d_u64_database_allows_for_mins_to_be_linked() {
     let point1 = [1, 1, 1, 1];
     let value1 = 5;
 
-    cql_db::create_db::<U64>(
+    cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[2, 3, 2, 2]
-    );
+    ).unwrap();
 
-    cql_db::link_dimensions::<U64>(
+    cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1[0..3],
-    );
+    ).unwrap();
 
-    cql_db::write_value::<U64>(
+    cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1,
         value1
-    );
+    ).unwrap();
 
-    let result1 = cql_db::read_value::<U64>(
+    let result1 = cql_db::read_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1
-    );
+    ).unwrap();
 
     assert_eq!(value1, result1);
 }
@@ -135,26 +135,26 @@ fn _4d_u64_database_allows_for_maxes_to_be_linked() {
     let point1 = [2, 3, 2, 2];
     let value1 = 5;
 
-    cql_db::create_db::<U64>(
+    cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[2, 3, 2, 2]
-    );
+    ).unwrap();
 
-    cql_db::link_dimensions::<U64>(
+    cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1[0..3],
-    );
+    ).unwrap();
 
-    cql_db::write_value::<U64>(
+    cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1,
         value1
-    );
+    ).unwrap();
 
-    let result1 = cql_db::read_value::<U64>(
+    let result1 = cql_db::read_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1
-    );
+    ).unwrap();
 
     assert_eq!(value1, result1);
 }
@@ -164,27 +164,27 @@ fn _4d_u64_database_allows_for_maxes_to_be_linked() {
 fn _4d_u64_database_correctly_sizes_files_for_all_links() {
     let db_dimensions = [2, 3, 2, 2];
 
-    cql_db::create_db::<U64>(
+    cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &db_dimensions
-    );
+    ).unwrap();
 
     for i in 1..3 {
         for j in 1..4 {
             for k in 1..3 {
-                cql_db::link_dimensions::<U64>(
+                cql_db::link_dimensions_unchecked::<U64>(
                     DATABASE_LOCATION,
                     &[i, j, k],
-                );
+                ).unwrap();
             }
         }
     }
 
     // test extra/duplicate link call
-    cql_db::link_dimensions::<U64>(
+    cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1, 2, 1],
-    );
+    ).unwrap();
 
     let key_file_size1_2 = get_file_length(&format!("{}/key1_2", DATABASE_LOCATION));
     let key_file_size2_3 = get_file_length(&format!("{}/key2_3", DATABASE_LOCATION));
@@ -198,37 +198,37 @@ fn _4d_u64_database_correctly_sizes_files_for_all_links() {
 #[test]
 #[serial]
 fn _4d_u64_database_allows_for_all_points_to_be_linked() {
-    cql_db::create_db::<U64>(
+    cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[2, 3, 2, 2]
-    );
+    ).unwrap();
 
     for i in 1..3 {
         for j in 1..4 {
             for k in 1..3 {
-                cql_db::link_dimensions::<U64>(
+                cql_db::link_dimensions_unchecked::<U64>(
                     DATABASE_LOCATION,
                     &[i, j, k],
-                );
+                ).unwrap();
             }
         }
     }
 
     // test extra/duplicate link call
-    cql_db::link_dimensions::<U64>(
+    cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1, 2, 1],
-    );
+    ).unwrap();
 
     for i in 1..3 {
         for j in 1..4 {
             for k in 1..3 {
                 for l in 1..3 {
-                    cql_db::write_value::<U64>(
+                    cql_db::write_value_unchecked::<U64>(
                         DATABASE_LOCATION,
                         &[i, j, k, l],
                         i * j * k * l,
-                    );
+                    ).unwrap();
                 }
             }
         }
@@ -238,10 +238,10 @@ fn _4d_u64_database_allows_for_all_points_to_be_linked() {
         for j in 1..4 {
             for k in 1..3 {
                 for l in 1..3 {
-                    let result1 = cql_db::read_value::<U64>(
+                    let result1 = cql_db::read_value_unchecked::<U64>(
                         DATABASE_LOCATION,
                         &[i, j, k, l]
-                    );
+                    ).unwrap();
 
                     assert_eq!(result1, i * j * k * l);
                 }
