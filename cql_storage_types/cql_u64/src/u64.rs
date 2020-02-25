@@ -43,13 +43,13 @@ cql_db::write_value_unchecked::<U64>(
     DATABASE_LOCATION,
     &base_point,
     value1
-);
+)?;
 
 cql_db::write_value_unchecked::<U64>(
     DATABASE_LOCATION,
     &[base_point[0] + 2],
     value3
-);
+)?;
 
 let mut result = [0; N_VALUES_TO_READ];
 let mut stream = Cursor::new(Vec::new());

@@ -119,7 +119,7 @@ fn _4d_u64_database_allows_for_mins_to_be_linked() {
         DATABASE_LOCATION,
         &point1,
         value1
-    );
+    ).unwrap();
 
     let result1 = cql_db::read_value::<U64>(
         DATABASE_LOCATION,
@@ -149,7 +149,7 @@ fn _4d_u64_database_allows_for_maxes_to_be_linked() {
         DATABASE_LOCATION,
         &point1,
         value1
-    );
+    ).unwrap();
 
     let result1 = cql_db::read_value::<U64>(
         DATABASE_LOCATION,
@@ -228,7 +228,7 @@ fn _4d_u64_database_allows_for_all_points_to_be_linked() {
                         DATABASE_LOCATION,
                         &[i, j, k, l],
                         i * j * k * l,
-                    );
+                    ).unwrap();
                 }
             }
         }

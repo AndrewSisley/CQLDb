@@ -24,7 +24,7 @@ fn _1d_u64_database_allows_for_single_point_read_writes() {
         DATABASE_LOCATION,
         &point1,
         value1
-    );
+    ).unwrap();
 
     let result1 = cql_db::read_value::<U64>(
         DATABASE_LOCATION,
@@ -61,7 +61,7 @@ fn _4d_u64_database_allows_for_single_point_read_writes() {
         DATABASE_LOCATION,
         &point1,
         value1
-    );
+    ).unwrap();
 
     let result1 = cql_db::read_value::<U64>(
         DATABASE_LOCATION,
@@ -114,19 +114,19 @@ fn _4d_u64_database_allows_for_single_point_read_writes_given_multiple_values_an
         DATABASE_LOCATION,
         &point1,
         value1
-    );
+    ).unwrap();
 
     cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &point2,
         value2
-    );
+    ).unwrap();
 
     cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &point3,
         value3
-    );
+    ).unwrap();
 
     let result1 = cql_db::read_value::<U64>(
         DATABASE_LOCATION,
@@ -157,7 +157,7 @@ fn _4d_u64_database_allows_for_single_point_read_writes_given_multiple_values_an
         DATABASE_LOCATION,
         &point2,
         value5
-    );
+    ).unwrap();
 
     let result5 = cql_db::read_value::<U64>(
         DATABASE_LOCATION,
@@ -185,19 +185,19 @@ fn _1d_u64_database_allows_for_stream_reads() {
         DATABASE_LOCATION,
         &base_point,
         value1
-    );
+    ).unwrap();
 
     cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &[base_point[0] + 1],
         value2
-    );
+    ).unwrap();
 
     cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &[base_point[0] + 2],
         value3
-    );
+    ).unwrap();
 
     let mut result = [0; N_VALUES_TO_READ];
     let mut stream = Cursor::new(Vec::new());
@@ -243,19 +243,19 @@ fn _4d_u64_database_allows_for_stream_reads() {
         DATABASE_LOCATION,
         &base_point,
         value1
-    );
+    ).unwrap();
 
     cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1, 1, 1, base_point[3] + 1],
         value2
-    );
+    ).unwrap();
 
     cql_db::write_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1, 1, 1, base_point[3] + 2],
         value3
-    );
+    ).unwrap();
 
     let mut result = [0; N_VALUES_TO_READ];
     let mut stream = Cursor::new(Vec::new());

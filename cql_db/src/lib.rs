@@ -96,7 +96,7 @@ cql_db::write_value_unchecked::<U64>(
     DATABASE_LOCATION,
     &point,
     value
-);
+)?;
 
 // Read the stored value from point `point`
 let result = cql_db::read_value::<U64>(
@@ -316,13 +316,13 @@ pub fn link_dimensions_unchecked<TStore: CqlType>(db_location: &str, location: &
 ///     DATABASE_LOCATION,
 ///     &[2, 4, 3, 1],
 ///     5
-/// );
+/// )?;
 /// # Ok(())
 /// # }
 /// ```
-pub fn write_value_unchecked<TStore: CqlWritable>(db_location: &str, location: &[u64], value: TStore::ValueType) {
+pub fn write_value_unchecked<TStore: CqlWritable>(db_location: &str, location: &[u64], value: TStore::ValueType) -> io::Result<()> {
 	let position = calculate_position(db_location, location);
-	database::write_value::<TStore>(&db_location, position, value).unwrap()
+	database::write_value::<TStore>(&db_location, position, value)
 }
 
 /// Reads the value at the given location from the database.
@@ -361,7 +361,7 @@ pub fn write_value_unchecked<TStore: CqlWritable>(db_location: &str, location: &
 ///     DATABASE_LOCATION,
 ///     &point,
 ///     value
-/// );
+/// )?;
 ///
 /// // Read the now-populated value from point `point`
 /// let result2 = cql_db::read_value::<U64>(
@@ -411,19 +411,19 @@ pub fn read_value<TStore: CqlReadable>(db_location: &str, location: &[u64]) -> T
 ///     DATABASE_LOCATION,
 ///     &base_point,
 ///     value1
-/// );
+/// )?;
 ///
 /// cql_db::write_value_unchecked::<U64>(
 ///     DATABASE_LOCATION,
 ///     &[1, 1, 1, base_point[3] + 1],
 ///     value2
-/// );
+/// )?;
 ///
 /// cql_db::write_value_unchecked::<U64>(
 ///     DATABASE_LOCATION,
 ///     &[1, 1, 1, base_point[3] + 2],
 ///     value3
-/// );
+/// )?;
 ///
 /// let mut result = [0; N_VALUES_TO_READ];
 /// let mut stream = Cursor::new(Vec::new());

@@ -24,7 +24,7 @@ fn _1d_u64_single_point_read_location_1(b: &mut Bencher) {
         DATABASE_LOCATION,
         &point1,
         value1
-    );
+    ).unwrap();
 
     b.iter(|| {
         cql_db::read_value::<U64>(
@@ -52,7 +52,7 @@ fn _1d_u64_single_point_read_location_100000(b: &mut Bencher) {
         DATABASE_LOCATION,
         &point1,
         value1
-    );
+    ).unwrap();
 
     b.iter(|| {
         cql_db::read_value::<U64>(
@@ -88,7 +88,7 @@ fn _4d_u64_single_point_read_location_1_1_1_1(b: &mut Bencher) {
         DATABASE_LOCATION,
         &point1,
         value1
-    );
+    ).unwrap();
 
     b.iter(|| {
         cql_db::read_value::<U64>(
@@ -124,7 +124,7 @@ fn _4d_u64_single_point_read_location_1_1_1_100000(b: &mut Bencher) {
         DATABASE_LOCATION,
         &point1,
         value1
-    );
+    ).unwrap();
 
     b.iter(|| {
         cql_db::read_value::<U64>(
@@ -160,7 +160,7 @@ fn _4d_u64_single_point_read_location_1_100000_1_1(b: &mut Bencher) {
         DATABASE_LOCATION,
         &point1,
         value1
-    );
+    ).unwrap();
 
     b.iter(|| {
         cql_db::read_value::<U64>(
