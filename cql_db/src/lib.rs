@@ -291,7 +291,20 @@ pub fn link_dimensions_unchecked<TStore: CqlType>(db_location: &str, location: &
     Ok(())
 }
 
-/// Writes the given value to the given location in the database.
+/// Writes the given value to the given location in the database.  Does not validate given parameters.
+///
+/// Can result in writing to an 'alternative' location if provided with an invalid location in the final dimension, other invalid dimensions will likely
+/// result in a panic.
+///
+/// # Errors
+///
+/// Will return any [I/O errors](https://doc.rust-lang.org/nightly/std/io/enum.ErrorKind.html) encountered during the execution of the function.
+/// If an error is returned it is not guaranteed that no bytes have been written to the requested location.
+///
+/// # Panics
+///
+/// Function does not actively defend against panics, and may do so if given invalid parameters.  If the function panics, no changes will have been made to the
+/// file system and the previous value should still be present.
 ///
 /// # Examples
 /// ```
