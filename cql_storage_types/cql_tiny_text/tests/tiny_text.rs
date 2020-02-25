@@ -253,7 +253,7 @@ fn _1d_tiny_text_database_allows_for_single_point_populated_stream_reads() {
 
     unpack_stream(&mut stream, n_values_to_read, |idx, value| {
         result[idx] = value
-    });
+    }).unwrap();
 
     assert_eq!(String::from(result[0].clone()), value1);
 }
@@ -287,7 +287,7 @@ fn _1d_tiny_text_database_allows_for_single_point_empty_stream_reads() {
 
     unpack_stream(&mut stream, n_values_to_read, |idx, value| {
         result[idx] = value
-    });
+    }).unwrap();
 
     assert_eq!(String::from(result[0].clone()), String::new());
 }
@@ -350,7 +350,7 @@ fn _1d_tiny_text_database_allows_for_multi_point_stream_reads() {
 
     unpack_stream(&mut stream, N_VALUES_TO_READ, |idx, value| {
         result[idx] = value
-    });
+    }).unwrap();
 
     assert_eq!(String::from(result[0].clone()), value1);
     assert_eq!(String::from(result[1].clone()), value2);

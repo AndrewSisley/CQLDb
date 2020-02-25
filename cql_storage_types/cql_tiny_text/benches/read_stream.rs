@@ -39,7 +39,7 @@ fn _1d_tiny_text_stream_read_0_char_location_1_to_1(b: &mut Bencher) {
 
         unpack_stream(&mut stream, N_VALUES_TO_READ, |_, value| {
             result.push(value)
-        });
+        }).unwrap();
     });
 }
 
@@ -75,7 +75,7 @@ fn _1d_tiny_text_stream_read_1_char_location_1_to_1(b: &mut Bencher) {
 
         unpack_stream(&mut stream, N_VALUES_TO_READ, |_, value| {
             result.push(value)
-        });
+        }).unwrap();
     });
 }
 
@@ -111,7 +111,7 @@ fn _1d_tiny_text_stream_read_255_char_location_1_to_1(b: &mut Bencher) {
 
         unpack_stream(&mut stream, N_VALUES_TO_READ, |_, value| {
             result.push(value)
-        });
+        }).unwrap();
     });
 }
 
@@ -147,7 +147,7 @@ fn _1d_tiny_text_stream_read_1_char_location_50000_to_100000(b: &mut Bencher) {
 
         unpack_stream(&mut stream, N_VALUES_TO_READ, |_, value| {
             result.push(value)
-        });
+        }).unwrap();
     });
 }
 
@@ -183,7 +183,7 @@ fn _1d_tiny_text_stream_read_255_char_location_50000_to_100000(b: &mut Bencher) 
 
         unpack_stream(&mut stream, N_VALUES_TO_READ, |_, value| {
             result.push(value)
-        });
+        }).unwrap();
     });
 }
 
@@ -224,7 +224,7 @@ fn _4d_tiny_text_stream_read_1_char_location_1_1_1_1_to_1_1_1_1(b: &mut Bencher)
 
         unpack_stream(&mut stream, N_VALUES_TO_READ, |_, value| {
             result.push(value)
-        });
+        }).unwrap();
     });
 }
 
@@ -265,7 +265,7 @@ fn _4d_tiny_text_stream_read_1_char_location_1_1_1_50000_to_1_1_1_100000(b: &mut
 
         unpack_stream(&mut stream, N_VALUES_TO_READ, |_, value| {
             result.push(value)
-        });
+        }).unwrap();
     });
 }
 
@@ -306,6 +306,6 @@ fn _4d_tiny_text_stream_read_255_char_location_1_1_1_50000_to_1_1_1_100000(b: &m
 
         unpack_stream(&mut stream, N_VALUES_TO_READ, |_, value| {
             result.push(value)
-        });
+        }).unwrap();
     });
 }

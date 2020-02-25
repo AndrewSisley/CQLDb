@@ -13,19 +13,19 @@ other [CqlType](../cql_model/trait.CqlType.html) derivatives as they stream into
 Operation | Chars in String | Database dimensions | Mean time (ns)
 --- | --- | --- | ---
 Single point read | 1 | 1 | 2 240 (+/- 185)
-Single point read | 255 | 1 | 2 250 (+/- 350)
+Single point read | 255 | 1 | 2 550 (+/- 450)
 Single point read | 1 | 4 | 11 600 (+/- 2 000)
 Single point read | 255 | 4 | 11 670 (+/- 4 400)
 Single point write | 1 | 1 | 2 450 (+/- 500)
 Single point write | 255 | 1 | 2 570 (+/- 300)
 Single point write | 1 | 4 | 12 500 (+/- 2 200)
-Stream read 1 point | 1 | 1 | 2 300 (+/- 500)
-Stream read 1 point | 255 | 1 | 2 300 (+/- 500)
+Stream read 1 point | 1 | 1 | 3 100 (+/- 500)
+Stream read 1 point | 255 | 1 | 3 000 (+/- 500)
 Stream read 1 point | 1 | 4 | 11 550 (+/- 2 400)
-Stream read 50 000 points | 1 | 1 | 42 000 000 (+/- 230 000)
-Stream read 50 000 points | 255 | 1 | 42 000 000 (+/- 200 000)
-Stream read 50 000 points | 1 | 4 | 42 000 000 (+/- 500 000)
-Stream read 50 000 points | 255 | 4 | 42 000 000 (+/- 1 400 000)
+Stream read 50 000 points | 1 | 1 | 42 400 000 (+/- 230 000)
+Stream read 50 000 points | 255 | 1 | 42 400 000 (+/- 200 000)
+Stream read 50 000 points | 1 | 4 | 42 400 000 (+/- 300 000)
+Stream read 50 000 points | 255 | 4 | 42 400 000 (+/- 250 000)
 
 # Examples
 The following creates a 1D database, writes 2 values to it, and then streams them into an array.
@@ -74,7 +74,7 @@ cql_db::read_to_stream_unchecked::<TinyText>(
 stream.seek(SeekFrom::Start(0));
 unpack_stream(&mut stream, N_VALUES_TO_READ, |_, value| {
     result.push(value)
-});
+})?;
 
 assert_eq!(result[0], TinyText::try_from(value1)?);
 assert_eq!(result[1], TinyText::new());
@@ -208,7 +208,7 @@ impl CqlStreamReadable for TinyText {
     }
 }
 
-/// Unpacks `n_values` of `TinyText` from a stream, calling `res` with each value and it's index.
+/// Unpacks `n_values` of `TinyText` from a stream, calling `value_handler` with each value and it's index.
 /// # Examples
 /// ```ignore
 /// cql_db::read_to_stream_unchecked::<TinyText>(
@@ -222,26 +222,27 @@ impl CqlStreamReadable for TinyText {
 ///
 /// unpack_stream(&mut stream, N_VALUES_TO_READ, |idx, value| {
 ///     result[idx] = value
-/// });
+/// })?;
 /// ```
-pub fn unpack_stream<F>(stream: &mut Cursor<Vec<u8>>, n_values: usize, mut res: F) where F: FnMut(usize, TinyText) {
+pub fn unpack_stream<F>(stream: &mut Cursor<Vec<u8>>, n_values: usize, mut value_handler: F) -> io::Result<()> where F: FnMut(usize, TinyText) {
     let mut size_buffer = [0; LENGTH_SIZE];
 
     for index in 0..n_values {
-        let n_bytes_read = stream.read(&mut size_buffer).unwrap();
-        if n_bytes_read == 0 {
-            break;
-        }
+        stream.read_exact(&mut size_buffer)?;
 
         let mut size_rdr = Cursor::new(size_buffer);
-        let size = usize::from(size_rdr.read_u16::<LittleEndian>().unwrap());
+        let size = usize::from(size_rdr.read_u16::<LittleEndian>()?);
 
         if size == 0 {
-            res(index, TinyText::new());
+            value_handler(index, TinyText::new());
         } else {
             let mut value_buffer = vec![0; size];
-            stream.read_exact(&mut value_buffer).unwrap();
-            res(index, TinyText(String::from_utf8(value_buffer).unwrap()));
+            stream.read_exact(&mut value_buffer)?;
+            // unwrap should be safe here, as we assume we are the only ones writing to the file, however low performance cost plus the fact that someone else `could`
+            // write to the file discourages the use of the unsafe method that skips the checks
+            value_handler(index, TinyText(String::from_utf8(value_buffer).unwrap()));
         }
     }
+
+    Ok(())
 }
