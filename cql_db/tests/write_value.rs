@@ -135,7 +135,7 @@ fn _3d_u64_database_allows_for_first_item_to_be_written_after_axis_linked() {
     cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1[0..3]
-    );
+    ).unwrap();
 
     cql_db::write_value::<U64>(
         DATABASE_LOCATION,
@@ -165,7 +165,7 @@ fn _3d_u64_database_allows_for_last_item_to_be_written_after_axis_linked() {
     cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1[0..3]
-    );
+    ).unwrap();
 
     cql_db::write_value::<U64>(
         DATABASE_LOCATION,
@@ -278,7 +278,7 @@ fn _3d_u64_database_maintains_size_as_last_item_written_after_axis_linked() {
     cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1[0..3]
-    );
+    ).unwrap();
 
     let post_link_db_size = get_file_length(&format!("{}/db", DATABASE_LOCATION));
 

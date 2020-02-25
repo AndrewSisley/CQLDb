@@ -20,7 +20,7 @@ fn _4d_u64_database_allows_for_first_dimension_pair_mins_to_be_linked() {
     cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1, 1],
-    );
+    ).unwrap();
 
     let key_file_size = get_file_length(&format!("{}/key1_2", DATABASE_LOCATION));
     let db_size = get_file_length(&format!("{}/db", DATABASE_LOCATION));
@@ -42,7 +42,7 @@ fn _4d_u64_database_allows_for_first_dimension_pair_maxes_to_be_linked() {
     cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &[2, 3],
-    );
+    ).unwrap();
 
     let key_file_size = get_file_length(&format!("{}/key1_2", DATABASE_LOCATION));
     let db_size = get_file_length(&format!("{}/db", DATABASE_LOCATION));
@@ -64,7 +64,7 @@ fn _4d_u64_database_correctly_sizes_files_for_min_link() {
     cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1, 1, 1],
-    );
+    ).unwrap();
 
     let key_file_size1_2 = get_file_length(&format!("{}/key1_2", DATABASE_LOCATION));
     let key_file_size2_3 = get_file_length(&format!("{}/key2_3", DATABASE_LOCATION));
@@ -88,7 +88,7 @@ fn _4d_u64_database_correctly_sizes_files_for_max_link() {
     cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &[2, 3, 2],
-    );
+    ).unwrap();
 
     let key_file_size1_2 = get_file_length(&format!("{}/key1_2", DATABASE_LOCATION));
     let key_file_size2_3 = get_file_length(&format!("{}/key2_3", DATABASE_LOCATION));
@@ -113,7 +113,7 @@ fn _4d_u64_database_allows_for_mins_to_be_linked() {
     cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1[0..3],
-    );
+    ).unwrap();
 
     cql_db::write_value::<U64>(
         DATABASE_LOCATION,
@@ -143,7 +143,7 @@ fn _4d_u64_database_allows_for_maxes_to_be_linked() {
     cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1[0..3],
-    );
+    ).unwrap();
 
     cql_db::write_value::<U64>(
         DATABASE_LOCATION,
@@ -175,7 +175,7 @@ fn _4d_u64_database_correctly_sizes_files_for_all_links() {
                 cql_db::link_dimensions_unchecked::<U64>(
                     DATABASE_LOCATION,
                     &[i, j, k],
-                );
+                ).unwrap();
             }
         }
     }
@@ -184,7 +184,7 @@ fn _4d_u64_database_correctly_sizes_files_for_all_links() {
     cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1, 2, 1],
-    );
+    ).unwrap();
 
     let key_file_size1_2 = get_file_length(&format!("{}/key1_2", DATABASE_LOCATION));
     let key_file_size2_3 = get_file_length(&format!("{}/key2_3", DATABASE_LOCATION));
@@ -209,7 +209,7 @@ fn _4d_u64_database_allows_for_all_points_to_be_linked() {
                 cql_db::link_dimensions_unchecked::<U64>(
                     DATABASE_LOCATION,
                     &[i, j, k],
-                );
+                ).unwrap();
             }
         }
     }
@@ -218,7 +218,7 @@ fn _4d_u64_database_allows_for_all_points_to_be_linked() {
     cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1, 2, 1],
-    );
+    ).unwrap();
 
     for i in 1..3 {
         for j in 1..4 {

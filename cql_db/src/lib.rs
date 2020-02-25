@@ -21,6 +21,9 @@ Given a database with `N` dimensions, calling [create_db_unchecked](fn.create_db
 # use cql_u64::U64;
 # use std::fs::OpenOptions;
 #
+# use std::error::Error;
+# fn main() -> Result<(), Box<dyn Error>> {
+#
 let database_definition = [6, 7, 8, 9, 10];
 let link = [2, 3, 4, 5];
 
@@ -32,7 +35,7 @@ let link = [2, 3, 4, 5];
 cql_db::link_dimensions_unchecked::<U64>(
     DATABASE_LOCATION,
     &link,
-);
+)?;
 
 let mut key_file_size = 176; // total size of the key files in bytes
 # key_file_size = OpenOptions::new().read(true).open("./.test_db/key1_2").unwrap().metadata().unwrap().len();
@@ -53,6 +56,8 @@ assert_eq!(
     ) * 8,
     key_file_size
 );
+# Ok(())
+# }
 ```
 Should additional elements be linked, the key libraries will expand accordingly.
 
@@ -84,7 +89,7 @@ cql_db::create_db_unchecked::<U64>(
 cql_db::link_dimensions_unchecked::<U64>(
     DATABASE_LOCATION,
     &[2, 4, 3], // don't link the Nth dimension, can also be expressed as `&point[0..3]`
-);
+)?;
 
 // Write value `value` to point `point`
 cql_db::write_value::<U64>(
@@ -237,41 +242,43 @@ pub fn create_db_unchecked<TStore: CqlType>(db_location: &str, array_size: &[u64
 /// cql_db::link_dimensions_unchecked::<U64>(
 ///     DATABASE_LOCATION,
 ///     &[2, 4, 3], // don't link the Nth dimension
-/// );
+/// )?;
 /// # Ok(())
 /// # }
 /// ```
-pub fn link_dimensions_unchecked<TStore: CqlType>(db_location: &str, location: &[u64]) {
+pub fn link_dimensions_unchecked<TStore: CqlType>(db_location: &str, location: &[u64]) -> io::Result<()> {
     let mut x_position = location[0];
 
     for x_axis_id in 1..location.len() {
         let y_axis_id = x_axis_id as u64 + 1;
         let y_position = location[x_axis_id];
-        let y_axis_definition = axis_library::get_by_id(db_location, y_axis_id).unwrap();
+        let y_axis_definition = axis_library::get_by_id(db_location, y_axis_id)?;
 
         let mut key = key_library::get(
             db_location,
             &key_library::AxisPoint { axis_id: x_axis_id as u64, position: x_position },
             &key_library::AxisPoint { axis_id: y_axis_id, position: y_position },
             &y_axis_definition
-        ).unwrap();
+        )?;
 
         if key == 0 {
             key = key_library::add::<TStore>(
                 db_location,
                 x_position,
                 y_position,
-                &axis_library::get_by_id(db_location, x_axis_id as u64).unwrap(),
+                &axis_library::get_by_id(db_location, x_axis_id as u64)?,
                 &y_axis_definition
-            ).unwrap();
+            )?;
 
-            let last_axis_id = axis_library::count(db_location).unwrap();
+            let last_axis_id = axis_library::count(db_location)?;
             if y_axis_id == last_axis_id - 1 {
-                database::grow::<TStore>(&db_location, y_axis_definition.max).unwrap();
+                database::grow::<TStore>(&db_location, y_axis_definition.max)?;
             }
         };
         x_position = key;
     }
+
+    Ok(())
 }
 
 /// Writes the given value to the given location in the database.
@@ -292,7 +299,7 @@ pub fn link_dimensions_unchecked<TStore: CqlType>(db_location: &str, location: &
 /// cql_db::link_dimensions_unchecked::<U64>(
 ///     DATABASE_LOCATION,
 ///     &[2, 4, 3],
-/// );
+/// )?;
 ///
 /// // Write `5` to location `[2, 4, 3, 1]`
 /// cql_db::write_value::<U64>(
@@ -329,7 +336,7 @@ pub fn write_value<TStore: CqlWritable>(db_location: &str, location: &[u64], val
 /// cql_db::link_dimensions_unchecked::<U64>(
 ///     DATABASE_LOCATION,
 ///     &point[0..3],
-/// );
+/// )?;
 ///
 /// // Read the default value from point `point`
 /// let result1 = cql_db::read_value::<U64>(
@@ -388,7 +395,7 @@ pub fn read_value<TStore: CqlReadable>(db_location: &str, location: &[u64]) -> T
 /// cql_db::link_dimensions_unchecked::<U64>(
 ///     DATABASE_LOCATION,
 ///     &base_point[0..3]
-/// );
+/// )?;
 ///
 /// cql_db::write_value::<U64>(
 ///     DATABASE_LOCATION,

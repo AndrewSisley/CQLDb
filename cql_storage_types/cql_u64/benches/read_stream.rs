@@ -78,7 +78,7 @@ fn _4d_u64_stream_read_location_1_1_1_1_to_1_1_1_1(b: &mut Bencher) {
     cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &base_point[0..3],
-    );
+    ).unwrap();
 
     let mut result = [0];
     let mut stream = Cursor::new(Vec::new());
@@ -112,7 +112,7 @@ fn _4d_u64_stream_read_location_1_1_1_50000_to_1_1_1_100000(b: &mut Bencher) {
     cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &base_point[0..3],
-    );
+    ).unwrap();
 
     let mut result = [0; 50000];
     let mut stream = Cursor::new(Vec::new());

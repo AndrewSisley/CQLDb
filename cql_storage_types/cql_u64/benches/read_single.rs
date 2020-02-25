@@ -82,7 +82,7 @@ fn _4d_u64_single_point_read_location_1_1_1_1(b: &mut Bencher) {
     cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1[0..3],
-    );
+    ).unwrap();
 
     cql_db::write_value::<U64>(
         DATABASE_LOCATION,
@@ -118,7 +118,7 @@ fn _4d_u64_single_point_read_location_1_1_1_100000(b: &mut Bencher) {
     cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1[0..3],
-    );
+    ).unwrap();
 
     cql_db::write_value::<U64>(
         DATABASE_LOCATION,
@@ -154,7 +154,7 @@ fn _4d_u64_single_point_read_location_1_100000_1_1(b: &mut Bencher) {
     cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1[0..3],
-    );
+    ).unwrap();
 
     cql_db::write_value::<U64>(
         DATABASE_LOCATION,
