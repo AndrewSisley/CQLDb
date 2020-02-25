@@ -338,7 +338,18 @@ pub fn write_value_unchecked<TStore: CqlWritable>(db_location: &str, location: &
 	database::write_value::<TStore>(&db_location, position, value)
 }
 
-/// Reads the value at the given location from the database.
+/// Reads the value at the given location from the database.  Does not validate given parameters.
+///
+/// Can result in reading from an 'alternative' location if provided with an invalid location in the final dimension, other invalid dimensions will likely
+/// result in a panic.
+///
+/// # Errors
+///
+/// Will return any [I/O errors](https://doc.rust-lang.org/nightly/std/io/enum.ErrorKind.html) encountered during the execution of the function.
+///
+/// # Panics
+///
+/// Function does not actively defend against panics, and may do so if given invalid parameters.
 ///
 /// # Examples
 /// ```
