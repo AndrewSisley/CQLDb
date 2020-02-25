@@ -29,7 +29,7 @@ fn _1d_u64_database_allows_for_single_point_read_writes() {
     let result1 = cql_db::read_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1
-    );
+    ).unwrap();
 
     assert_eq!(result1, value1);
 }
@@ -66,7 +66,7 @@ fn _4d_u64_database_allows_for_single_point_read_writes() {
     let result1 = cql_db::read_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1
-    );
+    ).unwrap();
 
     assert_eq!(result1, value1);
 }
@@ -131,22 +131,22 @@ fn _4d_u64_database_allows_for_single_point_read_writes_given_multiple_values_an
     let result1 = cql_db::read_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1
-    );
+    ).unwrap();
 
     let result2 = cql_db::read_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &point2
-    );
+    ).unwrap();
 
     let result3 = cql_db::read_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &point3
-    );
+    ).unwrap();
 
     let result4 = cql_db::read_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &point4
-    );
+    ).unwrap();
 
     assert_eq!(result1, value1);
     assert_eq!(result2, value2);
@@ -162,7 +162,7 @@ fn _4d_u64_database_allows_for_single_point_read_writes_given_multiple_values_an
     let result5 = cql_db::read_value_unchecked::<U64>(
         DATABASE_LOCATION,
         &point2
-    );
+    ).unwrap();
 
     assert_eq!(result5, value5);
 }

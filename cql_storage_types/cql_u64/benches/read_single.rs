@@ -30,7 +30,7 @@ fn _1d_u64_single_point_read_location_1(b: &mut Bencher) {
         cql_db::read_value_unchecked::<U64>(
             DATABASE_LOCATION,
             &point1
-        );
+        ).unwrap();
     });
 }
 
@@ -58,7 +58,7 @@ fn _1d_u64_single_point_read_location_100000(b: &mut Bencher) {
         cql_db::read_value_unchecked::<U64>(
             DATABASE_LOCATION,
             &point1
-        );
+        ).unwrap();
     });
 }
 
@@ -94,7 +94,7 @@ fn _4d_u64_single_point_read_location_1_1_1_1(b: &mut Bencher) {
         cql_db::read_value_unchecked::<U64>(
             DATABASE_LOCATION,
             &point1
-        );
+        ).unwrap();
     });
 }
 
@@ -130,7 +130,7 @@ fn _4d_u64_single_point_read_location_1_1_1_100000(b: &mut Bencher) {
         cql_db::read_value_unchecked::<U64>(
             DATABASE_LOCATION,
             &point1
-        );
+        ).unwrap();
     });
 }
 
@@ -166,6 +166,6 @@ fn _4d_u64_single_point_read_location_1_100000_1_1(b: &mut Bencher) {
         cql_db::read_value_unchecked::<U64>(
             DATABASE_LOCATION,
             &point1
-        );
+        ).unwrap();
     });
 }

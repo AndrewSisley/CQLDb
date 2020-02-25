@@ -102,7 +102,7 @@ cql_db::write_value_unchecked::<U64>(
 let result = cql_db::read_value_unchecked::<U64>(
     DATABASE_LOCATION,
     &point
-);
+)?;
 
 assert_eq!(result, value);
 # Ok(())
@@ -365,7 +365,7 @@ pub fn write_value_unchecked<TStore: CqlWritable>(db_location: &str, location: &
 /// let result1 = cql_db::read_value_unchecked::<U64>(
 ///     DATABASE_LOCATION,
 ///     &point
-/// );
+/// )?;
 ///
 /// assert_eq!(0, result1);
 ///
@@ -380,15 +380,15 @@ pub fn write_value_unchecked<TStore: CqlWritable>(db_location: &str, location: &
 /// let result2 = cql_db::read_value_unchecked::<U64>(
 ///     DATABASE_LOCATION,
 ///     &point
-/// );
+/// )?;
 ///
 /// assert_eq!(value, result2);
 /// # Ok(())
 /// # }
 /// ```
-pub fn read_value_unchecked<TStore: CqlReadable>(db_location: &str, location: &[u64]) -> TStore::ValueType {
+pub fn read_value_unchecked<TStore: CqlReadable>(db_location: &str, location: &[u64]) -> Result<TStore::ValueType, io::Error> {
 	let position = calculate_position(db_location, location);
-	database::read_value::<TStore>(&db_location, position).unwrap()
+	database::read_value::<TStore>(&db_location, position)
 }
 
 /// Reads `n_values` from the given location onward into the given stream.
