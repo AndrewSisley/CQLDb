@@ -152,8 +152,20 @@ impl CqlStreamReadable for U64 {
     }
 }
 
-/// Unpacks `n_values` of u64 from a stream, calling `res` with each value and it's index.
+/// Unpacks `n_values` of u64 from a stream, calling `value_handler` with each value and it's index.
+///
+/// # Errors
+///
+/// Will return any [I/O errors](https://doc.rust-lang.org/nightly/std/io/enum.ErrorKind.html) encountered during the execution of the function.  If an error
+/// is returned, it may be that values have already been fed into the `value_handler`.
+///
+/// # Panics
+///
+/// Function does not actively defend against panics, and may do so if given invalid parameters.  If the function panics it may be that values have
+/// already been fed into the `value_handler`.
+///
 /// # Examples
+///
 /// ```ignore
 /// cql_db::read_to_stream_unchecked::<U64>(
 ///     DATABASE_LOCATION,
