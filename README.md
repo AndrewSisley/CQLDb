@@ -38,7 +38,7 @@ Repo link |Crate | Documentation | Description
 
 ## Quick note on safety
 
-CQL Db currently performs next to no parameter checking, and has very little deliberate error handling.  For example, calling create_db with the directory of an existing database will replace the existing one, and read_to_stream will happily wrap itself around the bounds of it's requested location if you ask it to read more points than are available.  I plan on improving this soon (probably preserving the unsafe methods if the benchmarks take a hit), but have not yet done so yet, so take care.
+CQL Db currently performs next to no parameter checking, and has very little deliberate error handling.  For example, calling create_db with the directory of an existing database will replace the existing one, and read_to_stream will happily wrap itself around the bounds of it's requested location if you ask it to read more points than are available.  cql_db and cql_model versions 0.2.0 and onwards start to improve this - returning errors and marking methods as '_unchecked', but it is likely that parameter checking will not be fully in play until 0.3.0.
 
 
 ## Getting started
