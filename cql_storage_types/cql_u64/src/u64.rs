@@ -1,7 +1,7 @@
 /*!
 This crate implements various [CqlType](../cql_model/trait.CqlType.html) derivatives for storing `u64` values in a CQL database.
 
-Will allocate 8 bytes per value [linked](../cql_db/fn.link_dimensions.html).
+Will allocate 8 bytes per value [linked](../cql_db/fn.link_dimensions_unchecked.html).
 
 # Benchmarks
 Benchmarks supplied below are fairly rudimentary (and rounded) and are there to give a rough idea of relative costs.

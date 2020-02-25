@@ -17,7 +17,7 @@ fn _4d_u64_database_allows_for_first_dimension_pair_mins_to_be_linked() {
         &db_dimensions
     ).unwrap();
 
-    cql_db::link_dimensions::<U64>(
+    cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1, 1],
     );
@@ -39,7 +39,7 @@ fn _4d_u64_database_allows_for_first_dimension_pair_maxes_to_be_linked() {
         &db_dimensions
     ).unwrap();
 
-    cql_db::link_dimensions::<U64>(
+    cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &[2, 3],
     );
@@ -61,7 +61,7 @@ fn _4d_u64_database_correctly_sizes_files_for_min_link() {
         &db_dimensions
     ).unwrap();
 
-    cql_db::link_dimensions::<U64>(
+    cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1, 1, 1],
     );
@@ -85,7 +85,7 @@ fn _4d_u64_database_correctly_sizes_files_for_max_link() {
         &db_dimensions
     ).unwrap();
 
-    cql_db::link_dimensions::<U64>(
+    cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &[2, 3, 2],
     );
@@ -110,7 +110,7 @@ fn _4d_u64_database_allows_for_mins_to_be_linked() {
         &[2, 3, 2, 2]
     ).unwrap();
 
-    cql_db::link_dimensions::<U64>(
+    cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1[0..3],
     );
@@ -140,7 +140,7 @@ fn _4d_u64_database_allows_for_maxes_to_be_linked() {
         &[2, 3, 2, 2]
     ).unwrap();
 
-    cql_db::link_dimensions::<U64>(
+    cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1[0..3],
     );
@@ -172,7 +172,7 @@ fn _4d_u64_database_correctly_sizes_files_for_all_links() {
     for i in 1..3 {
         for j in 1..4 {
             for k in 1..3 {
-                cql_db::link_dimensions::<U64>(
+                cql_db::link_dimensions_unchecked::<U64>(
                     DATABASE_LOCATION,
                     &[i, j, k],
                 );
@@ -181,7 +181,7 @@ fn _4d_u64_database_correctly_sizes_files_for_all_links() {
     }
 
     // test extra/duplicate link call
-    cql_db::link_dimensions::<U64>(
+    cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1, 2, 1],
     );
@@ -206,7 +206,7 @@ fn _4d_u64_database_allows_for_all_points_to_be_linked() {
     for i in 1..3 {
         for j in 1..4 {
             for k in 1..3 {
-                cql_db::link_dimensions::<U64>(
+                cql_db::link_dimensions_unchecked::<U64>(
                     DATABASE_LOCATION,
                     &[i, j, k],
                 );
@@ -215,7 +215,7 @@ fn _4d_u64_database_allows_for_all_points_to_be_linked() {
     }
 
     // test extra/duplicate link call
-    cql_db::link_dimensions::<U64>(
+    cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1, 2, 1],
     );

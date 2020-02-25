@@ -52,7 +52,7 @@ fn _4d_u64_database_allows_for_single_point_read_writes() {
         &axis
     ).unwrap();
 
-    cql_db::link_dimensions::<U64>(
+    cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1[0..3],
     );
@@ -95,17 +95,17 @@ fn _4d_u64_database_allows_for_single_point_read_writes_given_multiple_values_an
         &axis
     ).unwrap();
 
-    cql_db::link_dimensions::<U64>(
+    cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1[0..3]
     );
 
-    cql_db::link_dimensions::<U64>(
+    cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &point2[0..3]
     );
 
-    cql_db::link_dimensions::<U64>(
+    cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &point3[0..3]
     );
@@ -234,7 +234,7 @@ fn _4d_u64_database_allows_for_stream_reads() {
         &[1, 1, 1, 10]
     ).unwrap();
 
-    cql_db::link_dimensions::<U64>(
+    cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &base_point[0..3]
     );

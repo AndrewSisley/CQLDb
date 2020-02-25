@@ -4,7 +4,7 @@ trait allowing the system to act as an array-based database.
 
 The library allows the consumers to provide a path to a local directory which will be used to store array based data as defined by the user.
 The number of dimensions in the array, and their maximum sizes must be stated on create of the database, however it will only allocate storage
-space for elements in the final (Nth) dimension upon [linking](fn.link_dimensions.html) of higher level dimensions.
+space for elements in the final (Nth) dimension upon [linking](fn.link_dimensions_unchecked.html) of higher level dimensions.
 
 Elements in the array can be writen to [one by one](fn.write_value.html), and read either as [single points](fn.read_value.html) or to a
 [stream](fn.read_to_stream.html).
@@ -15,7 +15,7 @@ This crate will allocate file space upon linking of dimensions, as well as a sma
 should be aware of the disk space requirements.
 
 Given a database with `N` dimensions, calling [create_db_unchecked](fn.create_db_unchecked.html) will allocate `(1 + N) * 8` bytes. Thereafter,
-[linking](fn.link_dimensions.html) a set of dimensions, will then expand the maximum file sizes according to the function below:
+[linking](fn.link_dimensions_unchecked.html) a set of dimensions, will then expand the maximum file sizes according to the function below:
 ```
 # const DATABASE_LOCATION: &str = "./.test_db";
 # use cql_u64::U64;
@@ -29,7 +29,7 @@ let link = [2, 3, 4, 5];
 #    &database_definition
 # ).unwrap();
 #
-cql_db::link_dimensions::<U64>(
+cql_db::link_dimensions_unchecked::<U64>(
     DATABASE_LOCATION,
     &link,
 );
@@ -56,7 +56,7 @@ assert_eq!(
 ```
 Should additional elements be linked, the key libraries will expand accordingly.
 
-Additional space will be allocated for each penultimate dimenion `(Nn-1)` linked using the [link_dimensions](fn.link_dimensions.html) function, this is
+Additional space will be allocated for each penultimate dimenion `(Nn-1)` linked using the [link_dimensions_unchecked](fn.link_dimensions_unchecked.html) function, this is
 equal to the maximum size of the final dimension multiplied by the [VALUE_SIZE](../cql_model/trait.CqlType.html#associatedconstant.VALUE_SIZE) of the stored struct.
 
 # Examples
@@ -81,7 +81,7 @@ cql_db::create_db_unchecked::<U64>(
 // Link the 2nd element of the 1st dimension with the 4th element of the 2nd dimension, and
 // the 4th of the 2nd with the 3rd of the 3rd - for example:
 // Turbine 2 has data for Signal 4 for Year 3
-cql_db::link_dimensions::<U64>(
+cql_db::link_dimensions_unchecked::<U64>(
     DATABASE_LOCATION,
     &[2, 4, 3], // don't link the Nth dimension, can also be expressed as `&point[0..3]`
 );
@@ -234,14 +234,14 @@ pub fn create_db_unchecked<TStore: CqlType>(db_location: &str, array_size: &[u64
 /// // Link the 2nd element of the 1st dimension with the 4th element of the 2nd dimension, and
 /// // the 4th of the 2nd with the 3rd of the 3rd - for example:
 /// // Turbine 2 has data for Signal 4 for Year 3
-/// cql_db::link_dimensions::<U64>(
+/// cql_db::link_dimensions_unchecked::<U64>(
 ///     DATABASE_LOCATION,
 ///     &[2, 4, 3], // don't link the Nth dimension
 /// );
 /// # Ok(())
 /// # }
 /// ```
-pub fn link_dimensions<TStore: CqlType>(db_location: &str, location: &[u64]) {
+pub fn link_dimensions_unchecked<TStore: CqlType>(db_location: &str, location: &[u64]) {
     let mut x_position = location[0];
 
     for x_axis_id in 1..location.len() {
@@ -289,7 +289,7 @@ pub fn link_dimensions<TStore: CqlType>(db_location: &str, location: &[u64]) {
 /// )?;
 ///
 /// // higher order elements must be linked before they can be writen to
-/// cql_db::link_dimensions::<U64>(
+/// cql_db::link_dimensions_unchecked::<U64>(
 ///     DATABASE_LOCATION,
 ///     &[2, 4, 3],
 /// );
@@ -326,7 +326,7 @@ pub fn write_value<TStore: CqlWritable>(db_location: &str, location: &[u64], val
 /// )?;
 ///
 /// // higher order elements must be linked before they can be read from
-/// cql_db::link_dimensions::<U64>(
+/// cql_db::link_dimensions_unchecked::<U64>(
 ///     DATABASE_LOCATION,
 ///     &point[0..3],
 /// );
@@ -385,7 +385,7 @@ pub fn read_value<TStore: CqlReadable>(db_location: &str, location: &[u64]) -> T
 ///     &[1, 1, 1, 10]
 /// )?;
 ///
-/// cql_db::link_dimensions::<U64>(
+/// cql_db::link_dimensions_unchecked::<U64>(
 ///     DATABASE_LOCATION,
 ///     &base_point[0..3]
 /// );

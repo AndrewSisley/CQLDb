@@ -132,7 +132,7 @@ fn _3d_u64_database_allows_for_first_item_to_be_written_after_axis_linked() {
         &[5, 5, 5]
     ).unwrap();
 
-    cql_db::link_dimensions::<U64>(
+    cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1[0..3]
     );
@@ -162,7 +162,7 @@ fn _3d_u64_database_allows_for_last_item_to_be_written_after_axis_linked() {
         &[5, 5, 5]
     ).unwrap();
 
-    cql_db::link_dimensions::<U64>(
+    cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1[0..3]
     );
@@ -275,7 +275,7 @@ fn _3d_u64_database_maintains_size_as_last_item_written_after_axis_linked() {
         &[5, 5, 5]
     ).unwrap();
 
-    cql_db::link_dimensions::<U64>(
+    cql_db::link_dimensions_unchecked::<U64>(
         DATABASE_LOCATION,
         &point1[0..3]
     );
