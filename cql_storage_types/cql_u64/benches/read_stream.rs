@@ -32,7 +32,7 @@ fn _1d_u64_stream_read_location_1_to_1(b: &mut Bencher) {
 
         unpack_stream(&mut stream, n_values_to_read, |idx, value| {
             result[idx] = value
-        });
+        }).unwrap();
     });
 }
 
@@ -61,7 +61,7 @@ fn _1d_u64_stream_read_location_50000_to_100000(b: &mut Bencher) {
 
         unpack_stream(&mut stream, n_values_to_read, |idx, value| {
             result[idx] = value
-        });
+        }).unwrap();
     });
 }
 
@@ -95,7 +95,7 @@ fn _4d_u64_stream_read_location_1_1_1_1_to_1_1_1_1(b: &mut Bencher) {
 
         unpack_stream(&mut stream, n_values_to_read, |idx, value| {
             result[idx] = value
-        });
+        }).unwrap();
     });
 }
 
@@ -129,6 +129,6 @@ fn _4d_u64_stream_read_location_1_1_1_50000_to_1_1_1_100000(b: &mut Bencher) {
 
         unpack_stream(&mut stream, n_values_to_read, |idx, value| {
             result[idx] = value
-        });
+        }).unwrap();
     });
 }

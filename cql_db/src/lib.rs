@@ -474,7 +474,7 @@ pub fn read_value_unchecked<TStore: CqlReadable>(db_location: &str, location: &[
 ///
 /// unpack_stream(&mut stream, N_VALUES_TO_READ, |idx, value| {
 ///     result[idx] = value
-/// });
+/// })?;
 ///
 /// assert_eq!(result[0], value1);
 /// assert_eq!(result[1], value2);

@@ -13,11 +13,11 @@ Operation | Database dimensions | Mean time (ns)
 Single point read | 1 | 1 830 (+/- 300)
 Single point read | 4 | 11 050 (+/- 1 700)
 Single point write | 1 | 2 400 (+/- 600)
-Single point write | 4 | 12 500 (+/- 2 500)
+Single point write | 4 | 12 600 (+/- 2 500)
 Stream read 1 point | 1 | 1 940 (+/- 300)
-Stream read 1 point | 4 | 11 400 (+/- 1 300)
-Stream read 50 000 points | 1 | 20 200 900 (+/- 300 000)
-Stream read 50 000 points | 4 | 20 200 000 (+/- 100 000)
+Stream read 1 point | 4 | 11 200 (+/- 2 300)
+Stream read 50 000 points | 1 | 20 600 000 (+/- 250 000)
+Stream read 50 000 points | 4 | 20 500 000 (+/- 100 000)
 
 # Examples
 The following creates a 1D database, writes 2 values to it, and then streams them into an array.
@@ -64,7 +64,7 @@ cql_db::read_to_stream_unchecked::<U64>(
 stream.seek(SeekFrom::Start(0)).unwrap();
 unpack_stream(&mut stream, N_VALUES_TO_READ, |idx, value| {
     result[idx] = value
-});
+})?;
 
 assert_eq!(result[0], value1);
 assert_eq!(result[1], 0);
@@ -166,18 +166,17 @@ impl CqlStreamReadable for U64 {
 ///
 /// unpack_stream(&mut stream, N_VALUES_TO_READ, |idx, value| {
 ///     result[idx] = value
-/// });
+/// })?;
 /// ```
-pub fn unpack_stream<F>(stream: &mut Cursor<Vec<u8>>, n_values: usize, mut res: F) where F: FnMut(usize, u64) {
+pub fn unpack_stream<F>(stream: &mut Cursor<Vec<u8>>, n_values: usize, mut value_handler: F) -> io::Result<()> where F: FnMut(usize, u64) {
     for index in 0..n_values {
         let mut value_buffer = [0; U64::VALUE_SIZE];
 
-        let n_bytes_read = stream.read(&mut value_buffer).unwrap();
-        if n_bytes_read == 0 {
-            break;
-        }
+        stream.read_exact(&mut value_buffer)?;
 
         let mut rdr = Cursor::new(value_buffer);
-        res(index, rdr.read_u64::<LittleEndian>().unwrap());
+        value_handler(index, rdr.read_u64::<LittleEndian>()?);
     }
+
+    Ok(())
 }

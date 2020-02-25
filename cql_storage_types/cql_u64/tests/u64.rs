@@ -213,7 +213,7 @@ fn _1d_u64_database_allows_for_stream_reads() {
 
     unpack_stream(&mut stream, N_VALUES_TO_READ, |idx, value| {
         result[idx] = value
-    });
+    }).unwrap();
 
     assert_eq!(result[0], value1);
     assert_eq!(result[1], value2);
@@ -271,7 +271,7 @@ fn _4d_u64_database_allows_for_stream_reads() {
 
     unpack_stream(&mut stream, N_VALUES_TO_READ, |idx, value| {
         result[idx] = value
-    });
+    }).unwrap();
 
     assert_eq!(result[0], value1);
     assert_eq!(result[1], value2);
