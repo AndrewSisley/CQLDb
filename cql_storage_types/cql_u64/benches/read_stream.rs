@@ -21,7 +21,7 @@ fn _1d_u64_stream_read_location_1_to_1(b: &mut Bencher) {
     let mut stream = Cursor::new(Vec::new());
 
     b.iter(|| {
-        cql_db::read_to_stream::<U64>(
+        cql_db::read_to_stream_unchecked::<U64>(
             DATABASE_LOCATION,
             &mut stream,
             &point1,
@@ -50,7 +50,7 @@ fn _1d_u64_stream_read_location_50000_to_100000(b: &mut Bencher) {
     let mut stream = Cursor::new(Vec::new());
 
     b.iter(|| {
-        cql_db::read_to_stream::<U64>(
+        cql_db::read_to_stream_unchecked::<U64>(
             DATABASE_LOCATION,
             &mut stream,
             &base_point,
@@ -84,7 +84,7 @@ fn _4d_u64_stream_read_location_1_1_1_1_to_1_1_1_1(b: &mut Bencher) {
     let mut stream = Cursor::new(Vec::new());
 
     b.iter(|| {
-        cql_db::read_to_stream::<U64>(
+        cql_db::read_to_stream_unchecked::<U64>(
             DATABASE_LOCATION,
             &mut stream,
             &base_point,
@@ -118,7 +118,7 @@ fn _4d_u64_stream_read_location_1_1_1_50000_to_1_1_1_100000(b: &mut Bencher) {
     let mut stream = Cursor::new(Vec::new());
 
     b.iter(|| {
-        cql_db::read_to_stream::<U64>(
+        cql_db::read_to_stream_unchecked::<U64>(
             DATABASE_LOCATION,
             &mut stream,
             &base_point,

@@ -54,7 +54,7 @@ cql_db::write_value_unchecked::<U64>(
 let mut result = [0; N_VALUES_TO_READ];
 let mut stream = Cursor::new(Vec::new());
 
-cql_db::read_to_stream::<U64>(
+cql_db::read_to_stream_unchecked::<U64>(
     DATABASE_LOCATION,
     &mut stream,
     &base_point,
@@ -155,7 +155,7 @@ impl CqlStreamReadable for U64 {
 /// Unpacks `n_values` of u64 from a stream, calling `res` with each value and it's index.
 /// # Examples
 /// ```ignore
-/// cql_db::read_to_stream::<U64>(
+/// cql_db::read_to_stream_unchecked::<U64>(
 ///     DATABASE_LOCATION,
 ///     &mut stream,
 ///     &base_point,

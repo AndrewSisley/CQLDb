@@ -202,7 +202,7 @@ fn _1d_u64_database_allows_for_stream_reads() {
     let mut result = [0; N_VALUES_TO_READ];
     let mut stream = Cursor::new(Vec::new());
 
-    cql_db::read_to_stream::<U64>(
+    cql_db::read_to_stream_unchecked::<U64>(
         DATABASE_LOCATION,
         &mut stream,
         &base_point,
@@ -260,7 +260,7 @@ fn _4d_u64_database_allows_for_stream_reads() {
     let mut result = [0; N_VALUES_TO_READ];
     let mut stream = Cursor::new(Vec::new());
 
-    cql_db::read_to_stream::<U64>(
+    cql_db::read_to_stream_unchecked::<U64>(
         DATABASE_LOCATION,
         &mut stream,
         &base_point,

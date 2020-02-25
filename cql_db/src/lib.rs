@@ -7,7 +7,7 @@ The number of dimensions in the array, and their maximum sizes must be stated on
 space for elements in the final (Nth) dimension upon [linking](fn.link_dimensions_unchecked.html) of higher level dimensions.
 
 Elements in the array can be writen to [one by one](fn.write_value_unchecked.html), and read either as [single points](fn.read_value_unchecked.html) or to a
-[stream](fn.read_to_stream.html).
+[stream](fn.read_to_stream_unchecked.html).
 
 # Storage space consumption
 
@@ -452,7 +452,7 @@ pub fn read_value_unchecked<TStore: CqlReadable>(db_location: &str, location: &[
 /// let mut result = [0; N_VALUES_TO_READ];
 /// let mut stream = Cursor::new(Vec::new());
 ///
-/// cql_db::read_to_stream::<U64>(
+/// cql_db::read_to_stream_unchecked::<U64>(
 ///     DATABASE_LOCATION,
 ///     &mut stream,
 ///     &base_point,
@@ -471,7 +471,7 @@ pub fn read_value_unchecked<TStore: CqlReadable>(db_location: &str, location: &[
 /// # Ok(())
 /// # }
 /// ```
-pub fn read_to_stream<TStore: CqlStreamReadable>(db_location: &str, stream: &mut dyn Write, location: &[u64], n_values: u64) {
+pub fn read_to_stream_unchecked<TStore: CqlStreamReadable>(db_location: &str, stream: &mut dyn Write, location: &[u64], n_values: u64) {
 	let position = calculate_position(db_location, location);
 	database::read_to_stream::<TStore>(&db_location, stream, position, n_values).unwrap()
 }
