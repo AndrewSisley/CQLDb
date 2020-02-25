@@ -402,9 +402,20 @@ pub fn read_value_unchecked<TStore: CqlReadable>(db_location: &str, location: &[
 	database::read_value::<TStore>(&db_location, position)
 }
 
-/// Reads `n_values` from the given location onward into the given stream.
+/// Reads `n_values` from the given location onward into the given stream.  Does not validate given parameters.
 ///
-/// Does not offer any protection against reading more values than exist in the selected location.
+/// Can result in reading from an 'alternative' location if provided with an invalid location in the final dimension, other invalid dimensions will likely
+/// result in a panic.
+///
+/// # Errors
+///
+/// Will return any [I/O errors](https://doc.rust-lang.org/nightly/std/io/enum.ErrorKind.html) encountered during the execution of the function.  If an error
+/// is returned, it may be that values have already been written to the stream.
+///
+/// # Panics
+///
+/// Function does not actively defend against panics, and may do so if given invalid parameters.  If the function panics it may be that values have
+/// already been written to the stream.
 ///
 /// # Examples
 /// ```
