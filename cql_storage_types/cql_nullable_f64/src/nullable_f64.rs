@@ -172,7 +172,7 @@ impl CqlStreamReadable for NullableF64 {
     }
 }
 
-/// Unpacks `n_values` of Option<f64> from a stream, calling `res` with each value and it's index.
+/// Unpacks `n_values` of Option<f64> from a stream, calling `value_handler` with each value and it's index.
 /// # Examples
 /// ```ignore
 /// cql_db::read_to_stream_unchecked::<NullableF64>(
@@ -188,16 +188,16 @@ impl CqlStreamReadable for NullableF64 {
 ///     result[idx] = value
 /// })?;
 /// ```
-pub fn unpack_stream<F>(stream: &mut Cursor<Vec<u8>>, n_values: usize, mut res: F) -> io::Result<()> where F: FnMut(usize, Option<f64>) {
+pub fn unpack_stream<F>(stream: &mut Cursor<Vec<u8>>, n_values: usize, mut value_handler: F) -> io::Result<()> where F: FnMut(usize, Option<f64>) {
     for index in 0..n_values {
         let mut buffer = [0; NullableF64::VALUE_SIZE];
         stream.read_exact(&mut buffer)?;
 
         if buffer[0] == NULL_FLAG {
-            res(index, None);
+            value_handler(index, None);
         } else {
             let mut rdr = Cursor::new(&buffer[1..NullableF64::VALUE_SIZE]);
-            res(index, Some(rdr.read_f64::<LittleEndian>()?));
+            value_handler(index, Some(rdr.read_f64::<LittleEndian>()?));
         }
     }
 
