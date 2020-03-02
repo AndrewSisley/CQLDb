@@ -12,8 +12,8 @@ Operation | Database dimensions | Mean time (ns)
 --- | --- | ---
 Single point read | 1 | 2 200 (+/- 400)
 Single point read | 4 | 11 600 (+/- 2 000)
-Single point write | 1 | 3 200 (+/- 350)
-Single point write | 4 | 13 000 (+/- 2 000)
+Single point write | 1 | 2 500 (+/- 350)
+Single point write | 4 | 12 500 (+/- 2 000)
 Stream read 1 point | 1 | 1 900 (+/- 450)
 Stream read 1 point | 4 | 11 500 (+/- 2 000)
 Stream read 50 000 points | 1 | 19 800 000 (+/- 400 000)
@@ -109,10 +109,9 @@ impl CqlWritable for NullableF64 {
                 file.write_all(&[NULL_FLAG; HAS_VALUE_SIZE])
             }
             Some(value) => {
-                file.write_all(&[HAS_VALUE_FLAG; HAS_VALUE_SIZE])?;
-                let mut wtr = vec![];
-                wtr.write_f64::<LittleEndian>(value)?;
-                file.write_all(&wtr)
+                let mut buffer = vec![HAS_VALUE_FLAG];
+                buffer.write_f64::<LittleEndian>(value)?;
+                file.write_all(&buffer)
             }
         }
     }
