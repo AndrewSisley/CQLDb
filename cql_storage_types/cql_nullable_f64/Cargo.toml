@@ -3,7 +3,7 @@ name = "cql_nullable_f64"
 description = "Nullable f64 storage support for CQL Database - a lightweight array-based database"
 keywords = ["cql", "database", "array", "storage", "nosql"]
 categories = ["database", "database-implementations", "filesystem", "caching"]
-version = "0.1.0"
+version = "0.2.0"
 repository = "https://github.com/AndrewSisley/CQLDb/tree/master/cql_storage_types/cql_nullable_f64"
 authors = ["Andrew Sisley"]
 edition = "2018"
@@ -14,9 +14,9 @@ name = "cql_nullable_f64"
 path = "src/nullable_f64.rs"
 
 [dev-dependencies]
-cql_db = "0.1.0"
+cql_db = "^0.2"
 serial_test = "0.3.2"
 
 [dependencies]
-cql_model = "0.1.0"
+cql_model = "^0.2"
 byteorder = "1"
