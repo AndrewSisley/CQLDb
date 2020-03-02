@@ -57,61 +57,62 @@ To get started, pick a storage type(s) (examples use NullableF64), and add it as
 ```
 [dependencies]
 //... (any existing dependencies you may have)
-cql_db = "0.1.*"
-cql_nullable_f64 = "0.1.*"
+cql_db = "^0.2"
+cql_nullable_f64 = "^0.2"
 ```
 
 You then need to create a folder where you want the database to live, and then try out the below:
 
 ```
+use std::io;
 use std::io::{ Cursor, SeekFrom, Seek };
 use cql_nullable_f64::{ NullableF64, unpack_stream };
 
 const DATABASE_LOCATION: &str = "PATH_TO_YOUR_DATABASE_DIRECTORY";
 const N_VALUES_TO_READ: usize = 3;
 
-pub fn example_cql() {
-    let base_point = [0];
+pub fn example_cql() -> io::Result<()> {
+    let base_point = [1];
     let value1 = Some(-1.6);
     let value3 = Some(5.4);
 
     // creates a one dimensional database, with a capacity of 3
-    cql_db::create_db::<NullableF64>(
+    cql_db::create_db_unchecked::<NullableF64>(
         DATABASE_LOCATION,
         &[3]
-    );
+    )?;
 
     // writes Some(-1.6) to [0]
-    cql_db::write_value::<NullableF64>(
+    cql_db::write_value_unchecked::<NullableF64>(
         DATABASE_LOCATION,
         &base_point,
         value1
-    );
+    )?;
 
     // writes Some(5.4) to [2]
-    cql_db::write_value::<NullableF64>(
+    cql_db::write_value_unchecked::<NullableF64>(
         DATABASE_LOCATION,
         &[base_point[0] + 2],
         value3
-    );
+    )?;
 
     let mut result: [Option<f64>; N_VALUES_TO_READ] = [None; N_VALUES_TO_READ];
     let mut stream = Cursor::new(Vec::new());
 
     // reads 3 points from [0] into `stream`
-    cql_db::read_to_stream::<NullableF64>(
+    cql_db::read_to_stream_unchecked::<NullableF64>(
         DATABASE_LOCATION,
         &mut stream,
         &base_point,
         N_VALUES_TO_READ as u64
-    );
+    )?;
 
     // returns to the start of the stream
     stream.seek(SeekFrom::Start(0)).unwrap();
     // unpacks the stream value by value into the result[]
     unpack_stream(&mut stream, N_VALUES_TO_READ, |idx, value| {
         result[idx] = value
-    });
+    })?;
 
     assert_eq!(result[0], value1);
     assert_eq!(result[1], None);
