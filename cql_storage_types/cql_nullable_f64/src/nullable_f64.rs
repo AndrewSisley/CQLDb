@@ -14,9 +14,9 @@ Single point read | 1 | 2 200 (+/- 400)
 Single point read | 4 | 11 600 (+/- 2 000)
 Single point write | 1 | 2 500 (+/- 350)
 Single point write | 4 | 12 500 (+/- 2 000)
-Stream read 1 point | 1 | 1 900 (+/- 450)
-Stream read 1 point | 4 | 11 500 (+/- 2 000)
-Stream read 50 000 points | 1 | 19 800 000 (+/- 400 000)
+Stream read 1 point | 1 | 1 860 (+/- 400)
+Stream read 1 point | 4 | 11 200 (+/- 2 000)
+Stream read 50 000 points | 1 | 19 800 000 (+/- 100 000)
 Stream read 50 000 points | 4 | 20 150 000 (+/- 200 000)
 
 # Examples
@@ -64,7 +64,7 @@ cql_db::read_to_stream_unchecked::<NullableF64>(
 stream.seek(SeekFrom::Start(0)).unwrap();
 unpack_stream(&mut stream, N_VALUES_TO_READ, |idx, value| {
     result[idx] = value
-});
+})?;
 
 assert_eq!(result[0], value1);
 assert_eq!(result[1], None);
@@ -186,25 +186,20 @@ impl CqlStreamReadable for NullableF64 {
 ///
 /// unpack_stream(&mut stream, N_VALUES_TO_READ, |idx, value| {
 ///     result[idx] = value
-/// });
+/// })?;
 /// ```
-pub fn unpack_stream<F>(stream: &mut Cursor<Vec<u8>>, n_values: usize, mut res: F) where F: FnMut(usize, Option<f64>) {
+pub fn unpack_stream<F>(stream: &mut Cursor<Vec<u8>>, n_values: usize, mut res: F) -> io::Result<()> where F: FnMut(usize, Option<f64>) {
     for index in 0..n_values {
-        let mut null_buffer = [0; HAS_VALUE_SIZE];
+        let mut buffer = [0; NullableF64::VALUE_SIZE];
+        stream.read_exact(&mut buffer)?;
 
-        let n_bytes_read = stream.read(&mut null_buffer).unwrap();
-        if n_bytes_read == 0 {
-            break;
-        }
-
-        let mut value_buffer = [0; CONTENT_SIZE];
-        stream.read(&mut value_buffer).unwrap();
-
-        if null_buffer[0] == NULL_FLAG {
+        if buffer[0] == NULL_FLAG {
             res(index, None);
         } else {
-            let mut rdr = Cursor::new(value_buffer);
-            res(index, Some(rdr.read_f64::<LittleEndian>().unwrap()));
+            let mut rdr = Cursor::new(&buffer[1..NullableF64::VALUE_SIZE]);
+            res(index, Some(rdr.read_f64::<LittleEndian>()?));
         }
     }
+
+    Ok(())
 }

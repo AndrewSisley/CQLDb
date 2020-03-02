@@ -36,7 +36,7 @@ fn _1d_f64_nullable_stream_read_empty_location_1_to_1(b: &mut Bencher) {
 
         unpack_stream(&mut stream, n_values_to_read, |idx, value| {
             result[idx] = value
-        });
+        }).unwrap();
     });
 }
 
@@ -76,7 +76,7 @@ fn _1d_f64_nullable_stream_read_populated_location_1_to_1(b: &mut Bencher) {
 
         unpack_stream(&mut stream, n_values_to_read, |idx, value| {
             result[idx] = value
-        });
+        }).unwrap();
     });
 }
 
@@ -109,7 +109,7 @@ fn _1d_f64_nullable_stream_read_empty_location_50000_to_100000(b: &mut Bencher) 
 
         unpack_stream(&mut stream, n_values_to_read, |idx, value| {
             result[idx] = value
-        });
+        }).unwrap();
     });
 }
 
@@ -151,7 +151,7 @@ fn _1d_f64_nullable_stream_read_populated_location_50000_to_100000(b: &mut Bench
 
         unpack_stream(&mut stream, n_values_to_read, |idx, value| {
             result[idx] = value
-        });
+        }).unwrap();
     });
 }
 
@@ -191,7 +191,7 @@ fn _4d_f64_nullable_stream_read_empty_location_1_1_1_1_to_1_1_1_1(b: &mut Benche
 
         unpack_stream(&mut stream, n_values_to_read, |idx, value| {
             result[idx] = value
-        });
+        }).unwrap();
     });
 }
 
@@ -239,7 +239,7 @@ fn _4d_f64_nullable_stream_read_populated_location_1_1_1_1_to_1_1_1_1(b: &mut Be
 
         unpack_stream(&mut stream, n_values_to_read, |idx, value| {
             result[idx] = value
-        });
+        }).unwrap();
     });
 }
 
@@ -280,7 +280,7 @@ fn _4d_f64_nullable_stream_read_empty_location_1_1_1_50000_to_1_1_1_100000(b: &m
 
         unpack_stream(&mut stream, n_values_to_read, |idx, value| {
             result[idx] = value
-        });
+        }).unwrap();
     });
 }
 
@@ -330,6 +330,6 @@ fn _4d_f64_nullable_stream_read_populated_location_1_1_1_50000_to_1_1_1_100000(b
 
         unpack_stream(&mut stream, n_values_to_read, |idx, value| {
             result[idx] = value
-        });
+        }).unwrap();
     });
 }
