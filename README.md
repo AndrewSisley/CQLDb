@@ -123,31 +123,20 @@ More examples can be found in the [rustdocs](https://docs.rs/cql_db).
 
 ## Benchmarks
 
-Benchmarks (like everywhere else) are still very much a WIP, however you can find a quick and very rough summary in the table below (run on an 8th gen Intel i5 with SSD). You can run them locally from the [NullableF64](cql_storage_types/cql_nullable_f64) folder with the following command `rustup run nightly cargo bench` if/after you have installed the rust nightly build, it will use about 900 kB of disk space.  Other benchmarks are available in their respective storage type's directory.
+Benchmarks supplied below for the NullableF64 type and are fairly rudimentary (and rounded) and are there to give a rough idea of relative costs.
+Full benchmark code can be found in [github](cql_storage_types/cql_nullable_f64) and can be run with `rustup run nightly cargo bench`.  Benchmarks for
+other types can be found in the the type's corresponding documentation.
 
-### Single point read - NullableF64
-
-Database size | Point location | Mean read time (ns)
+Operation | Database dimensions | Mean time (ns)
 --- | --- | ---
-[1] | [1] | 2 187 (+/- 268)
-[100 000] | [100 000] | 2 197 (+/- 439)
-[1, 1, 1, 1] | [1, 1, 1, 1] | 11 416 (+/- 1 111)
-[1, 100 000, 1, 1] | [1, 100 000, 1, 1] | 11 487 (+/- 2 755)
-[1, 1, 1, 100 000] | [1, 1, 1, 100 000] | 11 468 (+/- 1 678)
-
-### Stream read - NullableF64
-N number of points read across the last axis from the start location, benchmark includes the time taken to read from bytestream into an array.
-
-Database size | Some/None | Start location | N points | Mean read time (ns) | Mean per point (ns)
---- | --- | --- | --- | --- | ---
-[1] | None | [1] | 1 | 1 849 (+/- 360) | 1 849
-[1] | Some | [1] | 1 | 1 899 (+/- 374) | 1 899
-[100 000] | None | [50 000] | 50 000 | 16 159 340 (+/- 576 181) | 323
-[100 000] | Some | [50 000] | 50 000 | 19 036 834 (+/- 338 129) | 381
-[1, 1, 1, 1] | None | [1, 1, 1, 1] | 1 | 11 303 (+/- 2 576) | 11 303
-[1, 1, 1, 1] | Some | [1, 1, 1, 1] | 1 | 11 276 (+/- 3 574) | 11 276
-[1, 1, 1, 100 000] | None | [1, 1, 1, 50 000] | 50 000 | 18 802 770 (+/- 33 520) | 376
-[1, 1, 1, 100 000] | Some | [1, 1, 1, 50 000] | 50 000 | 18 796 934 (+/- 71 134) | 376
+Single point read | 1 | 2 200 (+/- 400)
+Single point read | 4 | 11 600 (+/- 2 000)
+Single point write | 1 | 2 500 (+/- 350)
+Single point write | 4 | 12 500 (+/- 2 000)
+Stream read 1 point | 1 | 1 860 (+/- 400)
+Stream read 1 point | 4 | 11 200 (+/- 2 000)
+Stream read 50 000 points | 1 | 19 800 000 (+/- 100 000)
+Stream read 50 000 points | 4 | 20 150 000 (+/- 200 000)
 
 ## License
 
