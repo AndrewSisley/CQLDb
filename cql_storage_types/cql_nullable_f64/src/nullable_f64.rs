@@ -1,5 +1,5 @@
 /*!
-This crate implements various [CqlType](../cql_model/trait.CqlType.html) derivatives for storing `Option<f64>` values in a CQL database.
+This crate implements various [CqlType](https://docs.rs/cql_model/0.2/cql_model/trait.CqlType.html) derivatives for storing `Option<f64>` values in a CQL database.
 
 Will allocate 9 bytes per value [linked](https://docs.rs/cql_db/0.2.0/cql_db/fn.link_dimensions.html).
 
