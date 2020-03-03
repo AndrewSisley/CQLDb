@@ -14,3 +14,9 @@ impl fmt::Display for Error {
         }
     }
 }
+
+impl From<io::Error> for Error {
+    fn from(err: io::Error) -> Error {
+        Error::Io(err)
+    }
+}
