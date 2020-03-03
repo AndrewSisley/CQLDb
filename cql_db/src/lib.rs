@@ -122,6 +122,7 @@ use cql_model::{
 
 mod database;
 mod axis_library;
+mod error;
 mod key_library;
 mod vectors;
 
