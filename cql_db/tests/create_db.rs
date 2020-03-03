@@ -7,7 +7,7 @@ use cql_model::{ CqlType };
 
 #[test]
 #[should_panic]
-fn create_db__panics__given_0D_definition() {
+fn create_db_unchecked__panics__given_0D_definition() {
     cql_db::create_db_unchecked::<DummyType>(
         DATABASE_LOCATION,
         &[]
@@ -15,7 +15,7 @@ fn create_db__panics__given_0D_definition() {
 }
 
 #[test]
-fn create_db__creates_db__given_1D_definition() {
+fn create_db_unchecked__creates_db__given_1D_definition() {
     cql_db::create_db_unchecked::<DummyType>(
         DATABASE_LOCATION,
         &[
@@ -25,7 +25,7 @@ fn create_db__creates_db__given_1D_definition() {
 }
 
 #[test]
-fn create_db__creates_db__given_3D_definition() {
+fn create_db_unchecked__creates_db__given_3D_definition() {
     cql_db::create_db_unchecked::<DummyType>(
         DATABASE_LOCATION,
         &[

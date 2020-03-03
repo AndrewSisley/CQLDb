@@ -122,7 +122,7 @@ use cql_model::{
 
 mod database;
 mod axis_library;
-mod error;
+pub mod error;
 mod key_library;
 mod result;
 mod vectors;
@@ -218,6 +218,23 @@ pub fn create_db_unchecked<TStore: CqlType>(db_location: &str, array_size: &[u64
     database::create::<TStore>(&db_location)?;
     axis_library::create(db_location, &axis_definitions)?;
     key_library::create(db_location, &axis_definitions)
+}
+
+pub fn create_db<TStore: CqlType>(db_location: &str, array_size: &[u64]) -> result::Result<()> {
+    validate_create_db_params::<TStore>(db_location, array_size)?;
+    create_db_unchecked::<TStore>(db_location, array_size)?;
+    Ok(())
+}
+
+fn validate_create_db_params<TStore: CqlType>(_db_location: &str, array_size: &[u64]) -> result::cql::Result<()> {
+    if array_size.len() == 0 {
+        return Err(error::cql::Error::InsufficientDimensionsError {
+            required: 1,
+            requested: array_size.len() as u64,
+        })
+    }
+
+    Ok(())
 }
 
 /// Links dimension indexs together if they are not already linked.  Does not validate given parameters.
