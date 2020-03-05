@@ -35,6 +35,7 @@ pub mod cql {
     #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Hash)]
     pub enum Error {
         InsufficientDimensionsError{ required: u64, requested: u64 },
+        DimensionTooSmallError,
     }
 
     impl error::Error for Error { }
@@ -43,6 +44,7 @@ pub mod cql {
         fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
             match *self {
                 Error::InsufficientDimensionsError { required, requested } => write!(f, "Must provide at least {} dimenision(s), but only provided '{}'", required, requested),
+                Error::DimensionTooSmallError => write!(f, "Dimensions must have a capacity of 1 or higher"),
             }
         }
     }
