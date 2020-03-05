@@ -1,9 +1,9 @@
 # CQLDb
 Lightweight, growable, array-based storage solution, currently with the out-of-the-box storage types below (custom types also possible):
-- [U64](cql_storage_types/cql_u64) (unsigned 64 integers)
-- [F64](cql_storage_types/cql_f64) (64-bit floating point)
-- [NullableF64](cql_storage_types/cql_nullable_f64) (nullable 64-bit floating point)
-- [TinyText](cql_storage_types/cql_tiny_text) (255 char utf-8 strings)
+- [U64](https://crates.io/crates/cql_u64) (unsigned 64 integers)
+- [F64](https://github.com/AndrewSisley/CQLDb/tree/master/cql_storage_types/cql_f64) (64-bit floating point)
+- [NullableF64](https://crates.io/crates/cql_nullable_f64) (nullable 64-bit floating point)
+- [TinyText](https://crates.io/crates/cql_tiny_text) (255 char utf-8 strings)
 
 The project works by treating the file system as an N dimensional array, removing the need to scan for items in order to find them. Currently the number of dimensions must be specified on create of the database, however each dimension (bar the last) may grow on demand.
 
@@ -14,26 +14,26 @@ Database is one indexed.
 
 ## Project structure
 
-The project is split into two core sub-projects, [cql_db](cql_db) and [cql_model](cql_model), and a sub-project per supported type within the [cql_storage_types](cql_storage_types) folder.
+The project is split into two core sub-projects, [cql_db](https://crates.io/crates/cql_db) and [cql_model](https://crates.io/crates/cql_model), and a sub-project per supported type within the [cql_storage_types](https://github.com/AndrewSisley/CQLDb/tree/master/cql_storage_types) folder.
 
-The [cql_db](cql_db) sub-project contains the core logic orchestrating the type specific logic, and the array-based logic allowing the whole thing to function as a database.  It is dependent on [cql_model](cql_model) and the [U64](cql_storage_types/cql_u64) type.
+The cql_db sub-project contains the core logic orchestrating the type specific logic, and the array-based logic allowing the whole thing to function as a database.  It is dependent on cql_model and the [U64](https://crates.io/crates/cql_u64) type.
 
-The [cql_model](cql_model) sub-project contains the interfaces consumed by [cql_db](cql_db) and the [storage types](cql_storage_types) and is referenced by all sub-projects.
+The cql_model sub-project contains the interfaces consumed by cql_db and the storage types, and is referenced by all sub-projects.
 
-The [storage type](cql_storage_types) specific projects contains type specific code used for read/writting specific types from a file, implementing the interfaces within the [cql_model](cql_model) sub-project.
+The storage type specific projects contains type specific code used for read/writting specific types from a file, implementing the interfaces within the cql_model sub-project.
 
-To use this project you'll need to import the [cql_db](cql_db) sub-project and either each of the [storage types](cql_storage_types) that you with to use, or the [cql_model](cql_model) and you own implementations of the traits within - should you wish to use other types.
+To use this project you'll need to import the cql_db sub-project and either each of the storage types that you with to use, or the cql_model and you own implementations of the traits within - should you wish to use other types.
 
 Rustdocs (with examples) and crates for all published components can be found in the table below:
 
 Repo link |Crate | Documentation | Description
 --- | --- | --- | ---
-[CQL Db](cql_db) | [crates.io](https://crates.io/crates/cql_db) | [docs.rs](https://docs.rs/cql_db) | Core CQL database engine
-[CQL Model](cql_model) | [crates.io](https://crates.io/crates/cql_model) | [docs.rs](https://docs.rs/cql_model) | Core CQL database models/interfaces
-[U64](cql_storage_types/cql_u64) | [crates.io](https://crates.io/crates/cql_u64) | [docs.rs](https://docs.rs/cql_u64) | Unsigned 64-bit interger storage support
-[F64](cql_storage_types/cql_f64) | *unpublished* | *unpublished* | 64-bit floating point storage support
-[NullableF64](cql_storage_types/cql_nullable_f64) | [crates.io](https://crates.io/crates/cql_nullable_f64) | [docs.rs](https://docs.rs/cql_nullable_f64) | Nullable 64-bit floating point storage support
-[TinyText](cql_storage_types/cql_tiny_text) | [crates.io](https://crates.io/crates/cql_tiny_text) | [docs.rs](https://docs.rs/cql_tiny_text) | 255 char utf-8 string storage support
+[CQL Db](https://github.com/AndrewSisley/CQLDb/tree/master/cql_db) | [crates.io](https://crates.io/crates/cql_db) | [docs.rs](https://docs.rs/cql_db) | Core CQL database engine
+[CQL Model](https://github.com/AndrewSisley/CQLDb/tree/master/cql_model) | [crates.io](https://crates.io/crates/cql_model) | [docs.rs](https://docs.rs/cql_model) | Core CQL database models/interfaces
+[U64](https://github.com/AndrewSisley/CQLDb/tree/master/cql_storage_types/cql_u64) | [crates.io](https://crates.io/crates/cql_u64) | [docs.rs](https://docs.rs/cql_u64) | Unsigned 64-bit interger storage support
+[F64](https://github.com/AndrewSisley/CQLDb/tree/master/cql_storage_types/cql_f64) | *unpublished* | *unpublished* | 64-bit floating point storage support
+[NullableF64](https://github.com/AndrewSisley/CQLDb/tree/master/cql_storage_types/cql_nullable_f64) | [crates.io](https://crates.io/crates/cql_nullable_f64) | [docs.rs](https://docs.rs/cql_nullable_f64) | Nullable 64-bit floating point storage support
+[TinyText](https://github.com/AndrewSisley/CQLDb/tree/master/cql_storage_types/cql_tiny_text) | [crates.io](https://crates.io/crates/cql_tiny_text) | [docs.rs](https://docs.rs/cql_tiny_text) | 255 char utf-8 string storage support
 
 
 ## Quick note on safety
@@ -47,7 +47,7 @@ As this project is a data-storage solution acting upon the file system, some cha
 
 Crate | Breaking version | Description
 --- | --- | ---
-[cql_db](cql_db) | 0.2.0 | Changes made in the key files, and the database file itself. Commits [048e533](https://github.com/AndrewSisley/CQLDb/commit/048e533bb22602a8206a96010b86a387810ab0b2) and [7dcaf7c](https://github.com/AndrewSisley/CQLDb/commit/7dcaf7c9aa2ce7e94c7fbcf0a0e4521944790e3d)
+[cql_db](https://crates.io/crates/cql_db) | 0.2.0 | Changes made in the key files, and the database file itself. Commits [048e533](https://github.com/AndrewSisley/CQLDb/commit/048e533bb22602a8206a96010b86a387810ab0b2) and [7dcaf7c](https://github.com/AndrewSisley/CQLDb/commit/7dcaf7c9aa2ce7e94c7fbcf0a0e4521944790e3d)
 
 
 ## Getting started
@@ -124,7 +124,7 @@ More examples can be found in the [rustdocs](https://docs.rs/cql_db).
 ## Benchmarks
 
 Benchmarks supplied below for the NullableF64 type and are fairly rudimentary (and rounded) and are there to give a rough idea of relative costs.
-Full benchmark code can be found in [github](cql_storage_types/cql_nullable_f64) and can be run with `rustup run nightly cargo bench`.  Benchmarks for
+Full benchmark code can be found in [github](https://github.com/AndrewSisley/CQLDb/tree/master/cql_storage_types/cql_nullable_f64) and can be run with `rustup run nightly cargo bench`.  Benchmarks for
 other types can be found in the the type's corresponding documentation.
 
 Operation | Database dimensions | Mean time (ns)
