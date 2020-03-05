@@ -30,7 +30,7 @@ let link = [2, 3, 4, 5];
 # cql_db::create_db_unchecked::<U64>(
 #    DATABASE_LOCATION,
 #    &database_definition
-# ).unwrap();
+# )?;
 #
 cql_db::link_dimensions_unchecked::<U64>(
     DATABASE_LOCATION,
@@ -109,7 +109,7 @@ assert_eq!(result, value);
 # }
 ```
 */
-#![doc(html_root_url = "https://docs.rs/cql_db/0.2.1")]
+#![doc(html_root_url = "https://docs.rs/cql_db/0.2.2")]
 use std::io;
 use std::io::Write;
 
@@ -334,7 +334,7 @@ pub fn link_dimensions_unchecked<TStore: CqlType>(db_location: &str, location: &
 /// # }
 /// ```
 pub fn write_value_unchecked<TStore: CqlWritable>(db_location: &str, location: &[u64], value: TStore::ValueType) -> io::Result<()> {
-	let position = calculate_position(db_location, location);
+	let position = calculate_position(db_location, location)?;
 	database::write_value::<TStore>(&db_location, position, value)
 }
 
@@ -398,7 +398,7 @@ pub fn write_value_unchecked<TStore: CqlWritable>(db_location: &str, location: &
 /// # }
 /// ```
 pub fn read_value_unchecked<TStore: CqlReadable>(db_location: &str, location: &[u64]) -> Result<TStore::ValueType, io::Error> {
-	let position = calculate_position(db_location, location);
+	let position = calculate_position(db_location, location)?;
 	database::read_value::<TStore>(&db_location, position)
 }
 
@@ -483,14 +483,16 @@ pub fn read_value_unchecked<TStore: CqlReadable>(db_location: &str, location: &[
 /// # }
 /// ```
 pub fn read_to_stream_unchecked<TStore: CqlStreamReadable>(db_location: &str, stream: &mut dyn Write, location: &[u64], n_values: u64) -> io::Result<()> {
-	let position = calculate_position(db_location, location);
+	let position = calculate_position(db_location, location)?;
 	database::read_to_stream::<TStore>(&db_location, stream, position, n_values)
 }
 
-fn calculate_position(db_location: &str, location: &[u64]) -> u64 {
+fn calculate_position(db_location: &str, location: &[u64]) -> io::Result<u64> {
     if location.len() == 1 {
         // minus one to handle the one-indexing
-        return location[0] - 1
+        return Ok(
+            location[0] - 1
+        )
     }
 
     let last_index = location.len() as u64 - 1;
@@ -499,18 +501,21 @@ fn calculate_position(db_location: &str, location: &[u64]) -> u64 {
     for x_axis_id in 1..last_index {
         let y_axis_id = x_axis_id + 1;
         let y_position = location[x_axis_id as usize];
-        let y_axis_definition = axis_library::get_by_id(db_location, y_axis_id).unwrap();
+        let y_axis_definition = axis_library::get_by_id(db_location, y_axis_id)?;
 
         let key = key_library::get(
             db_location,
             &key_library::AxisPoint { axis_id: x_axis_id, position: x_position },
             &key_library::AxisPoint { axis_id: y_axis_id, position: y_position },
             &y_axis_definition
-        ).unwrap();
+        )?;
 
         x_position = key;
     }
 
-    let last_axis_definition = axis_library::get_by_id(db_location, last_index + 1).unwrap();
-    calculate_index(x_position, location[last_index as usize], last_axis_definition.max)
+    let last_axis_definition = axis_library::get_by_id(db_location, last_index + 1)?;
+
+    Ok(
+        calculate_index(x_position, location[last_index as usize], last_axis_definition.max)
+    )
 }
