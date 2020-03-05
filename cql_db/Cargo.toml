@@ -1,6 +1,7 @@
 [package]
 name = "cql_db"
 description = "Core CQL Database functionality - a lightweight array-based database"
+readme = "../README.md"
 keywords = ["cql", "database", "array", "storage", "nosql"]
 categories = ["database", "database-implementations", "filesystem", "caching"]
 version = "0.2.2"
