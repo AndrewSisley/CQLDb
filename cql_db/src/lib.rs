@@ -207,6 +207,16 @@ use vectors::calculate_index;
 /// ```
 /// But see the type(s) that you are interested in for performance benchmarks, and the [index page](./index.html) to see how to calcuate file size requirements.
 pub fn create_db_unchecked<TStore: CqlType>(db_location: &str, array_size: &[u64]) -> io::Result<()> {
+    create_or_replace_db::<TStore>(db_location, array_size, false)
+}
+
+pub fn create_db<TStore: CqlType>(db_location: &str, array_size: &[u64]) -> result::Result<()> {
+    validate_create_db_params::<TStore>(db_location, array_size)?;
+    create_or_replace_db::<TStore>(db_location, array_size, true)?;
+    Ok(())
+}
+
+fn create_or_replace_db<TStore: CqlType>(db_location: &str, array_size: &[u64], create_new: bool) -> io::Result<()> {
     let mut axis_definitions = Vec::with_capacity(array_size.len());
     for index in 0..array_size.len() {
         axis_definitions.push(AxisDefinition {
@@ -215,15 +225,9 @@ pub fn create_db_unchecked<TStore: CqlType>(db_location: &str, array_size: &[u64
         });
     }
 
-    database::create::<TStore>(&db_location)?;
-    axis_library::create(db_location, &axis_definitions)?;
-    key_library::create(db_location, &axis_definitions)
-}
-
-pub fn create_db<TStore: CqlType>(db_location: &str, array_size: &[u64]) -> result::Result<()> {
-    validate_create_db_params::<TStore>(db_location, array_size)?;
-    create_db_unchecked::<TStore>(db_location, array_size)?;
-    Ok(())
+    database::create::<TStore>(&db_location, create_new)?;
+    axis_library::create(db_location, &axis_definitions, create_new)?;
+    key_library::create(db_location, &axis_definitions, create_new)
 }
 
 fn validate_create_db_params<TStore: CqlType>(_db_location: &str, array_size: &[u64]) -> result::cql::Result<()> {

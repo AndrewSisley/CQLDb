@@ -22,12 +22,13 @@ pub struct AxisPoint {
 // reducing the storage space required.  Each key library contains the id of the last key added in the first block, and then acts like an 1D array
 // for every point thereafter, with each entry pointing at the location of it's data in the next key library, or the start of the actual data if
 // it is the penultimate dimension (N - 1).
-pub fn create(db_location: &str, axis_definitions: &[AxisDefinition]) -> io::Result<()> {
+pub fn create(db_location: &str, axis_definitions: &[AxisDefinition], create_new: bool) -> io::Result<()> {
     for index in 1..axis_definitions.len() - 1 {
         let library_key_location = format!("{}{}{}_{}", db_location, KEY_FILE_NAME, axis_definitions[index - 1].id, axis_definitions[index].id);
         OpenOptions::new()
             .write(true)
             .create(true)
+            .create_new(create_new)
             .truncate(true)
             .open(library_key_location)?;
     }
