@@ -30,7 +30,7 @@ let link = [2, 3, 4, 5];
 # cql_db::create_db_unchecked::<U64>(
 #    DATABASE_LOCATION,
 #    &database_definition
-# ).unwrap();
+# )?;
 #
 cql_db::link_dimensions_unchecked::<U64>(
     DATABASE_LOCATION,
