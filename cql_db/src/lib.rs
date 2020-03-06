@@ -570,6 +570,60 @@ fn validate_element_within_max(db_location: &str, location: &[u64]) -> result::R
     Ok(())
 }
 
+fn validate_read_write_location(db_location: &str, location: &[u64]) -> result::Result<()> {
+    validate_no_zero_indexes(location)?;
+
+    let number_of_dimensions = axis_library::count(db_location)?;
+    if location.len() as u64 != number_of_dimensions {
+        return Err(
+            error::Error::Cql(
+                error::cql::Error::DimensionsOutOfRangeError {
+                    requested: location.len(),
+                    min: number_of_dimensions as usize,
+                    max: number_of_dimensions as usize,
+                }
+            )
+        )
+    }
+
+    validate_element_within_max(db_location, location)?;
+
+    if number_of_dimensions > 2 {
+        let last_index = location.len() as u64 - 1;
+
+        let mut x_position = location[0];
+        for x_axis_id in 1..last_index {
+            let y_axis_id = x_axis_id + 1;
+            let y_position = location[x_axis_id as usize];
+            let y_axis_definition = axis_library::get_by_id(db_location, y_axis_id)?;
+
+            let key = key_library::get(
+                db_location,
+                &key_library::AxisPoint { axis_id: x_axis_id, position: x_position },
+                &key_library::AxisPoint { axis_id: y_axis_id, position: y_position },
+                &y_axis_definition
+            )?;
+
+            if key == 0 {
+                return Err(
+                    error::Error::Cql(
+                        error::cql::Error::ElementsNotLinkedError {
+                            x_dimension: x_axis_id as usize - 1,
+                            x: location[x_axis_id as usize - 1],
+                            y_dimension: y_axis_id as usize - 1,
+                            y: y_position,
+                        }
+                    )
+                )
+            }
+
+            x_position = key;
+        }
+    }
+
+    Ok(())
+}
+
 fn calculate_position(db_location: &str, location: &[u64]) -> io::Result<u64> {
     if location.len() == 1 {
         // minus one to handle the one-indexing
