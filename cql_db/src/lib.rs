@@ -211,7 +211,7 @@ pub fn create_db_unchecked<TStore: CqlType>(db_location: &str, array_size: &[u64
 }
 
 pub fn create_db<TStore: CqlType>(db_location: &str, array_size: &[u64]) -> result::Result<()> {
-    validate_create_db_params::<TStore>(db_location, array_size)?;
+    validate_create_db_params::<TStore>(array_size)?;
     create_or_replace_db::<TStore>(db_location, array_size, true)?;
     Ok(())
 }
@@ -230,12 +230,16 @@ fn create_or_replace_db<TStore: CqlType>(db_location: &str, array_size: &[u64], 
     key_library::create(db_location, &axis_definitions, create_new)
 }
 
-fn validate_create_db_params<TStore: CqlType>(_db_location: &str, array_size: &[u64]) -> result::cql::Result<()> {
+fn validate_create_db_params<TStore: CqlType>(array_size: &[u64]) -> result::cql::Result<()> {
     if array_size.len() == 0 {
         return Err(error::cql::Error::InsufficientDimensionsError {
             required: 1,
             requested: array_size.len() as u64,
         })
+    }
+
+    if array_size.iter().any(|&dimension_capacity| dimension_capacity == 0) {
+        return Err(error::cql::Error::DimensionTooSmallError)
     }
 
     Ok(())
