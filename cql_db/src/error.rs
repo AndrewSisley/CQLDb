@@ -37,6 +37,7 @@ pub mod cql {
         InsufficientDimensionsError{ required: u64, requested: u64 },
         DimensionTooSmallError,
         IndexOutOfRangeError { dimension_index: usize, requested: u64, min: u64, max: u64 },
+        DimensionsOutOfRangeError { requested: usize, min: usize, max: usize },
     }
 
     impl error::Error for Error { }
@@ -52,6 +53,8 @@ pub mod cql {
                         "Requested index '{}' for dimension index '{}' was out of range, value must be between {} and {}",
                         requested, dimension_index, min, max
                     ),
+                Error::DimensionsOutOfRangeError { requested, min, max } =>
+                    write!(f, "Requested dimension '{}' was out of range, .len() must be between {} and {}", requested, min, max),
             }
         }
     }
