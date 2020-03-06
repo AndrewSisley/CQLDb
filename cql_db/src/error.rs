@@ -36,6 +36,7 @@ pub mod cql {
     pub enum Error {
         InsufficientDimensionsError{ required: u64, requested: u64 },
         DimensionTooSmallError,
+        IndexOutOfRangeError { dimension_index: usize, requested: u64, min: u64, max: u64 },
     }
 
     impl error::Error for Error { }
@@ -45,6 +46,12 @@ pub mod cql {
             match *self {
                 Error::InsufficientDimensionsError { required, requested } => write!(f, "Must provide at least {} dimenision(s), but only provided '{}'", required, requested),
                 Error::DimensionTooSmallError => write!(f, "Dimensions must have a capacity of 1 or higher"),
+                Error::IndexOutOfRangeError { dimension_index, requested, min, max } =>
+                    write!(
+                        f,
+                        "Requested index '{}' for dimension index '{}' was out of range, value must be between {} and {}",
+                        requested, dimension_index, min, max
+                    ),
             }
         }
     }
