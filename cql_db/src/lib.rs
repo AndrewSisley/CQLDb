@@ -318,6 +318,30 @@ pub fn link_dimensions_unchecked<TStore: CqlType>(db_location: &str, location: &
     Ok(())
 }
 
+pub fn link_dimensions<TStore: CqlType>(db_location: &str, location: &[u64]) -> result::Result<()> {
+    validate_link_dimensions_params::<TStore>(db_location, location)?;
+    link_dimensions_unchecked::<TStore>(db_location, location)?;
+    Ok(())
+}
+
+fn validate_link_dimensions_params<TStore: CqlType>(db_location: &str, location: &[u64]) -> result::Result<()> {
+    let number_of_dimensions = axis_library::count(db_location)?;
+
+    if location.len() < 2 || location.len() as u64 > (number_of_dimensions - 1) {
+        return Err(
+            error::Error::Cql(
+                error::cql::Error::DimensionsOutOfRangeError {
+                    requested: location.len(),
+                    min: 2,
+                    max: number_of_dimensions as usize - 1,
+                }
+            )
+        )
+    }
+
+    validate_element_within_max(db_location, location)
+}
+
 /// Writes the given value to the given location in the database.  Does not validate given parameters.
 ///
 /// Can result in writing to an 'alternative' location if provided with an invalid location in the final dimension, other invalid dimensions will likely
