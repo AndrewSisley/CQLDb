@@ -339,7 +339,7 @@ fn validate_link_dimensions_params<TStore: CqlType>(db_location: &str, location:
         )
     }
 
-    validate_element_within_max(db_location, location)
+    validate_element_within_range(db_location, location)
 }
 
 /// Writes the given value to the given location in the database.  Does not validate given parameters.
@@ -566,7 +566,12 @@ fn validate_read_to_stream(db_location: &str, location: &[u64], n_values: u64) -
     if last_index > axis_definition.max {
         return Err(
             error::Error::Cql(
-                error::cql::Error::IndexOutOfRangeError(last_index)
+                error::cql::Error::IndexOutOfRangeError {
+                    dimension_index: axis_id - 1,
+                    requested: last_index,
+                    min: 1,
+                    max: axis_definition.max
+                }
             )
         )
     }
@@ -574,22 +579,12 @@ fn validate_read_to_stream(db_location: &str, location: &[u64], n_values: u64) -
     Ok(())
 }
 
-fn validate_no_zero_indexes(location: &[u64]) -> result::cql::Result<()> {
-    if location.iter().any(|&dimension_index| dimension_index == 0) {
-        return Err(
-            error::cql::Error::IndexOutOfRangeError { dimension_index: 0, requested: 0, min: 1, max: 9999999999 }
-        )
-    }
-
-    Ok(())
-}
-
-fn validate_element_within_max(db_location: &str, location: &[u64]) -> result::Result<()> {
+fn validate_element_within_range(db_location: &str, location: &[u64]) -> result::Result<()> {
     for i in 0..location.len() {
         let axis_id = i as u64 + 1;
         let axis_definition = axis_library::get_by_id(db_location, axis_id)?;
 
-        if location[i] > axis_definition.max {
+        if location[i] < 1 || location[i] > axis_definition.max {
             return Err(
                 error::Error::Cql(
                     error::cql::Error::IndexOutOfRangeError {
@@ -607,8 +602,6 @@ fn validate_element_within_max(db_location: &str, location: &[u64]) -> result::R
 }
 
 fn validate_read_write_location(db_location: &str, location: &[u64]) -> result::Result<()> {
-    validate_no_zero_indexes(location)?;
-
     let number_of_dimensions = axis_library::count(db_location)?;
     if location.len() as u64 != number_of_dimensions {
         return Err(
@@ -622,7 +615,7 @@ fn validate_read_write_location(db_location: &str, location: &[u64]) -> result::
         )
     }
 
-    validate_element_within_max(db_location, location)?;
+    validate_element_within_range(db_location, location)?;
 
     if number_of_dimensions > 2 {
         let last_index = location.len() as u64 - 1;
