@@ -38,6 +38,7 @@ pub mod cql {
         DimensionTooSmallError,
         IndexOutOfRangeError { dimension_index: usize, requested: u64, min: u64, max: u64 },
         DimensionsOutOfRangeError { requested: usize, min: usize, max: usize },
+        ElementsNotLinkedError { x_dimension: usize, x: u64, y_dimension: usize, y: u64 },
     }
 
     impl error::Error for Error { }
@@ -55,6 +56,8 @@ pub mod cql {
                     ),
                 Error::DimensionsOutOfRangeError { requested, min, max } =>
                     write!(f, "Requested dimension '{}' was out of range, .len() must be between {} and {}", requested, min, max),
+                Error::ElementsNotLinkedError { x_dimension, x, y_dimension, y } => write!(f, "Requested dimension '{}', element '{}' was not linked to dimension '{}', element'{}",
+                    x_dimension, x, y_dimension, y),
             }
         }
     }
