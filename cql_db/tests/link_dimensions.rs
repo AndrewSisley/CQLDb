@@ -1,3 +1,5 @@
+#![allow(non_snake_case)]
+
 mod constants;
 
 use serial_test::serial;
@@ -6,6 +8,7 @@ use std::fs::OpenOptions;
 use constants::DATABASE_LOCATION;
 use cql_model::CqlType;
 use cql_u64::{ U64 };
+use cql_db::error;
 
 #[test]
 #[serial]
@@ -249,6 +252,253 @@ fn _4d_u64_database_allows_for_all_points_to_be_linked() {
         }
     }
 }
+
+#[test]
+#[serial]
+fn _link_dimensions__returns_DimensionsOutOfRangeError__given_4d_u64_database_and_empty_location() {
+    cql_db::create_db_unchecked::<U64>(
+        DATABASE_LOCATION,
+        &[2, 3, 2, 2]
+    ).unwrap();
+
+    let link_location = [];
+
+    let result = match cql_db::link_dimensions::<U64>(
+        DATABASE_LOCATION,
+        &link_location,
+    ) {
+        Err(error) => match error {
+            error::Error::Cql(cql_error) => match cql_error {
+                error::cql::Error::DimensionsOutOfRangeError{ requested, min, max } => Some((requested, min, max)),
+                _ => None,
+            },
+            _ => None,
+        }
+        _ => None,
+    };
+
+    assert_eq!(
+        result.unwrap(),
+        (link_location.len(), 2, 3)
+    );
+}
+
+#[test]
+#[serial]
+fn _link_dimensions__returns_DimensionsOutOfRangeError__given_4d_u64_database_and_1d_location() {
+    cql_db::create_db_unchecked::<U64>(
+        DATABASE_LOCATION,
+        &[2, 3, 2, 2]
+    ).unwrap();
+
+    let link_location = [1];
+
+    let result = match cql_db::link_dimensions::<U64>(
+        DATABASE_LOCATION,
+        &link_location,
+    ) {
+        Err(error) => match error {
+            error::Error::Cql(cql_error) => match cql_error {
+                error::cql::Error::DimensionsOutOfRangeError{ requested, min, max } => Some((requested, min, max)),
+                _ => None,
+            },
+            _ => None,
+        }
+        _ => None,
+    };
+
+    assert_eq!(
+        result.unwrap(),
+        (link_location.len(), 2, 3)
+    );
+}
+
+#[test]
+#[serial]
+fn _link_dimensions__returns_DimensionsOutOfRangeError__given_4d_u64_database_and_4d_location() {
+    cql_db::create_db_unchecked::<U64>(
+        DATABASE_LOCATION,
+        &[2, 3, 2, 2]
+    ).unwrap();
+
+    let link_location = [1, 1, 1, 1];
+
+    let result = match cql_db::link_dimensions::<U64>(
+        DATABASE_LOCATION,
+        &link_location,
+    ) {
+        Err(error) => match error {
+            error::Error::Cql(cql_error) => match cql_error {
+                error::cql::Error::DimensionsOutOfRangeError{ requested, min, max } => Some((requested, min, max)),
+                _ => None,
+            },
+            _ => None,
+        }
+        _ => None,
+    };
+
+    assert_eq!(
+        result.unwrap(),
+        (link_location.len(), 2, 3)
+    );
+}
+
+#[test]
+#[serial]
+fn _link_dimensions__returns_DimensionsOutOfRangeError__given_2d_u64_database_and_2d_location() {
+    cql_db::create_db_unchecked::<U64>(
+        DATABASE_LOCATION,
+        &[2, 3]
+    ).unwrap();
+
+    let link_location = [1, 1];
+
+    let result = match cql_db::link_dimensions::<U64>(
+        DATABASE_LOCATION,
+        &link_location,
+    ) {
+        Err(error) => match error {
+            error::Error::Cql(cql_error) => match cql_error {
+                error::cql::Error::DimensionsOutOfRangeError{ requested, min, max } => Some((requested, min, max)),
+                _ => None,
+            },
+            _ => None,
+        }
+        _ => None,
+    };
+
+    assert_eq!(
+        result.unwrap(),
+        (link_location.len(), 2, 1)
+    );
+}
+
+#[test]
+#[serial]
+fn _link_dimensions__links_dimension__given_4d_u64_database_and_2d_location() {
+    cql_db::create_db_unchecked::<U64>(
+        DATABASE_LOCATION,
+        &[2, 3, 2, 2]
+    ).unwrap();
+
+    let link_location = [1, 1];
+
+    let result = match cql_db::link_dimensions::<U64>(
+        DATABASE_LOCATION,
+        &link_location,
+    ) {
+        Err(error) => match error {
+            error::Error::Cql(cql_error) => match cql_error {
+                error::cql::Error::DimensionsOutOfRangeError{ requested, min, max } => Some((requested, min, max)),
+                _ => None,
+            },
+            _ => None,
+        }
+        _ => None,
+    };
+
+    assert_eq!(
+        result,
+        None
+    );
+}
+
+#[test]
+#[serial]
+fn _link_dimensions__links_dimension__given_4d_u64_database_and_3d_location() {
+    cql_db::create_db_unchecked::<U64>(
+        DATABASE_LOCATION,
+        &[2, 3, 2, 2]
+    ).unwrap();
+
+    let link_location = [2, 3, 2];
+
+    let result = match cql_db::link_dimensions::<U64>(
+        DATABASE_LOCATION,
+        &link_location,
+    ) {
+        Err(error) => match error {
+            error::Error::Cql(cql_error) => match cql_error {
+                error::cql::Error::DimensionsOutOfRangeError{ requested, min, max } => Some((requested, min, max)),
+                _ => None,
+            },
+            _ => None,
+        }
+        _ => None,
+    };
+
+    assert_eq!(
+        result,
+        None
+    );
+}
+
+#[test]
+#[serial]
+fn _link_dimensions__returns_DimensionsOutOfRangeError__given_4d_u64_database_and_3d_location_with_value_larger_than_capacity_index_0() {
+    let db_dimensions = [2, 3, 2, 2];
+
+    cql_db::create_db_unchecked::<U64>(
+        DATABASE_LOCATION,
+        &db_dimensions
+    ).unwrap();
+
+    let link_location = [10, 3, 2];
+    let large_index = 0;
+
+    let result = match cql_db::link_dimensions::<U64>(
+        DATABASE_LOCATION,
+        &link_location,
+    ) {
+        Err(error) => match error {
+            error::Error::Cql(cql_error) => match cql_error {
+                error::cql::Error::IndexOutOfRangeError{ dimension_index, requested, min, max } => Some((dimension_index, requested, min, max)),
+                _ => None,
+            },
+            _ => None,
+        }
+        _ => None,
+    };
+
+    assert_eq!(
+        result.unwrap(),
+        (large_index, link_location[large_index], 1, db_dimensions[large_index])
+    );
+}
+
+#[test]
+#[serial]
+fn _link_dimensions__returns_DimensionsOutOfRangeError__given_4d_u64_database_and_3d_location_with_value_larger_than_capacity_index_2() {
+    let db_dimensions = [2, 3, 2, 2];
+
+    cql_db::create_db_unchecked::<U64>(
+        DATABASE_LOCATION,
+        &db_dimensions
+    ).unwrap();
+
+    let link_location = [2, 3, 3];
+    let large_index = 2;
+
+    let result = match cql_db::link_dimensions::<U64>(
+        DATABASE_LOCATION,
+        &link_location,
+    ) {
+        Err(error) => match error {
+            error::Error::Cql(cql_error) => match cql_error {
+                error::cql::Error::IndexOutOfRangeError{ dimension_index, requested, min, max } => Some((dimension_index, requested, min, max)),
+                _ => None,
+            },
+            _ => None,
+        }
+        _ => None,
+    };
+
+    assert_eq!(
+        result.unwrap(),
+        (large_index, link_location[large_index], 1, db_dimensions[large_index])
+    );
+}
+
 
 fn calculate_key_file_max_size(db_dimensions: &[u64], first_dimension_index: usize) -> u64 {
     let mut dimension_size = db_dimensions[0];
