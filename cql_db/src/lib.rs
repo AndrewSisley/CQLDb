@@ -514,6 +514,16 @@ pub fn read_to_stream_unchecked<TStore: CqlStreamReadable>(db_location: &str, st
 	database::read_to_stream::<TStore>(&db_location, stream, position, n_values)
 }
 
+fn validate_no_zero_indexes(location: &[u64]) -> result::cql::Result<()> {
+    if location.iter().any(|&dimension_index| dimension_index == 0) {
+        return Err(
+            error::cql::Error::IndexOutOfRangeError { dimension_index: 0, requested: 0, min: 1, max: 9999999999 }
+        )
+    }
+
+    Ok(())
+}
+
 fn calculate_position(db_location: &str, location: &[u64]) -> io::Result<u64> {
     if location.len() == 1 {
         // minus one to handle the one-indexing
