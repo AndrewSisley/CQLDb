@@ -524,6 +524,28 @@ fn validate_no_zero_indexes(location: &[u64]) -> result::cql::Result<()> {
     Ok(())
 }
 
+fn validate_element_within_max(db_location: &str, location: &[u64]) -> result::Result<()> {
+    for i in 0..location.len() {
+        let axis_id = i as u64 + 1;
+        let axis_definition = axis_library::get_by_id(db_location, axis_id)?;
+
+        if location[i] > axis_definition.max {
+            return Err(
+                error::Error::Cql(
+                    error::cql::Error::IndexOutOfRangeError {
+                        dimension_index: i,
+                        requested: location[i],
+                        min: 1,
+                        max: axis_definition.max
+                    }
+                )
+            )
+        }
+    }
+
+    Ok(())
+}
+
 fn calculate_position(db_location: &str, location: &[u64]) -> io::Result<u64> {
     if location.len() == 1 {
         // minus one to handle the one-indexing
