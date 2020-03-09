@@ -550,6 +550,30 @@ pub fn read_to_stream_unchecked<TStore: CqlStreamReadable>(db_location: &str, st
 	database::read_to_stream::<TStore>(&db_location, stream, position, n_values)
 }
 
+pub fn read_to_stream<TStore: CqlStreamReadable>(db_location: &str, stream: &mut dyn Write, location: &[u64], n_values: u64) -> result::Result<()> {
+    validate_read_to_stream(db_location, location, n_values)?;
+    read_to_stream_unchecked::<TStore>(db_location, stream, location, n_values)?;
+    Ok(())
+}
+
+fn validate_read_to_stream(db_location: &str, location: &[u64], n_values: u64) -> result::Result<()> {
+    validate_read_write_location(db_location, location)?;
+
+    let axis_id = location.len();
+    let axis_definition = axis_library::get_by_id(db_location, axis_id as u64)?;
+    let last_index = location[axis_id - 1] + n_values - 1;
+
+    if last_index > axis_definition.max {
+        return Err(
+            error::Error::Cql(
+                error::cql::Error::IndexOutOfRangeError(last_index)
+            )
+        )
+    }
+
+    Ok(())
+}
+
 fn validate_no_zero_indexes(location: &[u64]) -> result::cql::Result<()> {
     if location.iter().any(|&dimension_index| dimension_index == 0) {
         return Err(
