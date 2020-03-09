@@ -459,6 +459,12 @@ pub fn read_value_unchecked<TStore: CqlReadable>(db_location: &str, location: &[
 	database::read_value::<TStore>(&db_location, position)
 }
 
+pub fn read_value<TStore: CqlReadable>(db_location: &str, location: &[u64]) -> result::Result<TStore::ValueType> {
+	validate_read_write_location(db_location, location)?;
+    let value = read_value_unchecked::<TStore>(db_location, location)?;
+    Ok(value)
+}
+
 /// Reads `n_values` from the given location onward into the given stream.  Does not validate given parameters.
 ///
 /// Can result in reading from an 'alternative' location if provided with an invalid location in the final dimension, other invalid dimensions will likely
