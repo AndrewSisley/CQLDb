@@ -232,9 +232,10 @@ fn create_or_replace_db<TStore: CqlType>(db_location: &str, array_size: &[u64], 
 
 fn validate_create_db_params<TStore: CqlType>(array_size: &[u64]) -> result::cql::Result<()> {
     if array_size.len() == 0 {
-        return Err(error::cql::Error::InsufficientDimensionsError {
-            required: 1,
-            requested: array_size.len() as u64,
+        return Err(error::cql::Error::DimensionsOutOfRangeError {
+            requested: array_size.len(),
+            min: 1,
+            max: u64::max_value() as usize - 1,
         })
     }
 

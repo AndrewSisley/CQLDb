@@ -34,7 +34,7 @@ fn create_db__returns_InsufficientDimensionsError__given_0D_definition() {
     ) {
         Err(error) => match error {
             error::Error::Cql(cql_error) => match cql_error {
-                error::cql::Error::InsufficientDimensionsError{ required, requested } => Some((required, requested)),
+                error::cql::Error::DimensionsOutOfRangeError{ requested, min, max } => Some((requested, min, max)),
                 _ => None,
             },
             _ => None,
@@ -44,7 +44,7 @@ fn create_db__returns_InsufficientDimensionsError__given_0D_definition() {
 
     assert_eq!(
         result.unwrap(),
-        (1, db_dimensions.len() as u64)
+        (db_dimensions.len(), 1, u64::max_value() as usize - 1)
     );
 }
 
