@@ -389,6 +389,12 @@ pub fn write_value_unchecked<TStore: CqlWritable>(db_location: &str, location: &
 	database::write_value::<TStore>(&db_location, position, value)
 }
 
+pub fn write_value<TStore: CqlWritable>(db_location: &str, location: &[u64], value: TStore::ValueType) -> result::Result<()> {
+	validate_read_write_location(db_location, location)?;
+    write_value_unchecked::<TStore>(db_location, location, value)?;
+    Ok(())
+}
+
 /// Reads the value at the given location from the database.  Does not validate given parameters.
 ///
 /// Can result in reading from an 'alternative' location if provided with an invalid location in the final dimension, other invalid dimensions will likely
