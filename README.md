@@ -77,20 +77,20 @@ pub fn example_cql() -> io::Result<()> {
     let value3 = Some(5.4);
 
     // creates a one dimensional database, with a capacity of 3
-    cql_db::create_db_unchecked::<NullableF64>(
+    cql_db::create_db::<NullableF64>(
         DATABASE_LOCATION,
         &[3]
     )?;
 
     // writes Some(-1.6) to [0]
-    cql_db::write_value_unchecked::<NullableF64>(
+    cql_db::write_value::<NullableF64>(
         DATABASE_LOCATION,
         &base_point,
         value1
     )?;
 
     // writes Some(5.4) to [2]
-    cql_db::write_value_unchecked::<NullableF64>(
+    cql_db::write_value::<NullableF64>(
         DATABASE_LOCATION,
         &[base_point[0] + 2],
         value3
@@ -100,7 +100,7 @@ pub fn example_cql() -> io::Result<()> {
     let mut stream = Cursor::new(Vec::new());
 
     // reads 3 points from [0] into `stream`
-    cql_db::read_to_stream_unchecked::<NullableF64>(
+    cql_db::read_to_stream::<NullableF64>(
         DATABASE_LOCATION,
         &mut stream,
         &base_point,
