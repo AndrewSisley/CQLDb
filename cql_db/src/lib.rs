@@ -215,6 +215,157 @@ pub fn create_db_unchecked<TStore: CqlType>(db_location: &str, array_size: &[u64
     create_or_replace_db::<TStore>(db_location, array_size, false)
 }
 
+/// Creates an CQL database in the provided directory, if a database doesn't exist already.
+///
+/// There is an [unchecked](fn.create_db_unchecked.html) version of this function, allowing you to replace existing databases if needed.
+///
+/// # Errors
+///
+/// Will return any [I/O errors](https://doc.rust-lang.org/nightly/std/io/enum.ErrorKind.html) encountered during the execution of the function, including if
+/// a database [already exists](https://doc.rust-lang.org/nightly/std/io/enum.ErrorKind.html#variant.AlreadyExists).  Function may partially succeed resulting
+/// in changes to the file system if an I/O error has occured.
+///
+/// Additionally, the following [Cql errors](./error/cql/enum.Error.html) may be returned:
+/// - A [DimensionsOutOfRangeError](./error/cql/enum.Error.html#variant.DimensionsOutOfRangeError) will be returned if the provided `array_size.len()` is less than 1, or greater than `u64::max_value() - 1`.
+/// - A [DimensionTooSmallError](./error/cql/enum.Error.html#variant.DimensionTooSmallError) will be returned if any of the provided capacities in `array_size` equal zero.
+/// ```
+/// # use cql_u64::U64;
+/// # use cql_db::error;
+/// # use cql_db::error::cql::Error;
+/// # const DATABASE_LOCATION: &str = "./.test_db";
+/// #
+/// let result = match cql_db::create_db::<U64>(
+///     DATABASE_LOCATION,
+///     // not enough dimensions
+///     &[]
+/// ) {
+///     Err(error) => match error {
+///         error::Error::Cql(cql_error) => Some(cql_error),
+///         _ => None,
+///     }
+///     _ => None,
+/// };
+///
+/// assert_eq!(
+///     result.unwrap(),
+///     Error::DimensionsOutOfRangeError {
+///         requested: 0,
+///         min: 1,
+///         max:u64::max_value() as usize - 1,
+///     }
+/// );
+///
+/// let result2 = match cql_db::create_db::<U64>(
+///     DATABASE_LOCATION,
+///     // dimension is too small
+///     &[0]
+/// ) {
+///     Err(error) => match error {
+///         error::Error::Cql(cql_error) => Some(cql_error),
+///         _ => None,
+///     }
+///     _ => None,
+/// };
+///
+/// assert_eq!(
+///     result2.unwrap(),
+///     Error::DimensionTooSmallError
+/// );
+/// ```
+///
+/// # Panics
+///
+/// Function should not panic.  If you get it to panic, please raise an issue in [github](https://github.com/AndrewSisley/CQLDb/issues).
+///
+/// # Examples
+///
+/// The below code creates a 2 dimensional array of [2, 3] storing unsigned 64bit integers:
+/// ```
+/// use cql_u64::U64;
+///
+/// # const DATABASE_LOCATION: &str = "./.test_db";
+/// #
+/// # use std::error::Error;
+/// # use std::fs::remove_file;
+/// # fn main() -> Result<(), Box<dyn Error>> {
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/db"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/ax"));
+/// cql_db::create_db::<U64>(
+///     DATABASE_LOCATION,
+///     &[2, 3]
+/// )?;
+///
+/// // created database will be matrix of zeros (default u64 value):
+/// // [ 0, 0, 0, ]
+/// // [ 0, 0, 0, ]
+/// # Ok(())
+/// # }
+/// ```
+/// More complex databases can be created by increaing the length of the input array:
+/// ```
+/// # use cql_u64::U64;
+/// # const DATABASE_LOCATION: &str = "./.test_db";
+/// #
+/// # use std::error::Error;
+/// # use std::fs::remove_file;
+/// # fn main() -> Result<(), Box<dyn Error>> {
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/db"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/ax"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key1_2"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key2_3"));
+/// // 4 dimensional array:
+/// cql_db::create_db::<U64>(
+///     DATABASE_LOCATION,
+///     &[2, 3, 4, 5]
+/// )?;
+///
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/db"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/ax"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key1_2"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key2_3"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key3_4"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key4_5"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key5_6"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key6_7"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key7_8"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key8_9"));
+/// // 10 dimensional array:
+/// cql_db::create_db::<U64>(
+///     DATABASE_LOCATION,
+///     &[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+/// )?;
+/// # Ok(())
+/// # }
+/// ```
+/// There are no restrictions on the shape of your databases, but it is usually better to have smaller dimensions at the start:
+/// ```
+/// # use cql_u64::U64;
+/// # const DATABASE_LOCATION: &str = "./.test_db";
+/// #
+/// # use std::error::Error;
+/// # use std::fs::remove_file;
+/// # fn main() -> Result<(), Box<dyn Error>> {
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/db"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/ax"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key1_2"));
+/// // This is valid:
+/// cql_db::create_db::<U64>(
+///     DATABASE_LOCATION,
+///     &[20, 50, 3]
+/// )?;
+///
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/db"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/ax"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key1_2"));
+/// // However this will likely be both faster to read from, and save file space:
+/// cql_db::create_db::<U64>(
+///     DATABASE_LOCATION,
+///     &[3, 20, 50]
+/// )?;
+/// # Ok(())
+/// # }
+/// ```
+/// But see the type(s) that you are interested in for performance benchmarks, and the [index page](./index.html) to see how to calcuate file size requirements.
 pub fn create_db<TStore: CqlType>(db_location: &str, array_size: &[u64]) -> result::Result<()> {
     validate_create_db_params::<TStore>(array_size)?;
     create_or_replace_db::<TStore>(db_location, array_size, true)?;
