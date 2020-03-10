@@ -10,7 +10,7 @@ use cql_u64::{ U64 };
 #[test]
 #[serial]
 #[should_panic]
-fn _1d_u64_database_panics_given_one_zero_index() {
+fn _1d_u64_database_panics_given_zero_index() {
     cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
         &[1]
