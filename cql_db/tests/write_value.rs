@@ -309,7 +309,7 @@ fn _1d_u64_database_allows_for_first_item_to_be_written() {
         value1
     ).unwrap();
 
-    let result1 = cql_db::read_value_unchecked::<U64>(
+    let result1 = cql_db::read_value::<U64>(
         DATABASE_LOCATION,
         &point1
     ).unwrap();
@@ -334,7 +334,7 @@ fn _1d_u64_database_allows_for_first_item_to_be_written_checked() {
         value1
     ).unwrap();
 
-    let result1 = cql_db::read_value_unchecked::<U64>(
+    let result1 = cql_db::read_value::<U64>(
         DATABASE_LOCATION,
         &point1
     ).unwrap();
@@ -359,7 +359,7 @@ fn _2d_u64_database_allows_for_first_item_to_be_written() {
         value1
     ).unwrap();
 
-    let result1 = cql_db::read_value_unchecked::<U64>(
+    let result1 = cql_db::read_value::<U64>(
         DATABASE_LOCATION,
         &point1
     ).unwrap();
@@ -384,7 +384,7 @@ fn _2d_u64_database_allows_for_first_item_to_be_written_checked() {
         value1
     ).unwrap();
 
-    let result1 = cql_db::read_value_unchecked::<U64>(
+    let result1 = cql_db::read_value::<U64>(
         DATABASE_LOCATION,
         &point1
     ).unwrap();
@@ -463,7 +463,7 @@ fn _3d_u64_database_allows_for_first_item_to_be_written_after_axis_linked() {
         value1
     ).unwrap();
 
-    let result1 = cql_db::read_value_unchecked::<U64>(
+    let result1 = cql_db::read_value::<U64>(
         DATABASE_LOCATION,
         &point1
     ).unwrap();
@@ -493,7 +493,7 @@ fn _3d_u64_database_allows_for_first_item_to_be_written_after_axis_linked_checke
         value1
     ).unwrap();
 
-    let result1 = cql_db::read_value_unchecked::<U64>(
+    let result1 = cql_db::read_value::<U64>(
         DATABASE_LOCATION,
         &point1
     ).unwrap();
@@ -523,7 +523,7 @@ fn _3d_u64_database_allows_for_last_item_to_be_written_after_axis_linked() {
         value1
     ).unwrap();
 
-    let result1 = cql_db::read_value_unchecked::<U64>(
+    let result1 = cql_db::read_value::<U64>(
         DATABASE_LOCATION,
         &point1
     ).unwrap();
@@ -553,7 +553,7 @@ fn _3d_u64_database_allows_for_last_item_to_be_written_after_axis_linked_checked
         value1
     ).unwrap();
 
-    let result1 = cql_db::read_value_unchecked::<U64>(
+    let result1 = cql_db::read_value::<U64>(
         DATABASE_LOCATION,
         &point1
     ).unwrap();
