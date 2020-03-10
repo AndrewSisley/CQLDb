@@ -480,6 +480,118 @@ pub fn link_dimensions_unchecked<TStore: CqlType>(db_location: &str, location: &
     Ok(())
 }
 
+/// Links dimension indexs together if they are not already linked.
+///
+/// This is required before read-writing to a location, and allocates the file space required to store the Nth dimension data.
+/// The last (Nth) dimension should not be linked.  There is an [unchecked](fn.link_dimensions_unchecked.html) version of this function if required.
+///
+/// # Errors
+///
+/// Will return any [I/O errors](https://doc.rust-lang.org/nightly/std/io/enum.ErrorKind.html) encountered during the execution of the function.  Function may
+/// partially succeed resulting in changes to the file system if such an error is returned.
+///
+/// Additionally, the following [Cql errors](./error/cql/enum.Error.html) may be returned:
+/// - A [DimensionsOutOfRangeError](./error/cql/enum.Error.html#variant.DimensionsOutOfRangeError) will be returned if the provided `location.len()` is less than 2,
+/// or greater than the number of dimensions in the database - 1.
+/// - An [IndexOutOfRangeError](./error/cql/enum.Error.html#variant.IndexOutOfRangeError) will be returned if any of the provided indexes in `location` are less than 1,
+/// or greater than that dimension's capacity.
+/// ```
+/// # use cql_u64::U64;
+/// # use cql_db::error;
+/// # use cql_db::error::cql::Error;
+/// # const DATABASE_LOCATION: &str = "./.test_db";
+/// #
+/// # use std::error::Error as StdError;
+/// # use std::fs::remove_file;
+/// # fn main() -> Result<(), Box<dyn StdError>> {
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/db"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/ax"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key1_2"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key2_3"));
+/// // Create a database with a maximum capacity of `[2, 5, 3, 2]`
+/// cql_db::create_db::<U64>(
+///     DATABASE_LOCATION,
+///     &[2, 5, 3, 2]
+/// )?;
+///
+/// let result = match cql_db::link_dimensions::<U64>(
+///     DATABASE_LOCATION,
+///     // not enough dimensions
+///     &[1]
+/// ) {
+///     Err(error) => match error {
+///         error::Error::Cql(cql_error) => Some(cql_error),
+///         _ => None,
+///     }
+///     _ => None,
+/// };
+///
+/// assert_eq!(
+///     result.unwrap(),
+///     Error::DimensionsOutOfRangeError {
+///         requested: 1,
+///         min: 2,
+///         max: 3, // 4 - 1
+///     }
+/// );
+///
+/// let result2 = match cql_db::link_dimensions::<U64>(
+///     DATABASE_LOCATION,
+///     // dimension[1] index is too large
+///     &[1, 6]
+/// ) {
+///     Err(error) => match error {
+///         error::Error::Cql(cql_error) => Some(cql_error),
+///         _ => None,
+///     }
+///     _ => None,
+/// };
+///
+/// assert_eq!(
+///     result2.unwrap(),
+///     Error::IndexOutOfRangeError {
+///         dimension_index: 1,
+///         requested: 6,
+///         min: 1,
+///         max: 5,
+///     }
+/// );
+/// # Ok(())
+/// # }
+/// ```
+///
+/// # Panics
+///
+/// Function should not panic.  If you get it to panic, please raise an issue in [github](https://github.com/AndrewSisley/CQLDb/issues).
+///
+/// # Examples
+/// ```
+/// # use cql_u64::U64;
+/// # const DATABASE_LOCATION: &str = "./.test_db";
+/// #
+/// # use std::error::Error;
+/// # use std::fs::remove_file;
+/// # fn main() -> Result<(), Box<dyn Error>> {
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/db"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/ax"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key1_2"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key2_3"));
+/// // Create a database with a maximum capacity of `[2, 5, 3, 2]`
+/// cql_db::create_db::<U64>(
+///     DATABASE_LOCATION,
+///     &[2, 5, 3, 2]
+/// )?;
+///
+/// // Link the 2nd element of the 1st dimension with the 4th element of the 2nd dimension, and
+/// // the 4th of the 2nd with the 3rd of the 3rd - for example:
+/// // Turbine 2 has data for Signal 4 for Year 3
+/// cql_db::link_dimensions::<U64>(
+///     DATABASE_LOCATION,
+///     &[2, 4, 3], // don't link the Nth dimension
+/// )?;
+/// # Ok(())
+/// # }
+/// ```
 pub fn link_dimensions<TStore: CqlType>(db_location: &str, location: &[u64]) -> result::Result<()> {
     validate_link_dimensions_params::<TStore>(db_location, location)?;
     link_dimensions_unchecked::<TStore>(db_location, location)?;
