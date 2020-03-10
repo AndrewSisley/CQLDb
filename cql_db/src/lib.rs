@@ -32,7 +32,7 @@ let link = [2, 3, 4, 5];
 #    &database_definition
 # )?;
 #
-cql_db::link_dimensions_unchecked::<U64>(
+cql_db::link_dimensions::<U64>(
     DATABASE_LOCATION,
     &link,
 )?;
@@ -71,14 +71,19 @@ The following example creates a 4 dimensional database of unsigned 64 bit intege
 use cql_u64::U64;
 
 # use std::error::Error;
+# use std::fs::remove_file;
 # fn main() -> Result<(), Box<dyn Error>> {
 #
 # const DATABASE_LOCATION: &str = "./.test_db";
+# let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/db"));
+# let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/ax"));
+# let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key1_2"));
+# let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key2_3"));
 let point = [2, 4, 3, 1];
 let value = 5;
 
 // Create a database with a maximum capacity of `[2, 5, 3, 2]`
-cql_db::create_db_unchecked::<U64>(
+cql_db::create_db::<U64>(
     DATABASE_LOCATION,
     &[2, 5, 3, 2]
 )?;
@@ -86,20 +91,20 @@ cql_db::create_db_unchecked::<U64>(
 // Link the 2nd element of the 1st dimension with the 4th element of the 2nd dimension, and
 // the 4th of the 2nd with the 3rd of the 3rd - for example:
 // Turbine 2 has data for Signal 4 for Year 3
-cql_db::link_dimensions_unchecked::<U64>(
+cql_db::link_dimensions::<U64>(
     DATABASE_LOCATION,
     &[2, 4, 3], // don't link the Nth dimension, can also be expressed as `&point[0..3]`
 )?;
 
 // Write value `value` to point `point`
-cql_db::write_value_unchecked::<U64>(
+cql_db::write_value::<U64>(
     DATABASE_LOCATION,
     &point,
     value
 )?;
 
 // Read the stored value from point `point`
-let result = cql_db::read_value_unchecked::<U64>(
+let result = cql_db::read_value::<U64>(
     DATABASE_LOCATION,
     &point
 )?;
@@ -267,9 +272,14 @@ fn validate_create_db_params<TStore: CqlType>(array_size: &[u64]) -> result::cql
 /// # const DATABASE_LOCATION: &str = "./.test_db";
 /// #
 /// # use std::error::Error;
+/// # use std::fs::remove_file;
 /// # fn main() -> Result<(), Box<dyn Error>> {
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/db"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/ax"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key1_2"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key2_3"));
 /// // Create a database with a maximum capacity of `[2, 5, 3, 2]`
-/// cql_db::create_db_unchecked::<U64>(
+/// cql_db::create_db::<U64>(
 ///     DATABASE_LOCATION,
 ///     &[2, 5, 3, 2]
 /// )?;
@@ -364,14 +374,19 @@ fn validate_link_dimensions_params<TStore: CqlType>(db_location: &str, location:
 /// # const DATABASE_LOCATION: &str = "./.test_db";
 /// #
 /// # use std::error::Error;
+/// # use std::fs::remove_file;
 /// # fn main() -> Result<(), Box<dyn Error>> {
-/// cql_db::create_db_unchecked::<U64>(
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/db"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/ax"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key1_2"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key2_3"));
+/// cql_db::create_db::<U64>(
 ///     DATABASE_LOCATION,
 ///     &[2, 5, 3, 2]
 /// )?;
 ///
 /// // higher order elements must be linked before they can be writen to
-/// cql_db::link_dimensions_unchecked::<U64>(
+/// cql_db::link_dimensions::<U64>(
 ///     DATABASE_LOCATION,
 ///     &[2, 4, 3],
 /// )?;
@@ -415,17 +430,22 @@ pub fn write_value<TStore: CqlWritable>(db_location: &str, location: &[u64], val
 /// # const DATABASE_LOCATION: &str = "./.test_db";
 /// #
 /// # use std::error::Error;
+/// # use std::fs::remove_file;
 /// # fn main() -> Result<(), Box<dyn Error>> {
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/db"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/ax"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key1_2"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key2_3"));
 /// let point = [2, 4, 3, 1];
 /// let value = 5;
 ///
-/// cql_db::create_db_unchecked::<U64>(
+/// cql_db::create_db::<U64>(
 ///     DATABASE_LOCATION,
 ///     &[2, 5, 3, 2]
 /// )?;
 ///
 /// // higher order elements must be linked before they can be read from
-/// cql_db::link_dimensions_unchecked::<U64>(
+/// cql_db::link_dimensions::<U64>(
 ///     DATABASE_LOCATION,
 ///     &point[0..3],
 /// )?;
@@ -439,7 +459,7 @@ pub fn write_value<TStore: CqlWritable>(db_location: &str, location: &[u64], val
 /// assert_eq!(0, result1);
 ///
 /// // Write `value` to location `[2, 4, 3, 1]`
-/// cql_db::write_value_unchecked::<U64>(
+/// cql_db::write_value::<U64>(
 ///     DATABASE_LOCATION,
 ///     &point,
 ///     value
@@ -489,36 +509,41 @@ pub fn read_value<TStore: CqlReadable>(db_location: &str, location: &[u64]) -> r
 /// use cql_u64::{ U64, unpack_stream };
 ///
 /// # use std::error::Error;
+/// # use std::fs::remove_file;
 /// # fn main() -> Result<(), Box<dyn Error>> {
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/db"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/ax"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key1_2"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key2_3"));
 /// let base_point = [1, 1, 1, 2];
 /// const N_VALUES_TO_READ: usize = 3;
 /// let value1 = 42;
 /// let value2 = 16;
 /// let value3 = 80;
 ///
-/// cql_db::create_db_unchecked::<U64>(
+/// cql_db::create_db::<U64>(
 ///     DATABASE_LOCATION,
 ///     &[1, 1, 1, 10]
 /// )?;
 ///
-/// cql_db::link_dimensions_unchecked::<U64>(
+/// cql_db::link_dimensions::<U64>(
 ///     DATABASE_LOCATION,
 ///     &base_point[0..3]
 /// )?;
 ///
-/// cql_db::write_value_unchecked::<U64>(
+/// cql_db::write_value::<U64>(
 ///     DATABASE_LOCATION,
 ///     &base_point,
 ///     value1
 /// )?;
 ///
-/// cql_db::write_value_unchecked::<U64>(
+/// cql_db::write_value::<U64>(
 ///     DATABASE_LOCATION,
 ///     &[1, 1, 1, base_point[3] + 1],
 ///     value2
 /// )?;
 ///
-/// cql_db::write_value_unchecked::<U64>(
+/// cql_db::write_value::<U64>(
 ///     DATABASE_LOCATION,
 ///     &[1, 1, 1, base_point[3] + 2],
 ///     value3
