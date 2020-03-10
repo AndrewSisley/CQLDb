@@ -10,14 +10,14 @@ Full benchmark code can be found in [github](https://github.com/AndrewSisley/CQL
 
 Operation | Database dimensions | Mean time (ns)
 --- | --- | ---
-Single point read | 1 | 1 830 (+/- 300)
-Single point read | 4 | 11 050 (+/- 1 700)
-Single point write | 1 | 2 400 (+/- 600)
-Single point write | 4 | 12 600 (+/- 2 500)
-Stream read 1 point | 1 | 1 940 (+/- 300)
-Stream read 1 point | 4 | 11 200 (+/- 2 300)
-Stream read 50 000 points | 1 | 20 600 000 (+/- 250 000)
-Stream read 50 000 points | 4 | 20 500 000 (+/- 100 000)
+Single point read | 1 | 2 450 (+/- 300)
+Single point read | 4 | 14 850 (+/- 1 000)
+Single point write | 1 | 2 800 (+/- 400)
+Single point write | 4 | 15 400 (+/- 2 500)
+Stream read 1 point | 1 | 2 500 (+/- 300)
+Stream read 1 point | 4 | 14 900 (+/- 600)
+Stream read 50 000 points | 1 | 27 650 000 (+/- 31 000)
+Stream read 50 000 points | 4 | 27 660 000 (+/- 1 200 000)
 
 # Examples
 The following creates a 1D database, writes 2 values to it, and then streams them into an array.
