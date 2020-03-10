@@ -4,18 +4,18 @@ trait allowing the system to act as an array-based database.
 
 The library allows the consumers to provide a path to a local directory which will be used to store array based data as defined by the user.
 The number of dimensions in the array, and their maximum sizes must be stated on create of the database, however it will only allocate storage
-space for elements in the final (Nth) dimension upon [linking](fn.link_dimensions_unchecked.html) of higher level dimensions.
+space for elements in the final (Nth) dimension upon [linking](fn.link_dimensions.html) of higher level dimensions.
 
-Elements in the array can be writen to [one by one](fn.write_value_unchecked.html), and read either as [single points](fn.read_value_unchecked.html) or to a
-[stream](fn.read_to_stream_unchecked.html).
+Elements in the array can be writen to [one by one](fn.write_value.html), and read either as [single points](fn.read_value.html) or to a
+[stream](fn.read_to_stream.html).
 
 # Storage space consumption
 
 This crate will allocate file space upon linking of dimensions, as well as a small amount on create of a database, so before starting you
 should be aware of the disk space requirements.
 
-Given a database with `N` dimensions, calling [create_db_unchecked](fn.create_db_unchecked.html) will allocate `(1 + N) * 8` bytes. Thereafter,
-[linking](fn.link_dimensions_unchecked.html) a set of dimensions, will then expand the maximum file sizes according to the function below:
+Given a database with `N` dimensions, calling [create_db](fn.create_db.html) will allocate `(1 + N) * 8` bytes. Thereafter,
+[linking](fn.link_dimensions.html) a set of dimensions, will then expand the maximum file sizes according to the function below:
 ```
 # const DATABASE_LOCATION: &str = "./.test_db";
 # use cql_u64::U64;
@@ -61,7 +61,7 @@ assert_eq!(
 ```
 Should additional elements be linked, the key libraries will expand accordingly.
 
-Additional space will be allocated for each penultimate dimenion `(Nn-1)` linked using the [link_dimensions_unchecked](fn.link_dimensions_unchecked.html) function, this is
+Additional space will be allocated for each penultimate dimenion `(Nn-1)` linked using the [link_dimensions](fn.link_dimensions.html) function, this is
 equal to the maximum size of the final dimension multiplied by the [VALUE_SIZE](https://docs.rs/cql_model/0.2/cql_model/trait.CqlType.html#associatedconstant.VALUE_SIZE) of the stored struct.
 
 # Examples
