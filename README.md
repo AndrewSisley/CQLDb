@@ -129,14 +129,14 @@ other types can be found in the the type's corresponding documentation.
 
 Operation | Database dimensions | Mean time (ns)
 --- | --- | ---
-Single point read | 1 | 2 200 (+/- 400)
-Single point read | 4 | 11 600 (+/- 2 000)
-Single point write | 1 | 2 500 (+/- 350)
-Single point write | 4 | 12 500 (+/- 2 000)
-Stream read 1 point | 1 | 1 860 (+/- 400)
-Stream read 1 point | 4 | 11 200 (+/- 2 000)
-Stream read 50 000 points | 1 | 19 800 000 (+/- 100 000)
-Stream read 50 000 points | 4 | 20 150 000 (+/- 200 000)
+Single point read | 1 | 3 100 (+/- 200)
+Single point read | 4 | 16 400 (+/- 900)
+Single point write | 1 | 2 800 (+/- 300)
+Single point write | 4 | 15 400 (+/- 1 000)
+Stream read 1 point | 1 | 2 500 (+/- 300)
+Stream read 1 point | 4 | 15 300 (+/- 800)
+Stream read 50 000 points | 1 | 27 300 000 (+/- 500 000)
+Stream read 50 000 points | 4 | 27 500 000 (+/- 150 000)
 
 ## License
 

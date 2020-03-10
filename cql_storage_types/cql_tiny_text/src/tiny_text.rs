@@ -12,14 +12,14 @@ other [CqlType](../cql_model/trait.CqlType.html) derivatives as they stream into
 
 Operation | Database dimensions | Mean time (ns)
 --- | --- | ---
-Single point read | 1 | 2 240 (+/- 185)
-Single point read | 4 | 11 600 (+/- 2 000)
-Single point write | 1 | 2 450 (+/- 500)
-Single point write | 4 | 12 500 (+/- 2 200)
-Stream read 1 point | 1 | 3 100 (+/- 500)
-Stream read 1 point | 4 | 11 550 (+/- 2 400)
-Stream read 50 000 points | 1 | 42 400 000 (+/- 230 000)
-Stream read 50 000 points | 4 | 42 400 000 (+/- 300 000)
+Single point read | 1 | 3 060 (+/- 200)
+Single point read | 4 | 15 800 (+/- 1 100)
+Single point write | 1 | 2 800 (+/- 300)
+Single point write | 4 | 15 400 (+/- 1 000)
+Stream read 1 point | 1 | 3 500 (+/- 300)
+Stream read 1 point | 4 | 15 500 (+/- 1 100)
+Stream read 50 000 points | 1 | 56 700 000 (+/- 800 000)
+Stream read 50 000 points | 4 | 56 400 000 (+/- 150 000)
 
 # Examples
 The following creates a 1D database, writes 2 values to it, and then streams them into an array.
