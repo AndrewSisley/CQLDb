@@ -29,6 +29,7 @@ impl From<cql::Error> for Error {
     }
 }
 
+/// Cql db specific errors returned when provided with invalid parameters
 pub mod cql {
     use std::{ error, fmt };
 
