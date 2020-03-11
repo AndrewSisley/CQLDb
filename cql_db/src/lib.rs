@@ -1146,6 +1146,195 @@ pub fn read_to_stream_unchecked<TStore: CqlStreamReadable>(db_location: &str, st
 	database::read_to_stream::<TStore>(&db_location, stream, position, n_values)
 }
 
+/// Reads `n_values` from the given location onward into the given stream.
+///
+/// There is an [unchecked](fn.read_to_stream_unchecked.html) version of this function if required.
+///
+/// # Errors
+///
+/// Will return any [I/O errors](https://doc.rust-lang.org/nightly/std/io/enum.ErrorKind.html) encountered during the execution of the function.
+///
+/// Additionally, the following [Cql errors](./error/cql/enum.Error.html) may be returned:
+/// - A [DimensionsOutOfRangeError](./error/cql/enum.Error.html#variant.DimensionsOutOfRangeError) will be returned if the provided `location.len()` is not equal
+/// to the number of dimensions in the database.
+/// - An [IndexOutOfRangeError](./error/cql/enum.Error.html#variant.IndexOutOfRangeError) will be returned if any of the provided indexes in `location` are less than 1,
+/// or greater than that dimension's capacity, this includes the final requested point - for example if `n_values` is too large.
+/// - An [ElementsNotLinkedError](./error/cql/enum.Error.html#variant.ElementsNotLinkedError) will be returned if the provided elements have not been linked.
+/// ```
+/// # use cql_u64::U64;
+/// # use cql_db::error;
+/// # use cql_db::error::cql::Error;
+/// # use std::io::{ Cursor };
+/// # const DATABASE_LOCATION: &str = "./.test_db";
+/// #
+/// # use std::error::Error as StdError;
+/// # use std::fs::remove_file;
+/// # fn main() -> Result<(), Box<dyn StdError>> {
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/db"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/ax"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key1_2"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key2_3"));
+/// // Create a database with a maximum capacity of `[2, 5, 3, 2]`
+/// cql_db::create_db::<U64>(
+///     DATABASE_LOCATION,
+///     &[2, 5, 6]
+/// )?;
+///
+/// cql_db::link_dimensions::<U64>(
+///     DATABASE_LOCATION,
+///     &[2, 4],
+/// )?;
+///
+/// let mut stream = Cursor::new(Vec::new());
+///
+/// let result = match cql_db::read_to_stream::<U64>(
+///     DATABASE_LOCATION,
+///     &mut stream,
+///     // not enough dimensions
+///     &[2, 4],
+///     2
+/// ) {
+///     Err(error) => match error {
+///         error::Error::Cql(cql_error) => Some(cql_error),
+///         _ => None,
+///     }
+///     _ => None,
+/// };
+///
+/// assert_eq!(
+///     result.unwrap(),
+///     Error::DimensionsOutOfRangeError {
+///         requested: 2,
+///         min: 3, // 4 - 1
+///         max: 3, // 4 - 1
+///     }
+/// );
+///
+/// let result2 = match cql_db::read_to_stream::<U64>(
+///     DATABASE_LOCATION,
+///     &mut stream,
+///     // dimension[2] index (6) + n_values (2) - 1 is too large (7)
+///     &[2, 4, 6],
+///     2
+/// ) {
+///     Err(error) => match error {
+///         error::Error::Cql(cql_error) => Some(cql_error),
+///         _ => None,
+///     }
+///     _ => None,
+/// };
+///
+/// assert_eq!(
+///     result2.unwrap(),
+///     Error::IndexOutOfRangeError {
+///         dimension_index: 2,
+///         requested: 7,
+///         min: 1,
+///         max: 6,
+///     }
+/// );
+///
+/// let result3 = match cql_db::read_to_stream::<U64>(
+///     DATABASE_LOCATION,
+///     &mut stream,
+///     // location[2, 3] has not been linked
+///     &[2, 3, 3],
+///     2
+/// ) {
+///     Err(error) => match error {
+///         error::Error::Cql(cql_error) => Some(cql_error),
+///         _ => None,
+///     }
+///     _ => None,
+/// };
+///
+/// assert_eq!(
+///     result3.unwrap(),
+///     Error::ElementsNotLinkedError {
+///         x_dimension: 0,
+///         x: 2,
+///         y_dimension: 1,
+///         y: 3,
+///     }
+/// );
+/// # Ok(())
+/// # }
+/// ```
+///
+/// # Panics
+///
+/// Function should not panic.  If you get it to panic, please raise an issue in [github](https://github.com/AndrewSisley/CQLDb/issues).
+///
+/// # Examples
+/// ```
+/// # use std::io::{ Cursor, SeekFrom, Seek };
+/// # const DATABASE_LOCATION: &str = "./.test_db";
+/// #
+/// use cql_u64::{ U64, unpack_stream };
+///
+/// # use std::error::Error;
+/// # use std::fs::remove_file;
+/// # fn main() -> Result<(), Box<dyn Error>> {
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/db"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/ax"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key1_2"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key2_3"));
+/// let base_point = [1, 1, 1, 2];
+/// const N_VALUES_TO_READ: usize = 3;
+/// let value1 = 42;
+/// let value2 = 16;
+/// let value3 = 80;
+///
+/// cql_db::create_db::<U64>(
+///     DATABASE_LOCATION,
+///     &[1, 1, 1, 10]
+/// )?;
+///
+/// cql_db::link_dimensions::<U64>(
+///     DATABASE_LOCATION,
+///     &base_point[0..3]
+/// )?;
+///
+/// cql_db::write_value::<U64>(
+///     DATABASE_LOCATION,
+///     &base_point,
+///     value1
+/// )?;
+///
+/// cql_db::write_value::<U64>(
+///     DATABASE_LOCATION,
+///     &[1, 1, 1, base_point[3] + 1],
+///     value2
+/// )?;
+///
+/// cql_db::write_value::<U64>(
+///     DATABASE_LOCATION,
+///     &[1, 1, 1, base_point[3] + 2],
+///     value3
+/// )?;
+///
+/// let mut result = [0; N_VALUES_TO_READ];
+/// let mut stream = Cursor::new(Vec::new());
+///
+/// cql_db::read_to_stream::<U64>(
+///     DATABASE_LOCATION,
+///     &mut stream,
+///     &base_point,
+///     N_VALUES_TO_READ as u64
+/// )?;
+///
+/// stream.seek(SeekFrom::Start(0));
+///
+/// unpack_stream(&mut stream, N_VALUES_TO_READ, |idx, value| {
+///     result[idx] = value
+/// })?;
+///
+/// assert_eq!(result[0], value1);
+/// assert_eq!(result[1], value2);
+/// assert_eq!(result[2], value3);
+/// # Ok(())
+/// # }
+/// ```
 pub fn read_to_stream<TStore: CqlStreamReadable>(db_location: &str, stream: &mut dyn Write, location: &[u64], n_values: u64) -> result::Result<()> {
     validate_read_to_stream(db_location, location, n_values)?;
     read_to_stream_unchecked::<TStore>(db_location, stream, location, n_values)?;
