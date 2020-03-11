@@ -1,14 +1,14 @@
 /*!
-This crate implements various [CqlType](../cql_model/trait.CqlType.html) derivatives for storing String values of up to (and including) 255 chars in a
-[CQL database](https://docs.rs/cql_db/0.2.0/cql_db/).
+This crate implements various [CqlType](https://docs.rs/cql_model/0.2/cql_model/trait.CqlType.html) derivatives for storing String values of up to (and including) 255 chars in a
+[CQL database](https://docs.rs/cql_db/0.2/cql_db/).
 
-Will allocate 1020 bytes per value [linked](https://docs.rs/cql_db/0.2.0/cql_db/fn.link_dimensions.html).
+Will allocate 1020 bytes per value [linked](https://docs.rs/cql_db/0.2/cql_db/fn.link_dimensions.html).
 
 # Benchmarks
 Benchmarks supplied below are fairly rudimentary (and rounded) and are there to give a rough idea of relative costs.
-Full benchmark code can be found in [github](https://github.com/AndrewSisley/CQLDb/tree/master/cql_storage_types/cql_u64) and can be run with
+Full benchmark code can be found in [github](https://github.com/AndrewSisley/CQLDb/tree/master/cql_storage_types/cql_tiny_text) and can be run with
 `rustup run nightly cargo bench`, but please be aware that they will allocate ~102MB of disk space.  The read_to_stream benchmarks also differ slightly from
-other [CqlType](../cql_model/trait.CqlType.html) derivatives as they stream into a Vector, not an Array.
+other [CqlType](https://docs.rs/cql_model/0.2/cql_model/trait.CqlType.html) derivatives as they stream into a Vector, not an Array.
 
 Operation | Database dimensions | Mean time (ns)
 --- | --- | ---
@@ -95,7 +95,7 @@ use cql_model::{ CqlType, CqlWritable, CqlReadable, CqlStreamReadable };
 const CONTENT_SIZE: usize = (255 * 4);
 const LENGTH_SIZE: usize = 2;
 
-/// Tuple wrapping `String` for working with `TinyText` values in a [CQL database](https://docs.rs/cql_db/0.2.0/cql_db/).
+/// Tuple wrapping `String` for working with `TinyText` values in a [CQL database](https://docs.rs/cql_db/).
 ///
 /// Limited in size to `255 * 4 = 1020` bytes.
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Default, Hash)]
