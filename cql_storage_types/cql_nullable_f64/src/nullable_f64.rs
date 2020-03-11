@@ -76,7 +76,7 @@ assert_eq!(result[2], value3);
 # }
 ```
 */
-#![doc(html_root_url = "https://docs.rs/cql_nullable_f64/0.2.1")]
+#![doc(html_root_url = "https://docs.rs/cql_nullable_f64/0.2.2")]
 use std::fs::{ File, OpenOptions };
 use std::io;
 use std::io::{ Read, Write, Cursor, SeekFrom, Seek };
