@@ -18,5 +18,5 @@ cql_db = "^0.2.4"
 serial_test = "0.3.2"
 
 [dependencies]
-cql_model = "0.2.0"
+cql_model = "^0.2"
 byteorder = "1"
