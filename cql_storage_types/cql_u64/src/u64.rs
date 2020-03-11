@@ -1,7 +1,7 @@
 /*!
 This crate implements various [CqlType](https://docs.rs/cql_model/0.2/cql_model/trait.CqlType.html) derivatives for storing `u64` values in a CQL database.
 
-Will allocate 8 bytes per value [linked](https://docs.rs/cql_db/0.2/cql_db/fn.link_dimensions_unchecked.html).
+Will allocate 8 bytes per value [linked](https://docs.rs/cql_db/0.2/cql_db/fn.link_dimensions.html).
 
 # Benchmarks
 Benchmarks supplied below are fairly rudimentary (and rounded) and are there to give a rough idea of relative costs.
@@ -29,23 +29,26 @@ The following creates a 1D database, writes 2 values to it, and then streams the
 const N_VALUES_TO_READ: usize = 3;
 
 # use std::error::Error;
+# use std::fs::remove_file;
 # fn main() -> Result<(), Box<dyn Error>> {
+# let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/db"));
+# let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/ax"));
 let base_point = [1];
 let value1 = 1;
 let value3 = 5;
 
-cql_db::create_db_unchecked::<U64>(
+cql_db::create_db::<U64>(
     DATABASE_LOCATION,
     &[3]
 )?;
 
-cql_db::write_value_unchecked::<U64>(
+cql_db::write_value::<U64>(
     DATABASE_LOCATION,
     &base_point,
     value1
 )?;
 
-cql_db::write_value_unchecked::<U64>(
+cql_db::write_value::<U64>(
     DATABASE_LOCATION,
     &[base_point[0] + 2],
     value3
@@ -54,7 +57,7 @@ cql_db::write_value_unchecked::<U64>(
 let mut result = [0; N_VALUES_TO_READ];
 let mut stream = Cursor::new(Vec::new());
 
-cql_db::read_to_stream_unchecked::<U64>(
+cql_db::read_to_stream::<U64>(
     DATABASE_LOCATION,
     &mut stream,
     &base_point,
@@ -167,7 +170,7 @@ impl CqlStreamReadable for U64 {
 /// # Examples
 ///
 /// ```ignore
-/// cql_db::read_to_stream_unchecked::<U64>(
+/// cql_db::read_to_stream::<U64>(
 ///     DATABASE_LOCATION,
 ///     &mut stream,
 ///     &base_point,
