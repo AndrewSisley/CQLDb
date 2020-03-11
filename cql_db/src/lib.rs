@@ -143,10 +143,12 @@ use cql_model::{
 
 mod database;
 mod axis_library;
-pub mod error;
 mod key_library;
 mod result;
 mod vectors;
+
+/// Error types returned by cql_db
+pub mod error;
 
 use axis_library::AxisDefinition;
 use vectors::calculate_index;
