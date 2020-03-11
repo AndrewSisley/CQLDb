@@ -64,6 +64,22 @@ Should additional elements be linked, the key libraries will expand accordingly.
 Additional space will be allocated for each penultimate dimenion `(Nn-1)` linked using the [link_dimensions](fn.link_dimensions.html) function, this is
 equal to the maximum size of the final dimension multiplied by the [VALUE_SIZE](https://docs.rs/cql_model/0.2/cql_model/trait.CqlType.html#associatedconstant.VALUE_SIZE) of the stored struct.
 
+# Benchmarks
+
+Benchmarks supplied below for the [U64](https://docs.rs/cql_u64) type and are fairly rudimentary (and rounded) and are there to give a rough idea of relative costs.
+Full benchmark code can be found in [github](https://github.com/AndrewSisley/CQLDb/tree/master/cql_storage_types/cql_u64) and can be run with `rustup run nightly cargo bench`.  Benchmarks for
+other types can be found in the the type's corresponding documentation.
+
+Operation | Database dimensions | Mean time _unchecked (ns) | Mean time (ns)
+--- | --- | --- | ---
+Single point read | 1 | 2 450 (+/- 300) | 7 500 (+/- 600)
+Single point read | 4 | 14 850 (+/- 1 000) | 37 550 (+/- 2 300)
+Single point write | 1 | 2 800 (+/- 400) | 7 700 (+/- 400)
+Single point write | 4 | 15 400 (+/- 2 500) | 37 700 (+/- 3 000)
+Stream read 1 point | 1 | 2 500 (+/- 300) | 10 000 (+/- 850)
+Stream read 1 point | 4 | 14 900 (+/- 600) | 42 500 (+/- 6 500)
+Stream read 50 000 points | 1 | 27 650 000 (+/- 31 000) | 27 630 000 (+/- 180 000)
+Stream read 50 000 points | 4 | 27 660 000 (+/- 1 200 000) | 27 620 000 (+/- 480 000)
 # Examples
 
 The following example creates a 4 dimensional database of unsigned 64 bit integers, links a chain of elements, writes a value, and then reads it:
