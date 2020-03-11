@@ -889,6 +889,167 @@ pub fn read_value_unchecked<TStore: CqlReadable>(db_location: &str, location: &[
 	database::read_value::<TStore>(&db_location, position)
 }
 
+/// Reads the value at the given location from the database.
+///
+/// There is an [unchecked](fn.read_value_unchecked.html) version of this function if required.
+///
+/// # Errors
+///
+/// Will return any [I/O errors](https://doc.rust-lang.org/nightly/std/io/enum.ErrorKind.html) encountered during the execution of the function.
+///
+/// Additionally, the following [Cql errors](./error/cql/enum.Error.html) may be returned:
+/// - A [DimensionsOutOfRangeError](./error/cql/enum.Error.html#variant.DimensionsOutOfRangeError) will be returned if the provided `location.len()` is not equal
+/// to the number of dimensions in the database.
+/// - An [IndexOutOfRangeError](./error/cql/enum.Error.html#variant.IndexOutOfRangeError) will be returned if any of the provided indexes in `location` are less than 1,
+/// or greater than that dimension's capacity.
+/// - An [ElementsNotLinkedError](./error/cql/enum.Error.html#variant.ElementsNotLinkedError) will be returned if the provided elements have not been linked.
+/// ```
+/// # use cql_u64::U64;
+/// # use cql_db::error;
+/// # use cql_db::error::cql::Error;
+/// # const DATABASE_LOCATION: &str = "./.test_db";
+/// #
+/// # use std::error::Error as StdError;
+/// # use std::fs::remove_file;
+/// # fn main() -> Result<(), Box<dyn StdError>> {
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/db"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/ax"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key1_2"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key2_3"));
+/// // Create a database with a maximum capacity of `[2, 5, 3, 2]`
+/// cql_db::create_db::<U64>(
+///     DATABASE_LOCATION,
+///     &[2, 5, 6]
+/// )?;
+///
+/// cql_db::link_dimensions::<U64>(
+///     DATABASE_LOCATION,
+///     &[2, 4],
+/// )?;
+///
+/// let result = match cql_db::read_value::<U64>(
+///     DATABASE_LOCATION,
+///     // not enough dimensions
+///     &[2, 4]
+/// ) {
+///     Err(error) => match error {
+///         error::Error::Cql(cql_error) => Some(cql_error),
+///         _ => None,
+///     }
+///     _ => None,
+/// };
+///
+/// assert_eq!(
+///     result.unwrap(),
+///     Error::DimensionsOutOfRangeError {
+///         requested: 2,
+///         min: 3, // 4 - 1
+///         max: 3, // 4 - 1
+///     }
+/// );
+///
+/// let result2 = match cql_db::read_value::<U64>(
+///     DATABASE_LOCATION,
+///     // dimension[2] index is too large
+///     &[2, 4, 7]
+/// ) {
+///     Err(error) => match error {
+///         error::Error::Cql(cql_error) => Some(cql_error),
+///         _ => None,
+///     }
+///     _ => None,
+/// };
+///
+/// assert_eq!(
+///     result2.unwrap(),
+///     Error::IndexOutOfRangeError {
+///         dimension_index: 2,
+///         requested: 7,
+///         min: 1,
+///         max: 6,
+///     }
+/// );
+///
+/// let result3 = match cql_db::read_value::<U64>(
+///     DATABASE_LOCATION,
+///     // location[2, 3] has not been linked
+///     &[2, 3, 3]
+/// ) {
+///     Err(error) => match error {
+///         error::Error::Cql(cql_error) => Some(cql_error),
+///         _ => None,
+///     }
+///     _ => None,
+/// };
+///
+/// assert_eq!(
+///     result3.unwrap(),
+///     Error::ElementsNotLinkedError {
+///         x_dimension: 0,
+///         x: 2,
+///         y_dimension: 1,
+///         y: 3,
+///     }
+/// );
+/// # Ok(())
+/// # }
+/// ```
+///
+/// # Panics
+///
+/// Function should not panic.  If you get it to panic, please raise an issue in [github](https://github.com/AndrewSisley/CQLDb/issues).
+///
+/// # Examples
+/// ```
+/// # use cql_u64::U64;
+/// # const DATABASE_LOCATION: &str = "./.test_db";
+/// #
+/// # use std::error::Error;
+/// # use std::fs::remove_file;
+/// # fn main() -> Result<(), Box<dyn Error>> {
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/db"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/ax"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key1_2"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key2_3"));
+/// let point = [2, 4, 3, 1];
+/// let value = 5;
+///
+/// cql_db::create_db::<U64>(
+///     DATABASE_LOCATION,
+///     &[2, 5, 3, 2]
+/// )?;
+///
+/// // higher order elements must be linked before they can be read from
+/// cql_db::link_dimensions::<U64>(
+///     DATABASE_LOCATION,
+///     &point[0..3],
+/// )?;
+///
+/// // Read the default value from point `point`
+/// let result1 = cql_db::read_value::<U64>(
+///     DATABASE_LOCATION,
+///     &point
+/// )?;
+///
+/// assert_eq!(0, result1);
+///
+/// // Write `value` to location `[2, 4, 3, 1]`
+/// cql_db::write_value::<U64>(
+///     DATABASE_LOCATION,
+///     &point,
+///     value
+/// )?;
+///
+/// // Read the now-populated value from point `point`
+/// let result2 = cql_db::read_value::<U64>(
+///     DATABASE_LOCATION,
+///     &point
+/// )?;
+///
+/// assert_eq!(value, result2);
+/// # Ok(())
+/// # }
+/// ```
 pub fn read_value<TStore: CqlReadable>(db_location: &str, location: &[u64]) -> result::Result<TStore::ValueType> {
 	validate_read_write_location(db_location, location)?;
     let value = read_value_unchecked::<TStore>(db_location, location)?;
