@@ -10,9 +10,16 @@ use cql_model::{
 
 const DB_FILE_NAME: &str = "/db";
 
-pub fn create<TStore: CqlType>(db_location: &str) -> io::Result<()> {
+pub fn create<TStore: CqlType>(db_location: &str, create_new: bool) -> io::Result<()> {
     let db_key_location = format!("{}{}", db_location, DB_FILE_NAME);
-    match OpenOptions::new().write(true).create(true).truncate(true).open(db_key_location) {
+    let result = OpenOptions::new()
+        .write(true)
+        .create(true)
+        .create_new(create_new)
+        .truncate(true)
+        .open(db_key_location);
+
+    match result {
         Ok(_) => Ok(()),
         Err(e) => Err(e),
     }

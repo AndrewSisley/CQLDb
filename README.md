@@ -36,11 +36,6 @@ Repo link |Crate | Documentation | Description
 [TinyText](https://github.com/AndrewSisley/CQLDb/tree/master/cql_storage_types/cql_tiny_text) | [crates.io](https://crates.io/crates/cql_tiny_text) | [docs.rs](https://docs.rs/cql_tiny_text) | 255 char utf-8 string storage support
 
 
-## Quick note on safety
-
-CQL Db currently performs next to no parameter checking, and has very little deliberate error handling.  For example, calling create_db with the directory of an existing database will replace the existing one, and read_to_stream will happily wrap itself around the bounds of it's requested location if you ask it to read more points than are available.  cql_db and cql_model versions 0.2.0 and onwards start to improve this - returning errors and marking methods as '_unchecked', but it is likely that parameter checking will not be fully in play until 0.3.0.
-
-
 ## Breaking changes
 
 As this project is a data-storage solution acting upon the file system, some changes may alter the expected structure of the underlying data - preventing one version from correctly utilising a database created on a different version.  Up until version 1.0.0, the minor version (middle number) will be incremented and the breaking version listed in the table below.  If you need to upgrade between one of these versions, I'd suggest reading your entire database from the earlier version and the writing it to a new database with the new target version, I will try and improve this at somepoint.  Please take care.
@@ -77,20 +72,20 @@ pub fn example_cql() -> io::Result<()> {
     let value3 = Some(5.4);
 
     // creates a one dimensional database, with a capacity of 3
-    cql_db::create_db_unchecked::<NullableF64>(
+    cql_db::create_db::<NullableF64>(
         DATABASE_LOCATION,
         &[3]
     )?;
 
     // writes Some(-1.6) to [0]
-    cql_db::write_value_unchecked::<NullableF64>(
+    cql_db::write_value::<NullableF64>(
         DATABASE_LOCATION,
         &base_point,
         value1
     )?;
 
     // writes Some(5.4) to [2]
-    cql_db::write_value_unchecked::<NullableF64>(
+    cql_db::write_value::<NullableF64>(
         DATABASE_LOCATION,
         &[base_point[0] + 2],
         value3
@@ -100,7 +95,7 @@ pub fn example_cql() -> io::Result<()> {
     let mut stream = Cursor::new(Vec::new());
 
     // reads 3 points from [0] into `stream`
-    cql_db::read_to_stream_unchecked::<NullableF64>(
+    cql_db::read_to_stream::<NullableF64>(
         DATABASE_LOCATION,
         &mut stream,
         &base_point,
@@ -123,20 +118,20 @@ More examples can be found in the [rustdocs](https://docs.rs/cql_db).
 
 ## Benchmarks
 
-Benchmarks supplied below for the NullableF64 type and are fairly rudimentary (and rounded) and are there to give a rough idea of relative costs.
-Full benchmark code can be found in [github](https://github.com/AndrewSisley/CQLDb/tree/master/cql_storage_types/cql_nullable_f64) and can be run with `rustup run nightly cargo bench`.  Benchmarks for
+Benchmarks supplied below for the U64 type and are fairly rudimentary (and rounded) and are there to give a rough idea of relative costs.
+Full benchmark code can be found in [github](https://github.com/AndrewSisley/CQLDb/tree/master/cql_storage_types/cql_u64) and can be run with `rustup run nightly cargo bench`.  Benchmarks for
 other types can be found in the the type's corresponding documentation.
 
-Operation | Database dimensions | Mean time (ns)
---- | --- | ---
-Single point read | 1 | 3 100 (+/- 200)
-Single point read | 4 | 16 400 (+/- 900)
-Single point write | 1 | 2 800 (+/- 300)
-Single point write | 4 | 15 400 (+/- 1 000)
-Stream read 1 point | 1 | 2 500 (+/- 300)
-Stream read 1 point | 4 | 15 300 (+/- 800)
-Stream read 50 000 points | 1 | 27 300 000 (+/- 500 000)
-Stream read 50 000 points | 4 | 27 500 000 (+/- 150 000)
+Operation | Database dimensions | Mean time _unchecked (ns) | Mean time (ns)
+--- | --- | --- | ---
+Single point read | 1 | 2 450 (+/- 300) | 7 500 (+/- 600)
+Single point read | 4 | 14 850 (+/- 1 000) | 37 550 (+/- 2 300)
+Single point write | 1 | 2 800 (+/- 400) | 7 700 (+/- 400)
+Single point write | 4 | 15 400 (+/- 2 500) | 37 700 (+/- 3 000)
+Stream read 1 point | 1 | 2 500 (+/- 300) | 10 000 (+/- 850)
+Stream read 1 point | 4 | 14 900 (+/- 600) | 42 500 (+/- 6 500)
+Stream read 50 000 points | 1 | 27 650 000 (+/- 31 000) | 27 630 000 (+/- 180 000)
+Stream read 50 000 points | 4 | 27 660 000 (+/- 1 200 000) | 27 620 000 (+/- 480 000)
 
 ## License
 

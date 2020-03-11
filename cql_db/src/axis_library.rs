@@ -17,11 +17,12 @@ pub struct AxisDefinition {
 
 // The axis definitions are stored in the axis library.  The first block contains how many dimensions exist.
 // The subsequent blocks contain the max size of each dimension.
-pub fn create(db_location: &str, axis_definitions: &[AxisDefinition]) -> io::Result<()> {
+pub fn create(db_location: &str, axis_definitions: &[AxisDefinition], create_new: bool) -> io::Result<()> {
     let library_axis_location = format!("{}{}", db_location, AXIS_FILE_NAME);
     OpenOptions::new()
         .write(true)
         .create(true)
+        .create_new(create_new)
         .truncate(true)
         .open(&library_axis_location)
         ?
