@@ -1,8 +1,54 @@
 use std::{ io, error, fmt };
 
+/// Error type wrapping types of errors that may be returned from cql_db
+///
+/// # Examples
+/// The below code shows a match on the return type from [read_value](../fn.read_value.html):
+/// ```
+/// use cql_u64::U64;
+/// use cql_db::error;
+/// use std::io;
+/// # const DATABASE_LOCATION: &str = "./.test_db";
+/// #
+/// # use std::error::Error as StdError;
+/// # use std::fs::remove_file;
+/// # fn main() -> Result<(), Box<dyn StdError>> {
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/db"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/ax"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key1_2"));
+/// # let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/key2_3"));
+/// # cql_db::create_db::<U64>(
+/// #     DATABASE_LOCATION,
+/// #     &[2, 5]
+/// # )?;
+///
+/// match cql_db::read_value::<U64>(
+///     DATABASE_LOCATION,
+///     &[2, 4]
+/// ) {
+///     Err(error) => match error {
+///         error::Error::Cql(cql_error) => match cql_error {
+///             error::cql::Error::DimensionTooSmallError => { },
+///             error::cql::Error::IndexOutOfRangeError { dimension_index, requested, min, max } => { },
+///             error::cql::Error::DimensionsOutOfRangeError { requested, min, max } => { },
+///             error::cql::Error::ElementsNotLinkedError{ x_dimension, x, y_dimension, y } => { },
+///         },
+///         error::Error::Io(io_error) => match io_error.kind() {
+///             io::ErrorKind::AlreadyExists => { },
+///             io::ErrorKind::PermissionDenied => { },
+///             _ => { },
+///         },
+///     }
+///     Ok(value) => { },
+/// };
+/// # Ok(())
+/// # }
+/// ```
 #[derive(Debug)]
 pub enum Error {
+    /// Any [I/O errors](https://doc.rust-lang.org/std/io/struct.Error.html) returned from a Cql function.
     Io(io::Error),
+    /// Any [Cql errors](./cql/enum.Error.html) returned from a Cql function.
     Cql(cql::Error),
 }
 
