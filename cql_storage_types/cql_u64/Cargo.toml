@@ -1,6 +1,7 @@
 [package]
 name = "cql_u64"
 description = "u64 storage support for CQL Database - a lightweight array-based database"
+readme = "./README.md"
 keywords = ["cql", "database", "array", "storage", "nosql"]
 categories = ["database", "database-implementations", "filesystem", "caching"]
 version = "0.2.2"
