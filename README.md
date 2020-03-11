@@ -36,11 +36,6 @@ Repo link |Crate | Documentation | Description
 [TinyText](https://github.com/AndrewSisley/CQLDb/tree/master/cql_storage_types/cql_tiny_text) | [crates.io](https://crates.io/crates/cql_tiny_text) | [docs.rs](https://docs.rs/cql_tiny_text) | 255 char utf-8 string storage support
 
 
-## Quick note on safety
-
-CQL Db currently performs next to no parameter checking, and has very little deliberate error handling.  For example, calling create_db with the directory of an existing database will replace the existing one, and read_to_stream will happily wrap itself around the bounds of it's requested location if you ask it to read more points than are available.  cql_db and cql_model versions 0.2.0 and onwards start to improve this - returning errors and marking methods as '_unchecked', but it is likely that parameter checking will not be fully in play until 0.3.0.
-
-
 ## Breaking changes
 
 As this project is a data-storage solution acting upon the file system, some changes may alter the expected structure of the underlying data - preventing one version from correctly utilising a database created on a different version.  Up until version 1.0.0, the minor version (middle number) will be incremented and the breaking version listed in the table below.  If you need to upgrade between one of these versions, I'd suggest reading your entire database from the earlier version and the writing it to a new database with the new target version, I will try and improve this at somepoint.  Please take care.
