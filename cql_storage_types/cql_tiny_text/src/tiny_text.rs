@@ -2,7 +2,7 @@
 This crate implements various [CqlType](../cql_model/trait.CqlType.html) derivatives for storing String values of up to (and including) 255 chars in a
 [CQL database](https://docs.rs/cql_db/0.2.0/cql_db/).
 
-Will allocate 1020 bytes per value [linked](https://docs.rs/cql_db/0.2.0/cql_db/fn.link_dimensions_unchecked.html).
+Will allocate 1020 bytes per value [linked](https://docs.rs/cql_db/0.2.0/cql_db/fn.link_dimensions.html).
 
 # Benchmarks
 Benchmarks supplied below are fairly rudimentary (and rounded) and are there to give a rough idea of relative costs.
@@ -29,7 +29,10 @@ The following creates a 1D database, writes 2 values to it, and then streams the
 # use cql_tiny_text::{ TinyText, unpack_stream };
 #
 # use std::error::Error;
+# use std::fs::remove_file;
 # fn main() -> Result<(), Box<dyn Error>> {
+# let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/db"));
+# let _ = remove_file(format!("{}{}", DATABASE_LOCATION, "/ax"));
 #
 # const DATABASE_LOCATION: &str = "./.test_db";
 const N_VALUES_TO_READ: usize = 3;
@@ -38,18 +41,18 @@ let base_point = [1];
 let value1 = "item one";
 let value3 = "شماره ۳";
 
-cql_db::create_db_unchecked::<TinyText>(
+cql_db::create_db::<TinyText>(
     DATABASE_LOCATION,
     &[3]
 );
 
-cql_db::write_value_unchecked::<TinyText>(
+cql_db::write_value::<TinyText>(
     DATABASE_LOCATION,
     &base_point,
     TinyText::try_from(value1)?
 )?;
 
-cql_db::write_value_unchecked::<TinyText>(
+cql_db::write_value::<TinyText>(
     DATABASE_LOCATION,
     &[base_point[0] + 2],
     TinyText::try_from(value3)?
@@ -58,7 +61,7 @@ cql_db::write_value_unchecked::<TinyText>(
 let mut result = Vec::with_capacity(N_VALUES_TO_READ);
 let mut stream = Cursor::new(Vec::new());
 
-cql_db::read_to_stream_unchecked::<TinyText>(
+cql_db::read_to_stream::<TinyText>(
     DATABASE_LOCATION,
     &mut stream,
     &base_point,
@@ -216,7 +219,7 @@ impl CqlStreamReadable for TinyText {
 ///
 /// # Examples
 /// ```ignore
-/// cql_db::read_to_stream_unchecked::<TinyText>(
+/// cql_db::read_to_stream::<TinyText>(
 ///     DATABASE_LOCATION,
 ///     &mut stream,
 ///     &base_point,
