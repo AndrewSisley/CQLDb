@@ -76,7 +76,7 @@ assert_eq!(result[2], value3);
 # }
 ```
 */
-#![doc(html_root_url = "https://docs.rs/cql_u64/0.2.2")]
+#![doc(html_root_url = "https://docs.rs/cql_u64/0.2.3")]
 use std::fs::{ File, OpenOptions };
 use std::io;
 use std::io::{ Read, Write, Cursor, SeekFrom, Seek };

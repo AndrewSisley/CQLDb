@@ -47,71 +47,57 @@ Crate | Breaking version | Description
 
 ## Getting started
 
-To get started, pick a storage type(s) (examples use NullableF64), and add it as a dependency to your Cargo.toml, along with the core cql_db crate:
+To get started, pick a storage type(s) (examples use U64), and add it as a dependency to your Cargo.toml, along with the core cql_db crate:
 
 ```
 [dependencies]
 //... (any existing dependencies you may have)
-cql_db = "^0.2"
-cql_nullable_f64 = "^0.2"
+cql_db = "^0.2.4"
+cql_u64 = "^0.2"
 ```
 
 You then need to create a folder where you want the database to live, and then try out the below:
 
 ```
-use std::io;
 use std::io::{ Cursor, SeekFrom, Seek };
-use cql_nullable_f64::{ NullableF64, unpack_stream };
+use cql_db::error::Error;
+use cql_u64::{ U64, unpack_stream };
 
 const DATABASE_LOCATION: &str = "PATH_TO_YOUR_DATABASE_DIRECTORY";
-const N_VALUES_TO_READ: usize = 3;
 
-pub fn example_cql() -> io::Result<()> {
-    let base_point = [1];
-    let value1 = Some(-1.6);
-    let value3 = Some(5.4);
-
-    // creates a one dimensional database, with a capacity of 3
-    cql_db::create_db::<NullableF64>(
+pub fn example_cql() -> Result<(), Error> {
+    // create a one dimensional database to hold 3 points
+    cql_db::create_db::<U64>(
         DATABASE_LOCATION,
         &[3]
     )?;
 
-    // writes Some(-1.6) to [0]
-    cql_db::write_value::<NullableF64>(
+    // write '1', to [1]
+    cql_db::write_value::<U64>(
         DATABASE_LOCATION,
-        &base_point,
-        value1
+        &[1],
+        1
     )?;
 
-    // writes Some(5.4) to [2]
-    cql_db::write_value::<NullableF64>(
-        DATABASE_LOCATION,
-        &[base_point[0] + 2],
-        value3
-    )?;
-
-    let mut result: [Option<f64>; N_VALUES_TO_READ] = [None; N_VALUES_TO_READ];
+    let mut result = [0; 2];
     let mut stream = Cursor::new(Vec::new());
 
-    // reads 3 points from [0] into `stream`
-    cql_db::read_to_stream::<NullableF64>(
+    // read 2 values from [1] to 'stream'
+    cql_db::read_to_stream::<U64>(
         DATABASE_LOCATION,
         &mut stream,
-        &base_point,
-        N_VALUES_TO_READ as u64
+        &[1],
+        2
     )?;
 
-    // returns to the start of the stream
     stream.seek(SeekFrom::Start(0)).unwrap();
-    // unpacks the stream value by value into the result[]
-    unpack_stream(&mut stream, N_VALUES_TO_READ, |idx, value| {
+    unpack_stream(&mut stream, 2, |idx, value| {
         result[idx] = value
     })?;
 
-    assert_eq!(result[0], value1);
-    assert_eq!(result[1], None);
-    assert_eq!(result[2], value3);
+    assert_eq!(result[0], 1);
+    assert_eq!(result[1], 0);
+    Ok(())
 }
 ```
 More examples can be found in the [rustdocs](https://docs.rs/cql_db).
