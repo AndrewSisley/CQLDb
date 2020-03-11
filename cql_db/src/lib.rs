@@ -130,7 +130,7 @@ assert_eq!(result, value);
 # }
 ```
 */
-#![doc(html_root_url = "https://docs.rs/cql_db/0.2.3")]
+#![doc(html_root_url = "https://docs.rs/cql_db/0.2.4")]
 use std::io;
 use std::io::Write;
 
