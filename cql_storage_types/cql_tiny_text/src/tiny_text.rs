@@ -80,7 +80,7 @@ assert_eq!(result[2], TinyText::try_from(value3)?);
 # }
 ```
 */
-#![doc(html_root_url = "https://docs.rs/cql_tiny_text/0.2.0")]
+#![doc(html_root_url = "https://docs.rs/cql_tiny_text/0.2.1")]
 
 pub mod errors;
 pub mod interop;
