@@ -1,0 +1,23 @@
+[package]
+name = "cql_i16"
+description = "i16 storage support for CQL Database - a lightweight array-based database"
+readme = "./README.md"
+keywords = ["cql", "database", "array", "storage", "nosql"]
+categories = ["database", "database-implementations", "filesystem", "caching"]
+version = "0.2.0"
+repository = "https://github.com/AndrewSisley/CQLDb/tree/master/cql_storage_types/cql_i16"
+authors = ["Andrew Sisley"]
+edition = "2018"
+license = "MIT OR Apache-2.0"
+
+[lib]
+name = "cql_i16"
+path = "src/i16.rs"
+
+[dev-dependencies]
+cql_db = "^0.2.4"
+serial_test = "0.3.2"
+
+[dependencies]
+cql_model = "^0.2"
+byteorder = "1"
