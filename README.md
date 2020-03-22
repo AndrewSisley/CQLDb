@@ -1,6 +1,7 @@
 # CQLDb
 Lightweight, growable, array-based storage solution, currently with the out-of-the-box storage types below (custom types also possible):
-- [U64](https://crates.io/crates/cql_u64) (unsigned 64 integers)
+- [I16](https://crates.io/crates/cql_i16) (signed 16-bit integers)
+- [U64](https://crates.io/crates/cql_u64) (unsigned 64-bit integers)
 - [F64](https://github.com/AndrewSisley/CQLDb/tree/master/cql_storage_types/cql_f64) (64-bit floating point)
 - [NullableF64](https://crates.io/crates/cql_nullable_f64) (nullable 64-bit floating point)
 - [TinyText](https://crates.io/crates/cql_tiny_text) (255 char utf-8 strings)
@@ -30,7 +31,8 @@ Repo link |Crate | Documentation | Description
 --- | --- | --- | ---
 [CQL Db](https://github.com/AndrewSisley/CQLDb/tree/master/cql_db) | [crates.io](https://crates.io/crates/cql_db) | [docs.rs](https://docs.rs/cql_db) | Core CQL database engine
 [CQL Model](https://github.com/AndrewSisley/CQLDb/tree/master/cql_model) | [crates.io](https://crates.io/crates/cql_model) | [docs.rs](https://docs.rs/cql_model) | Core CQL database models/interfaces
-[U64](https://github.com/AndrewSisley/CQLDb/tree/master/cql_storage_types/cql_u64) | [crates.io](https://crates.io/crates/cql_u64) | [docs.rs](https://docs.rs/cql_u64) | Unsigned 64-bit interger storage support
+[I16](https://github.com/AndrewSisley/CQLDb/tree/master/cql_storage_types/cql_i16) | [crates.io](https://crates.io/crates/cql_i16) | [docs.rs](https://docs.rs/cql_i16) | Signed 16-bit integer storage support
+[U64](https://github.com/AndrewSisley/CQLDb/tree/master/cql_storage_types/cql_u64) | [crates.io](https://crates.io/crates/cql_u64) | [docs.rs](https://docs.rs/cql_u64) | Unsigned 64-bit integer storage support
 [F64](https://github.com/AndrewSisley/CQLDb/tree/master/cql_storage_types/cql_f64) | *unpublished* | *unpublished* | 64-bit floating point storage support
 [NullableF64](https://github.com/AndrewSisley/CQLDb/tree/master/cql_storage_types/cql_nullable_f64) | [crates.io](https://crates.io/crates/cql_nullable_f64) | [docs.rs](https://docs.rs/cql_nullable_f64) | Nullable 64-bit floating point storage support
 [TinyText](https://github.com/AndrewSisley/CQLDb/tree/master/cql_storage_types/cql_tiny_text) | [crates.io](https://crates.io/crates/cql_tiny_text) | [docs.rs](https://docs.rs/cql_tiny_text) | 255 char utf-8 string storage support
