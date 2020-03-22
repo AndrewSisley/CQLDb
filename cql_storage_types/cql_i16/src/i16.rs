@@ -9,7 +9,7 @@ Full benchmark code can be found in [github](https://github.com/AndrewSisley/CQL
 `rustup run nightly cargo bench`.
 
 Operation | Database dimensions | Mean time _unchecked (ns)
---- | --- | --- | ---
+--- | --- | ---
 Single point read | 1 | 2 520 (+/- 200)
 Single point read | 4 | 15 300 (+/- 1 100)
 Single point write | 1 | 2 800 (+/- 300)
