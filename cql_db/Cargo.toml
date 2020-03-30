@@ -10,6 +10,11 @@ authors = ["Andrew Sisley"]
 edition = "2018"
 license = "MIT OR Apache-2.0"
 
+[features]
+default = ["icosahedral"]
+matrix = []
+icosahedral = []
+
 [dev-dependencies]
 serial_test = "0.3.2"
 

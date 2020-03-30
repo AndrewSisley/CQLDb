@@ -1,8 +1,10 @@
+#[cfg(feature = "matrix")]
 pub fn calculate_index(x: u64, y: u64, y_max: u64) -> u64 {
 	((x - 1) * y_max) + (y - 1)
 }
 
-pub fn calculate_index_icosahedral(x: u64, y: u64, m: u64) -> u64 {
+#[cfg(feature = "icosahedral")]
+pub fn calculate_index(x: u64, y: u64, m: u64) -> u64 {
     let mut index = x - 1;
 
     let m1_bound = m + 1;

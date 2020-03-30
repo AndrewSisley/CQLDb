@@ -296,6 +296,7 @@ fn read_to_stream__returns_IndexOutOfRangeError__given_2d_u64_database_and_zero_
 
 #[test]
 #[serial]
+#[cfg(feature = "matrix")]
 fn _4d_u64_database_allows_for_stream_reads() {
     let base_point = [1, 1, 1, 2];
     const N_VALUES_TO_READ: usize = 3;
@@ -354,6 +355,7 @@ fn _4d_u64_database_allows_for_stream_reads() {
 
 #[test]
 #[serial]
+#[cfg(feature = "matrix")]
 fn _4d_u64_database_allows_for_stream_reads_checked() {
     let base_point = [1, 1, 1, 2];
     const N_VALUES_TO_READ: usize = 3;

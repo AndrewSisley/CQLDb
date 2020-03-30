@@ -34,6 +34,7 @@ fn _4d_u64_database_allows_for_first_dimension_pair_mins_to_be_linked() {
 
 #[test]
 #[serial]
+#[cfg(feature = "matrix")]
 fn _4d_u64_database_allows_for_first_dimension_pair_maxes_to_be_linked() {
     let db_dimensions = [2, 3, 2, 2];
 
@@ -80,6 +81,7 @@ fn _4d_u64_database_correctly_sizes_files_for_min_link() {
 
 #[test]
 #[serial]
+#[cfg(feature = "matrix")]
 fn _4d_u64_database_correctly_sizes_files_for_max_link() {
     let db_dimensions = [2, 3, 2, 2];
 
@@ -164,6 +166,7 @@ fn _4d_u64_database_allows_for_maxes_to_be_linked() {
 
 #[test]
 #[serial]
+#[cfg(feature = "matrix")]
 fn _4d_u64_database_correctly_sizes_files_for_all_links() {
     let db_dimensions = [2, 3, 2, 2];
 
@@ -200,6 +203,7 @@ fn _4d_u64_database_correctly_sizes_files_for_all_links() {
 
 #[test]
 #[serial]
+#[cfg(feature = "matrix")]
 fn _4d_u64_database_allows_for_all_points_to_be_linked() {
     cql_db::create_db_unchecked::<U64>(
         DATABASE_LOCATION,
