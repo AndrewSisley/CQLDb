@@ -26,97 +26,13 @@ fn _4d_u64_database_allows_for_single_point_read_writes() {
 #[test]
 #[serial]
 fn _4d_u64_database_allows_for_single_point_read_writes_given_multiple_values_and_overwrites() {
-    let axis = [
-        2,
+    cql_storage_type_testing_lib::_4d_database_allows_for_single_point_read_writes_given_multiple_values_and_overwrites::<U64>(
+        DATABASE_LOCATION,
         5,
-        3,
-        4,
-    ];
-
-    let point1 = [2, 4, 3, 1];
-    let point2 = [1, 4, 3, 1];
-    let point3 = [2, 1, 3, 1];
-    let point4 = [2, 4, 3, 2];
-    let value1 = 5;
-    let value2 = 20;
-    let value3 = 0;
-    let value5 = 9999999999999;
-
-    cql_db::create_db_unchecked::<U64>(
-        DATABASE_LOCATION,
-        &axis
-    ).unwrap();
-
-    cql_db::link_dimensions_unchecked::<U64>(
-        DATABASE_LOCATION,
-        &point1[0..3]
-    ).unwrap();
-
-    cql_db::link_dimensions_unchecked::<U64>(
-        DATABASE_LOCATION,
-        &point2[0..3]
-    ).unwrap();
-
-    cql_db::link_dimensions_unchecked::<U64>(
-        DATABASE_LOCATION,
-        &point3[0..3]
-    ).unwrap();
-
-    cql_db::write_value_unchecked::<U64>(
-        DATABASE_LOCATION,
-        &point1,
-        value1
-    ).unwrap();
-
-    cql_db::write_value_unchecked::<U64>(
-        DATABASE_LOCATION,
-        &point2,
-        value2
-    ).unwrap();
-
-    cql_db::write_value_unchecked::<U64>(
-        DATABASE_LOCATION,
-        &point3,
-        value3
-    ).unwrap();
-
-    let result1 = cql_db::read_value_unchecked::<U64>(
-        DATABASE_LOCATION,
-        &point1
-    ).unwrap();
-
-    let result2 = cql_db::read_value_unchecked::<U64>(
-        DATABASE_LOCATION,
-        &point2
-    ).unwrap();
-
-    let result3 = cql_db::read_value_unchecked::<U64>(
-        DATABASE_LOCATION,
-        &point3
-    ).unwrap();
-
-    let result4 = cql_db::read_value_unchecked::<U64>(
-        DATABASE_LOCATION,
-        &point4
-    ).unwrap();
-
-    assert_eq!(result1, value1);
-    assert_eq!(result2, value2);
-    assert_eq!(result3, value3);
-    assert_eq!(result4, 0);
-
-    cql_db::write_value_unchecked::<U64>(
-        DATABASE_LOCATION,
-        &point2,
-        value5
-    ).unwrap();
-
-    let result5 = cql_db::read_value_unchecked::<U64>(
-        DATABASE_LOCATION,
-        &point2
-    ).unwrap();
-
-    assert_eq!(result5, value5);
+        20,
+        0,
+        9999999999999
+    );
 }
 
 #[test]
