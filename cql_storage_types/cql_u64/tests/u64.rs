@@ -38,54 +38,13 @@ fn _4d_u64_database_allows_for_single_point_read_writes_given_multiple_values_an
 #[test]
 #[serial]
 fn _1d_u64_database_allows_for_stream_reads() {
-    let base_point = [2];
-    const N_VALUES_TO_READ: usize = 3;
-    let value1 = 42;
-    let value2 = 16;
-    let value3 = 80;
-
-    cql_db::create_db_unchecked::<U64>(
+    cql_storage_type_testing_lib::_1d_database_allows_for_stream_reads::<U64, &dyn Fn(&mut Cursor<Vec<u8>>, usize, &mut [u64])>(
         DATABASE_LOCATION,
-        &[10]
-    ).unwrap();
-
-    cql_db::write_value_unchecked::<U64>(
-        DATABASE_LOCATION,
-        &base_point,
-        value1
-    ).unwrap();
-
-    cql_db::write_value_unchecked::<U64>(
-        DATABASE_LOCATION,
-        &[base_point[0] + 1],
-        value2
-    ).unwrap();
-
-    cql_db::write_value_unchecked::<U64>(
-        DATABASE_LOCATION,
-        &[base_point[0] + 2],
-        value3
-    ).unwrap();
-
-    let mut result = [0; N_VALUES_TO_READ];
-    let mut stream = Cursor::new(Vec::new());
-
-    cql_db::read_to_stream_unchecked::<U64>(
-        DATABASE_LOCATION,
-        &mut stream,
-        &base_point,
-        N_VALUES_TO_READ as u64
-    ).unwrap();
-
-    stream.seek(SeekFrom::Start(0)).unwrap();
-
-    unpack_stream(&mut stream, N_VALUES_TO_READ, |idx, value| {
-        result[idx] = value
-    }).unwrap();
-
-    assert_eq!(result[0], value1);
-    assert_eq!(result[1], value2);
-    assert_eq!(result[2], value3);
+        42,
+        16,
+        80,
+        &unpack_u64_stream
+    );
 }
 
 #[test]
@@ -144,4 +103,10 @@ fn _4d_u64_database_allows_for_stream_reads() {
     assert_eq!(result[0], value1);
     assert_eq!(result[1], value2);
     assert_eq!(result[2], value3);
+}
+
+fn unpack_u64_stream (stream: &mut Cursor<Vec<u8>>, n_values: usize, result: &mut [u64]) {
+    unpack_stream(stream, n_values, |idx, value| {
+        result[idx] = value
+    }).unwrap()
 }
