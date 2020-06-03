@@ -17,38 +17,10 @@ fn _1d_i16_database_allows_for_single_point_read_writes() {
 #[test]
 #[serial]
 fn _4d_i16_database_allows_for_single_point_read_writes() {
-    let axis = [
-        2,
-        5,
-        3,
-        2,
-    ];
-
-    let point1 = [2, 4, 3, 1];
-    let value1 = 5;
-
-    cql_db::create_db_unchecked::<I16>(
+    cql_storage_type_testing_lib::_4d_database_allows_for_single_point_read_writes::<I16>(
         DATABASE_LOCATION,
-        &axis
-    ).unwrap();
-
-    cql_db::link_dimensions_unchecked::<I16>(
-        DATABASE_LOCATION,
-        &point1[0..3],
-    ).unwrap();
-
-    cql_db::write_value_unchecked::<I16>(
-        DATABASE_LOCATION,
-        &point1,
-        value1
-    ).unwrap();
-
-    let result1 = cql_db::read_value_unchecked::<I16>(
-        DATABASE_LOCATION,
-        &point1
-    ).unwrap();
-
-    assert_eq!(result1, value1);
+        5
+    );
 }
 
 #[test]
