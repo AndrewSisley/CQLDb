@@ -1,0 +1,20 @@
+[package]
+name = "cql_storage_type_testing_lib"
+description = "Testing library for CQL Database storage types"
+readme = "./README.md"
+keywords = ["cql"]
+categories = ["development-tools::testing"]
+version = "0.2.0"
+repository = "https://github.com/AndrewSisley/CQLDb/tree/master/cql_storage_types/cql_storage_type_testing_lib"
+authors = ["Andrew Sisley"]
+edition = "2018"
+license = "MIT OR Apache-2.0"
+
+[lib]
+name = "cql_storage_type_testing_lib"
+path = "src/cql_storage_type_testing_lib.rs"
+
+[dependencies]
+cql_model = "^0.2"
+cql_db = "^0.2.4"
+byteorder = "1"
