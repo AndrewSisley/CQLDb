@@ -8,30 +8,10 @@ use cql_i16::{ I16, unpack_stream };
 #[test]
 #[serial]
 fn _1d_i16_database_allows_for_single_point_read_writes() {
-    let axis = [
-        2,
-    ];
-
-    let point1 = [2];
-    let value1 = 42;
-
-    cql_db::create_db_unchecked::<I16>(
+    cql_storage_type_testing_lib::_1d_database_allows_for_single_point_read_writes::<I16>(
         DATABASE_LOCATION,
-        &axis
-    ).unwrap();
-
-    cql_db::write_value_unchecked::<I16>(
-        DATABASE_LOCATION,
-        &point1,
-        value1
-    ).unwrap();
-
-    let result1 = cql_db::read_value_unchecked::<I16>(
-        DATABASE_LOCATION,
-        &point1
-    ).unwrap();
-
-    assert_eq!(result1, value1);
+        42
+    );
 }
 
 #[test]

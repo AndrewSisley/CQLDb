@@ -8,26 +8,10 @@ use cql_nullable_f64::{ NullableF64, unpack_stream };
 #[test]
 #[serial]
 fn _1d_f64_nullable_database_allows_for_single_point_read_writes() {
-    let point1 = [2];
-    let value1 = Some(42.87);
-
-    cql_db::create_db_unchecked::<NullableF64>(
+    cql_storage_type_testing_lib::_1d_database_allows_for_single_point_read_writes::<NullableF64>(
         DATABASE_LOCATION,
-        &[2]
-    ).unwrap();
-
-    cql_db::write_value_unchecked::<NullableF64>(
-        DATABASE_LOCATION,
-        &point1,
-        value1
-    ).unwrap();
-
-    let result1 = cql_db::read_value_unchecked::<NullableF64>(
-        DATABASE_LOCATION,
-        &point1
-    ).unwrap();
-
-    assert_eq!(result1, value1);
+        Some(42.87)
+    );
 }
 
 #[test]

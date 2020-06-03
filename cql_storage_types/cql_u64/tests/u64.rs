@@ -8,30 +8,10 @@ use cql_u64::{ U64, unpack_stream };
 #[test]
 #[serial]
 fn _1d_u64_database_allows_for_single_point_read_writes() {
-    let axis = [
-        2,
-    ];
-
-    let point1 = [2];
-    let value1 = 42;
-
-    cql_db::create_db_unchecked::<U64>(
+    cql_storage_type_testing_lib::_1d_database_allows_for_single_point_read_writes::<U64>(
         DATABASE_LOCATION,
-        &axis
-    ).unwrap();
-
-    cql_db::write_value_unchecked::<U64>(
-        DATABASE_LOCATION,
-        &point1,
-        value1
-    ).unwrap();
-
-    let result1 = cql_db::read_value_unchecked::<U64>(
-        DATABASE_LOCATION,
-        &point1
-    ).unwrap();
-
-    assert_eq!(result1, value1);
+        42
+    );
 }
 
 #[test]
