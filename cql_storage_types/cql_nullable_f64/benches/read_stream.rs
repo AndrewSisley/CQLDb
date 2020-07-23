@@ -6,37 +6,14 @@ use std::io::{ Cursor, SeekFrom, Seek };
 use constants::DATABASE_LOCATION;
 use test::{ Bencher };
 use cql_nullable_f64::{ unpack_stream, NullableF64 };
+use cql_storage_type_testing_lib::benches::read_stream;
 
 #[bench]
 fn _1d_f64_nullable_stream_read_empty_location_1_to_1(b: &mut Bencher) {
-    let axis = [
-        2,
-    ];
-
-    let n_values_to_read = 1usize;
-    let point1 = [1];
-
-    cql_db::create_db_unchecked::<NullableF64>(
-        DATABASE_LOCATION,
-        &axis
-    ).unwrap();
-
-    let mut result: [Option<f64>; 1] = [None];
-    let mut stream = Cursor::new(Vec::new());
+    let test_fn = read_stream::_1d_read_empty_location_1_to_1::<NullableF64>(DATABASE_LOCATION, &unpack_nullable_f64_stream);
 
     b.iter(|| {
-        cql_db::read_to_stream_unchecked::<NullableF64>(
-            DATABASE_LOCATION,
-            &mut stream,
-            &point1,
-            n_values_to_read as u64
-        ).unwrap();
-
-        stream.seek(SeekFrom::Start(0)).unwrap();
-
-        unpack_stream(&mut stream, n_values_to_read, |idx, value| {
-            result[idx] = value
-        }).unwrap();
+        test_fn();
     });
 }
 
@@ -332,4 +309,10 @@ fn _4d_f64_nullable_stream_read_populated_location_1_1_1_50000_to_1_1_1_100000(b
             result[idx] = value
         }).unwrap();
     });
+}
+
+fn unpack_nullable_f64_stream (stream: &mut Cursor<Vec<u8>>, n_values: usize, result: &mut [Option<f64>]) {
+    unpack_stream(stream, n_values, |idx, value| {
+        result[idx] = value
+    }).unwrap()
 }
