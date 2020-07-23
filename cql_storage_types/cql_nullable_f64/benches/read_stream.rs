@@ -37,43 +37,10 @@ fn _1d_f64_nullable_stream_read_empty_location_50000_to_100000(b: &mut Bencher) 
 
 #[bench]
 fn _1d_f64_nullable_stream_read_populated_location_50000_to_100000(b: &mut Bencher) {
-    let axis = [
-        100000,
-    ];
-
-    let n_values_to_read = 50000usize;
-    let base_point = [50000u64];
-    let base_value = 42.87f64;
-
-    cql_db::create_db_unchecked::<NullableF64>(
-        DATABASE_LOCATION,
-        &axis
-    ).unwrap();
-
-    for index in 0..n_values_to_read {
-        cql_db::write_value_unchecked::<NullableF64>(
-            DATABASE_LOCATION,
-            &[base_point[0] + index as u64],
-            Some(base_value + index as f64)
-        ).unwrap();
-    }
-
-    let mut result: [Option<f64>; 50000] = [None; 50000];
-    let mut stream = Cursor::new(Vec::new());
+    let test_fn = read_stream::_1d_read_populated_location_50000_to_100000::<NullableF64>(DATABASE_LOCATION, &|_| Some(42.87), &unpack_nullable_f64_stream);
 
     b.iter(|| {
-        cql_db::read_to_stream_unchecked::<NullableF64>(
-            DATABASE_LOCATION,
-            &mut stream,
-            &base_point,
-            n_values_to_read as u64
-        ).unwrap();
-
-        stream.seek(SeekFrom::Start(0)).unwrap();
-
-        unpack_stream(&mut stream, n_values_to_read, |idx, value| {
-            result[idx] = value
-        }).unwrap();
+        test_fn();
     });
 }
 

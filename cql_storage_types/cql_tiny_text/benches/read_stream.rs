@@ -40,73 +40,27 @@ fn _1d_tiny_text_stream_read_255_char_location_1_to_1(b: &mut Bencher) {
 
 #[bench]
 fn _1d_tiny_text_stream_read_1_char_location_50000_to_100000(b: &mut Bencher) {
-    const N_VALUES_TO_READ: usize = 50000;
-    let point1 = [50000];
-    let value1 = "1";
-
-    cql_db::create_db_unchecked::<TinyText>(
+    let test_fn = read_stream::_1d_read_populated_location_50000_to_100000::<TinyText>(
         DATABASE_LOCATION,
-        &[100000]
-    ).unwrap();
-
-    cql_db::write_value_unchecked::<TinyText>(
-        DATABASE_LOCATION,
-        &point1,
-        TinyText::try_from(value1).unwrap()
-    ).unwrap();
-
-    let mut result = Vec::with_capacity(N_VALUES_TO_READ);
-    let mut stream = Cursor::new(Vec::new());
+        &|_| TinyText::try_from("1").unwrap(),
+        &unpack_tiny_text_stream
+    );
 
     b.iter(|| {
-        cql_db::read_to_stream_unchecked::<TinyText>(
-            DATABASE_LOCATION,
-            &mut stream,
-            &point1,
-            N_VALUES_TO_READ as u64
-        ).unwrap();
-
-        stream.seek(SeekFrom::Start(0)).unwrap();
-
-        unpack_stream(&mut stream, N_VALUES_TO_READ, |_, value| {
-            result.push(value)
-        }).unwrap();
+        test_fn();
     });
 }
 
 #[bench]
 fn _1d_tiny_text_stream_read_255_char_location_50000_to_100000(b: &mut Bencher) {
-    const N_VALUES_TO_READ: usize = 50000;
-    let point1 = [50000];
-    let value1 = "1".repeat(255);
-
-    cql_db::create_db_unchecked::<TinyText>(
+    let test_fn = read_stream::_1d_read_populated_location_50000_to_100000::<TinyText>(
         DATABASE_LOCATION,
-        &[100000]
-    ).unwrap();
-
-    cql_db::write_value_unchecked::<TinyText>(
-        DATABASE_LOCATION,
-        &point1,
-        TinyText::try_from(value1).unwrap()
-    ).unwrap();
-
-    let mut result = Vec::with_capacity(N_VALUES_TO_READ);
-    let mut stream = Cursor::new(Vec::new());
+        &|_| TinyText::try_from("1".repeat(255)).unwrap(),
+        &unpack_tiny_text_stream
+    );
 
     b.iter(|| {
-        cql_db::read_to_stream_unchecked::<TinyText>(
-            DATABASE_LOCATION,
-            &mut stream,
-            &point1,
-            N_VALUES_TO_READ as u64
-        ).unwrap();
-
-        stream.seek(SeekFrom::Start(0)).unwrap();
-
-        unpack_stream(&mut stream, N_VALUES_TO_READ, |_, value| {
-            result.push(value)
-        }).unwrap();
+        test_fn();
     });
 }
 
