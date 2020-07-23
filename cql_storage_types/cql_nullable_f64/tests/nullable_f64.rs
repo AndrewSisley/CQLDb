@@ -4,11 +4,12 @@ use serial_test::serial;
 use std::io::{ Cursor };
 use constants::DATABASE_LOCATION;
 use cql_nullable_f64::{ NullableF64, unpack_stream };
+use cql_storage_type_testing_lib::tests;
 
 #[test]
 #[serial]
 fn _1d_f64_nullable_database_allows_for_single_point_read_writes() {
-    cql_storage_type_testing_lib::_1d_database_allows_for_single_point_read_writes::<NullableF64>(
+    tests::_1d_database_allows_for_single_point_read_writes::<NullableF64>(
         DATABASE_LOCATION,
         Some(42.87)
     );
@@ -17,7 +18,7 @@ fn _1d_f64_nullable_database_allows_for_single_point_read_writes() {
 #[test]
 #[serial]
 fn _4d_f64_nullable_database_allows_for_single_point_read_writes() {
-    cql_storage_type_testing_lib::_4d_database_allows_for_single_point_read_writes::<NullableF64>(
+    tests::_4d_database_allows_for_single_point_read_writes::<NullableF64>(
         DATABASE_LOCATION,
         Some(-5.6)
     );
@@ -26,7 +27,7 @@ fn _4d_f64_nullable_database_allows_for_single_point_read_writes() {
 #[test]
 #[serial]
 fn _4d_f64_nullable_database_allows_for_single_point_read_writes_given_multiple_values_and_overwrites() {
-    cql_storage_type_testing_lib::_4d_database_allows_for_single_point_read_writes_given_multiple_values_and_overwrites::<NullableF64>(
+    tests::_4d_database_allows_for_single_point_read_writes_given_multiple_values_and_overwrites::<NullableF64>(
         DATABASE_LOCATION,
         Some(-5.6),
         Some(20.61241),
@@ -38,7 +39,7 @@ fn _4d_f64_nullable_database_allows_for_single_point_read_writes_given_multiple_
 #[test]
 #[serial]
 fn _1d_f64_nullable_database_allows_for_stream_reads() {
-    cql_storage_type_testing_lib::_1d_database_allows_for_stream_reads::<NullableF64, &dyn Fn(&mut Cursor<Vec<u8>>, usize, &mut [Option<f64>])>(
+    tests::_1d_database_allows_for_stream_reads::<NullableF64, &dyn Fn(&mut Cursor<Vec<u8>>, usize, &mut [Option<f64>])>(
         DATABASE_LOCATION,
         Some(42.3),
         Some(-414.16),
@@ -50,7 +51,7 @@ fn _1d_f64_nullable_database_allows_for_stream_reads() {
 #[test]
 #[serial]
 fn _4d_f64_nullable_database_allows_for_stream_reads() {
-    cql_storage_type_testing_lib::_4d_database_allows_for_stream_reads::<NullableF64, &dyn Fn(&mut Cursor<Vec<u8>>, usize, &mut [Option<f64>])>(
+    tests::_4d_database_allows_for_stream_reads::<NullableF64, &dyn Fn(&mut Cursor<Vec<u8>>, usize, &mut [Option<f64>])>(
         DATABASE_LOCATION,
         Some(4.2),
         Some(1124.6),
