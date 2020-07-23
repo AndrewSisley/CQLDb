@@ -5,23 +5,14 @@ extern crate test;
 use constants::DATABASE_LOCATION;
 use test::Bencher;
 use cql_nullable_f64::NullableF64;
+use cql_storage_type_testing_lib::benches::write_single;
 
 #[bench]
 fn _1d_f64_nullable_single_point_write_location_1(b: &mut Bencher) {
-    let point1 = [1];
-    let value1 = Some(42.1);
-
-    cql_db::create_db_unchecked::<NullableF64>(
-        DATABASE_LOCATION,
-        &[1]
-    ).unwrap();
+    let test_fn = write_single::_1d_write_location_1::<NullableF64>(DATABASE_LOCATION);
 
     b.iter(|| {
-        cql_db::write_value_unchecked::<NullableF64>(
-            DATABASE_LOCATION,
-            &point1,
-            value1
-        ).unwrap();
+        test_fn(Some(42.1));
     });
 }
 
