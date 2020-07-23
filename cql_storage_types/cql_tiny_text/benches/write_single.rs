@@ -59,49 +59,21 @@ fn _4d_tiny_text_single_point_write_1_char_location_1_1_1_1(b: &mut Bencher) {
 
 #[bench]
 fn _4d_tiny_text_single_point_write_1_char_location_1_1_1_100000(b: &mut Bencher) {
-    let point1 = [1, 1, 1, 100000];
     let value1 = "1";
-
-    cql_db::create_db_unchecked::<TinyText>(
-        DATABASE_LOCATION,
-        &[1, 1, 1, 100000]
-    ).unwrap();
-
-    cql_db::link_dimensions_unchecked::<TinyText>(
-        DATABASE_LOCATION,
-        &point1[0..3],
-    ).unwrap();
+    let test_fn = write_single::_4d_write_location_1_1_1_100000::<TinyText>(DATABASE_LOCATION);
 
     b.iter(|| {
-        cql_db::write_value_unchecked::<TinyText>(
-            DATABASE_LOCATION,
-            &point1,
-            TinyText::try_from(value1).unwrap()
-        ).unwrap();
+        test_fn(TinyText::try_from(value1).unwrap());
     });
 }
 
 #[bench]
 fn _4d_tiny_text_single_point_write_255_char_location_1_1_1_100000(b: &mut Bencher) {
-    let point1 = [1, 1, 1, 100000];
     let value1 = "1";
-
-    cql_db::create_db_unchecked::<TinyText>(
-        DATABASE_LOCATION,
-        &[1, 1, 1, 100000]
-    ).unwrap();
-
-    cql_db::link_dimensions_unchecked::<TinyText>(
-        DATABASE_LOCATION,
-        &point1[0..3],
-    ).unwrap();
+    let test_fn = write_single::_4d_write_location_1_1_1_100000::<TinyText>(DATABASE_LOCATION);
 
     b.iter(|| {
-        cql_db::write_value_unchecked::<TinyText>(
-            DATABASE_LOCATION,
-            &point1,
-            TinyText::try_from(value1.repeat(255)).unwrap()
-        ).unwrap();
+        test_fn(TinyText::try_from(value1.repeat(255)).unwrap());
     });
 }
 
