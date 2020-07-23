@@ -66,42 +66,15 @@ fn _1d_tiny_text_stream_read_255_char_location_50000_to_100000(b: &mut Bencher) 
 
 #[bench]
 fn _4d_tiny_text_stream_read_1_char_location_1_1_1_1_to_1_1_1_1(b: &mut Bencher) {
-    const N_VALUES_TO_READ: usize = 1;
-    let point1 = [1, 1, 1, 1];
-    let value1 = "1".to_string();
-
-    cql_db::create_db_unchecked::<TinyText>(
+    let value1 = "1";
+    let test_fn = read_stream::_4d_read_populated_location_1_1_1_1_to_1_1_1_1::<TinyText>(
         DATABASE_LOCATION,
-        &[1, 1, 1, 1]
-    ).unwrap();
-
-    cql_db::link_dimensions_unchecked::<TinyText>(
-        DATABASE_LOCATION,
-        &point1[0..3],
-    ).unwrap();
-
-    cql_db::write_value_unchecked::<TinyText>(
-        DATABASE_LOCATION,
-        &point1,
-        TinyText::try_from(value1).unwrap()
-    ).unwrap();
-
-    let mut result = Vec::with_capacity(N_VALUES_TO_READ);
-    let mut stream = Cursor::new(Vec::new());
+        TinyText::try_from(value1).unwrap(),
+        &unpack_tiny_text_stream
+    );
 
     b.iter(|| {
-        cql_db::read_to_stream_unchecked::<TinyText>(
-            DATABASE_LOCATION,
-            &mut stream,
-            &point1,
-            N_VALUES_TO_READ as u64
-        ).unwrap();
-
-        stream.seek(SeekFrom::Start(0)).unwrap();
-
-        unpack_stream(&mut stream, N_VALUES_TO_READ, |_, value| {
-            result.push(value)
-        }).unwrap();
+        test_fn();
     });
 }
 
