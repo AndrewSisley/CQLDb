@@ -79,29 +79,10 @@ fn _4d_tiny_text_single_point_read_255_char_location_1_1_1_100000(b: &mut Benche
 
 #[bench]
 fn _4d_tiny_text_single_point_read_1_char_location_1_100000_1_1(b: &mut Bencher) {
-    let point1 = [1, 100000, 1, 1];
     let value1 = "1";
-
-    cql_db::create_db_unchecked::<TinyText>(
-        DATABASE_LOCATION,
-        &[1, 100000, 1, 1]
-    ).unwrap();
-
-    cql_db::link_dimensions_unchecked::<TinyText>(
-        DATABASE_LOCATION,
-        &point1[0..3],
-    ).unwrap();
-
-    cql_db::write_value_unchecked::<TinyText>(
-        DATABASE_LOCATION,
-        &point1,
-        TinyText::try_from(value1).unwrap()
-    ).unwrap();
+    let test_fn = read_single::_4d_read_location_1_100000_1_1::<TinyText>(DATABASE_LOCATION, TinyText::try_from(value1).unwrap());
 
     b.iter(|| {
-        cql_db::read_value_unchecked::<TinyText>(
-            DATABASE_LOCATION,
-            &point1
-        ).unwrap();
+        test_fn();
     });
 }
