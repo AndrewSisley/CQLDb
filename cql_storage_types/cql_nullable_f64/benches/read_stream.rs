@@ -2,7 +2,7 @@
 mod constants;
 extern crate test;
 
-use std::io::{ Cursor, SeekFrom, Seek };
+use std::io::{ Cursor };
 use constants::DATABASE_LOCATION;
 use test::{ Bencher };
 use cql_nullable_f64::{ unpack_stream, NullableF64 };
@@ -73,51 +73,10 @@ fn _4d_f64_nullable_stream_read_empty_location_1_1_1_50000_to_1_1_1_100000(b: &m
 
 #[bench]
 fn _4d_f64_nullable_stream_read_populated_location_1_1_1_50000_to_1_1_1_100000(b: &mut Bencher) {
-    let axis = [
-        2,
-        2,
-        2,
-        100000,
-    ];
-
-    let n_values_to_read = 50000usize;
-    let base_point = [1, 1, 1, 50000];
-    let base_value = 78352.3;
-
-    cql_db::create_db_unchecked::<NullableF64>(
-        DATABASE_LOCATION,
-        &axis
-    ).unwrap();
-
-    cql_db::link_dimensions_unchecked::<NullableF64>(
-        DATABASE_LOCATION,
-        &base_point[0..3],
-    ).unwrap();
-
-    for index in 0..n_values_to_read {
-        cql_db::write_value_unchecked::<NullableF64>(
-            DATABASE_LOCATION,
-            &[1, 1, 1, base_point[0] + index as u64],
-            Some(base_value + index as f64)
-        ).unwrap();
-    }
-
-    let mut result: [Option<f64>; 50000] = [None; 50000];
-    let mut stream = Cursor::new(Vec::new());
+    let test_fn = read_stream::_4d_read_populated_location_1_1_1_50000_to_1_1_1_100000::<NullableF64>(DATABASE_LOCATION, &|_| Some(78352.3), &unpack_nullable_f64_stream);
 
     b.iter(|| {
-        cql_db::read_to_stream_unchecked::<NullableF64>(
-            DATABASE_LOCATION,
-            &mut stream,
-            &base_point,
-            n_values_to_read as u64
-        ).unwrap();
-
-        stream.seek(SeekFrom::Start(0)).unwrap();
-
-        unpack_stream(&mut stream, n_values_to_read, |idx, value| {
-            result[idx] = value
-        }).unwrap();
+        test_fn();
     });
 }
 
