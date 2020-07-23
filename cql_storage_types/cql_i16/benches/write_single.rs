@@ -18,24 +18,10 @@ fn _1d_i16_single_point_write_location_1(b: &mut Bencher) {
 
 #[bench]
 fn _1d_i16_single_point_write_location_100000(b: &mut Bencher) {
-    let axis = [
-        100000,
-    ];
-
-    let point1 = [100000];
-    let value1 = 42;
-
-    cql_db::create_db_unchecked::<I16>(
-        DATABASE_LOCATION,
-        &axis
-    ).unwrap();
+    let test_fn = write_single::_1d_write_location_100000::<I16>(DATABASE_LOCATION);
 
     b.iter(|| {
-        cql_db::write_value_unchecked::<I16>(
-            DATABASE_LOCATION,
-            &point1,
-            value1
-        ).unwrap();
+        test_fn(42);
     });
 }
 

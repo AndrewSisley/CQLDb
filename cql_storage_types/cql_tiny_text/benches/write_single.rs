@@ -39,20 +39,11 @@ fn _1d_tiny_text_single_point_write_255_char_location_1(b: &mut Bencher) {
 
 #[bench]
 fn _1d_tiny_text_single_point_write_1_char_location_100000(b: &mut Bencher) {
-    let point1 = [100000];
     let value1 = "1";
-
-    cql_db::create_db_unchecked::<TinyText>(
-        DATABASE_LOCATION,
-        &[100000]
-    ).unwrap();
+    let test_fn = write_single::_1d_write_location_100000::<TinyText>(DATABASE_LOCATION);
 
     b.iter(|| {
-        cql_db::write_value_unchecked::<TinyText>(
-            DATABASE_LOCATION,
-            &point1,
-            TinyText::try_from(value1).unwrap()
-        ).unwrap();
+        test_fn(TinyText::try_from(value1).unwrap());
     });
 }
 
