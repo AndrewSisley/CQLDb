@@ -5,32 +5,14 @@ extern crate test;
 use constants::DATABASE_LOCATION;
 use test::Bencher;
 use cql_u64::U64;
+use cql_storage_type_testing_lib::benches::read_single;
 
 #[bench]
 fn _1d_u64_single_point_read_location_1(b: &mut Bencher) {
-    let axis = [
-        2,
-    ];
-
-    let point1 = [1];
-    let value1 = 42;
-
-    cql_db::create_db_unchecked::<U64>(
-        DATABASE_LOCATION,
-        &axis
-    ).unwrap();
-
-    cql_db::write_value_unchecked::<U64>(
-        DATABASE_LOCATION,
-        &point1,
-        value1
-    ).unwrap();
+    let test_fn = read_single::_1d_read_location_1::<U64>(DATABASE_LOCATION, 42);
 
     b.iter(|| {
-        cql_db::read_value_unchecked::<U64>(
-            DATABASE_LOCATION,
-            &point1
-        ).unwrap();
+        test_fn();
     });
 }
 

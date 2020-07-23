@@ -6,32 +6,14 @@ use constants::DATABASE_LOCATION;
 use test::{Bencher};
 
 use cql_nullable_f64::NullableF64;
+use cql_storage_type_testing_lib::benches::read_single;
 
 #[bench]
 fn _1d_f64_nullable_single_point_read_location_1(b: &mut Bencher) {
-    let axis = [
-        2,
-    ];
-
-    let point1 = [1];
-    let value1 = Some(42.87);
-
-    cql_db::create_db_unchecked::<NullableF64>(
-        DATABASE_LOCATION,
-        &axis
-    ).unwrap();
-
-    cql_db::write_value_unchecked::<NullableF64>(
-        DATABASE_LOCATION,
-        &point1,
-        value1
-    ).unwrap();
+    let test_fn = read_single::_1d_read_location_1::<NullableF64>(DATABASE_LOCATION, Some(42.87));
 
     b.iter(|| {
-        cql_db::read_value_unchecked::<NullableF64>(
-            DATABASE_LOCATION,
-            &point1
-        ).unwrap();
+        test_fn();
     });
 }
 
