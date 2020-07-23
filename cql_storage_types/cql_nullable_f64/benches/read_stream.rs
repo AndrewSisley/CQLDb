@@ -167,42 +167,10 @@ fn _4d_f64_nullable_stream_read_populated_location_1_1_1_1_to_1_1_1_1(b: &mut Be
 
 #[bench]
 fn _4d_f64_nullable_stream_read_empty_location_1_1_1_50000_to_1_1_1_100000(b: &mut Bencher) {
-    let axis = [
-        2,
-        2,
-        2,
-        100000,
-    ];
-
-    let n_values_to_read = 50000usize;
-    let base_point = [1, 1, 1, 50000];
-
-    cql_db::create_db_unchecked::<NullableF64>(
-        DATABASE_LOCATION,
-        &axis
-    ).unwrap();
-
-    cql_db::link_dimensions_unchecked::<NullableF64>(
-        DATABASE_LOCATION,
-        &base_point[0..3],
-    ).unwrap();
-
-    let mut result: [Option<f64>; 50000] = [None; 50000];
-    let mut stream = Cursor::new(Vec::new());
+    let test_fn = read_stream::_4d_read_empty_location_1_1_1_50000_to_1_1_1_100000::<NullableF64>(DATABASE_LOCATION, &unpack_nullable_f64_stream);
 
     b.iter(|| {
-        cql_db::read_to_stream_unchecked::<NullableF64>(
-            DATABASE_LOCATION,
-            &mut stream,
-            &base_point,
-            n_values_to_read as u64
-        ).unwrap();
-
-        stream.seek(SeekFrom::Start(0)).unwrap();
-
-        unpack_stream(&mut stream, n_values_to_read, |idx, value| {
-            result[idx] = value
-        }).unwrap();
+        test_fn();
     });
 }
 
