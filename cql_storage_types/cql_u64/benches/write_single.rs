@@ -27,32 +27,10 @@ fn _1d_u64_single_point_write_location_100000(b: &mut Bencher) {
 
 #[bench]
 fn _4d_u64_single_point_write_location_1_1_1_1(b: &mut Bencher) {
-    let axis = [
-        2,
-        2,
-        2,
-        2,
-    ];
-
-    let point1 = [1, 1, 1, 1];
-    let value1 = 5;
-
-    cql_db::create_db_unchecked::<U64>(
-        DATABASE_LOCATION,
-        &axis
-    ).unwrap();
-
-    cql_db::link_dimensions_unchecked::<U64>(
-        DATABASE_LOCATION,
-        &point1[0..3],
-    ).unwrap();
+    let test_fn = write_single::_4d_write_location_1_1_1_1::<U64>(DATABASE_LOCATION);
 
     b.iter(|| {
-        cql_db::write_value_unchecked::<U64>(
-            DATABASE_LOCATION,
-            &point1,
-            value1
-        ).unwrap();
+        test_fn(5);
     });
 }
 
