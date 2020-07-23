@@ -19,30 +19,10 @@ fn _1d_u64_stream_read_location_1_to_1(b: &mut Bencher) {
 
 #[bench]
 fn _1d_u64_stream_read_location_50000_to_100000(b: &mut Bencher) {
-    let n_values_to_read = 50000usize;
-    let base_point = [50000u64];
-
-    cql_db::create_db_unchecked::<U64>(
-        DATABASE_LOCATION,
-        &[100000]
-    ).unwrap();
-
-    let mut result = [0; 50000];
-    let mut stream = Cursor::new(Vec::new());
+    let test_fn = read_stream::_1d_read_empty_location_50000_to_100000::<U64>(DATABASE_LOCATION, &unpack_u64_stream);
 
     b.iter(|| {
-        cql_db::read_to_stream_unchecked::<U64>(
-            DATABASE_LOCATION,
-            &mut stream,
-            &base_point,
-            n_values_to_read as u64
-        ).unwrap();
-
-        stream.seek(SeekFrom::Start(0)).unwrap();
-
-        unpack_stream(&mut stream, n_values_to_read, |idx, value| {
-            result[idx] = value
-        }).unwrap();
+        test_fn();
     });
 }
 
