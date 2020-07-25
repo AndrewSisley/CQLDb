@@ -4,11 +4,12 @@ use serial_test::serial;
 use std::io::{ Cursor };
 use constants::DATABASE_LOCATION;
 use cql_u64::{ U64, unpack_stream };
+use cql_storage_type_testing_lib::tests;
 
 #[test]
 #[serial]
 fn _1d_u64_database_allows_for_single_point_read_writes() {
-    cql_storage_type_testing_lib::_1d_database_allows_for_single_point_read_writes::<U64>(
+    tests::_1d_database_allows_for_single_point_read_writes::<U64>(
         DATABASE_LOCATION,
         42
     );
@@ -17,7 +18,7 @@ fn _1d_u64_database_allows_for_single_point_read_writes() {
 #[test]
 #[serial]
 fn _4d_u64_database_allows_for_single_point_read_writes() {
-    cql_storage_type_testing_lib::_4d_database_allows_for_single_point_read_writes::<U64>(
+    tests::_4d_database_allows_for_single_point_read_writes::<U64>(
         DATABASE_LOCATION,
         5
     );
@@ -26,7 +27,7 @@ fn _4d_u64_database_allows_for_single_point_read_writes() {
 #[test]
 #[serial]
 fn _4d_u64_database_allows_for_single_point_read_writes_given_multiple_values_and_overwrites() {
-    cql_storage_type_testing_lib::_4d_database_allows_for_single_point_read_writes_given_multiple_values_and_overwrites::<U64>(
+    tests::_4d_database_allows_for_single_point_read_writes_given_multiple_values_and_overwrites::<U64>(
         DATABASE_LOCATION,
         5,
         20,
@@ -38,7 +39,7 @@ fn _4d_u64_database_allows_for_single_point_read_writes_given_multiple_values_an
 #[test]
 #[serial]
 fn _1d_u64_database_allows_for_stream_reads() {
-    cql_storage_type_testing_lib::_1d_database_allows_for_stream_reads::<U64, &dyn Fn(&mut Cursor<Vec<u8>>, usize, &mut [u64])>(
+    tests::_1d_database_allows_for_stream_reads::<U64, &dyn Fn(&mut Cursor<Vec<u8>>, usize, &mut [u64])>(
         DATABASE_LOCATION,
         42,
         16,
@@ -50,7 +51,7 @@ fn _1d_u64_database_allows_for_stream_reads() {
 #[test]
 #[serial]
 fn _4d_u64_database_allows_for_stream_reads() {
-    cql_storage_type_testing_lib::_4d_database_allows_for_stream_reads::<U64, &dyn Fn(&mut Cursor<Vec<u8>>, usize, &mut [u64])>(
+    tests::_4d_database_allows_for_stream_reads::<U64, &dyn Fn(&mut Cursor<Vec<u8>>, usize, &mut [u64])>(
         DATABASE_LOCATION,
         42,
         16,

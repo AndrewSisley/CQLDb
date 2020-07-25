@@ -10,14 +10,14 @@ Full benchmark code can be found in [github](https://github.com/AndrewSisley/CQL
 
 Operation | Database dimensions | Mean time (ns)
 --- | --- | ---
-Single point read | 1 | 3 100 (+/- 200)
-Single point read | 4 | 16 400 (+/- 900)
-Single point write | 1 | 2 800 (+/- 300)
-Single point write | 4 | 15 400 (+/- 1 000)
-Stream read 1 point | 1 | 2 500 (+/- 300)
-Stream read 1 point | 4 | 15 300 (+/- 800)
-Stream read 50 000 points | 1 | 27 300 000 (+/- 500 000)
-Stream read 50 000 points | 4 | 27 500 000 (+/- 150 000)
+Single point read | 1 | 3 100 (+/- 300)
+Single point read | 4 | 16 100 (+/- 2 200)
+Single point write | 1 | 2 900 (+/- 300)
+Single point write | 4 | 15 700 (+/- 1 000)
+Stream read 1 point | 1 | 2 600 (+/- 300)
+Stream read 1 point | 4 | 15 800 (+/- 2 000)
+Stream read 50 000 points | 1 | 28 000 000 (+/- 1 000 000)
+Stream read 50 000 points | 4 | 27 900 000 (+/- 80 000)
 
 ## Getting started
 To get started, add the below dependencies to your Cargo.toml:

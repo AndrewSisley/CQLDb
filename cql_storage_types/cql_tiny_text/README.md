@@ -7,19 +7,18 @@ Will allocate 1020 bytes per value [linked](https://docs.rs/cql_db/0.2/cql_db/fn
 ## Benchmarks
 Benchmarks supplied below are fairly rudimentary (and rounded) and are there to give a rough idea of relative costs.
 Full benchmark code can be found in [github](https://github.com/AndrewSisley/CQLDb/tree/master/cql_storage_types/cql_tiny_text) and can be run with
-`rustup run nightly cargo bench`, but please be aware that they will allocate ~102MB of disk space.  The read_to_stream benchmarks also differ slightly from
-other [CqlType](https://docs.rs/cql_model/0.2/cql_model/trait.CqlType.html) derivatives as they stream into a Vector, not an Array.
+`rustup run nightly cargo bench`, but please be aware that they will allocate ~102MB of disk space.
 
 Operation | Database dimensions | Mean time (ns)
 --- | --- | ---
-Single point read | 1 | 3 060 (+/- 200)
-Single point read | 4 | 15 800 (+/- 1 100)
+Single point read | 1 | 3 100 (+/- 200)
+Single point read | 4 | 16 100 (+/- 1 100)
 Single point write | 1 | 2 800 (+/- 300)
 Single point write | 4 | 15 400 (+/- 1 000)
 Stream read 1 point | 1 | 3 500 (+/- 300)
-Stream read 1 point | 4 | 15 500 (+/- 1 100)
-Stream read 50 000 points | 1 | 56 700 000 (+/- 800 000)
-Stream read 50 000 points | 4 | 56 400 000 (+/- 150 000)
+Stream read 1 point | 4 | 16 100 (+/- 1 200)
+Stream read 50 000 points | 1 | 62 100 000 (+/- 150 000)
+Stream read 50 000 points | 4 | 61 600 000 (+/- 300 000)
 
 ## Getting started
 To get started, add the below dependencies to your Cargo.toml:
