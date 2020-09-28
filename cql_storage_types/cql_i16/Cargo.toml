@@ -17,7 +17,7 @@ path = "src/i16.rs"
 [dev-dependencies]
 cql_db = "^0.2.4"
 serial_test = "0.3.2"
-cql_storage_type_testing_lib = "^0.3.0"
+cql_storage_type_testing_lib = { path = "../cql_storage_type_testing_lib" }
 
 [dependencies]
 cql_model = "^0.2"
