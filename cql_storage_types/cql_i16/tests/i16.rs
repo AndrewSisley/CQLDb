@@ -6,6 +6,7 @@ use constants::DATABASE_LOCATION;
 use cql_i16::{ I16, unpack_stream };
 use cql_storage_type_testing_lib::tests::{ read_write_stream_unchecked };
 pub mod single_point_read_writes;
+pub mod stream_read_point_writes;
 
 #[test]
 #[serial]
