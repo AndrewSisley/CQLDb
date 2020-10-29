@@ -10,18 +10,6 @@ pub mod stream_read_point_writes;
 
 #[test]
 #[serial]
-fn _1d_i16_database_allows_for_stream_reads() {
-    read_write_stream_unchecked::_1d_database_allows_for_stream_reads::<I16, &dyn Fn(&mut Cursor<Vec<u8>>, usize, &mut [i16])>(
-        DATABASE_LOCATION,
-        42,
-        16,
-        80,
-        &unpack_i16_stream
-    );
-}
-
-#[test]
-#[serial]
 fn _4d_i16_database_allows_for_stream_reads() {
     read_write_stream_unchecked::_4d_database_allows_for_stream_reads::<I16, &dyn Fn(&mut Cursor<Vec<u8>>, usize, &mut [i16])>(
         DATABASE_LOCATION,
