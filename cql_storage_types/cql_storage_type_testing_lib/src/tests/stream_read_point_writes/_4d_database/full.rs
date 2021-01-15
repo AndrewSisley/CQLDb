@@ -22,7 +22,7 @@ pub fn unchecked<'a, TStore: CqlWritable + CqlStreamReadable>(
             value3: TStore::ValueType,
             unpack_stream: &'a dyn Fn(&mut Cursor<Vec<u8>>, usize, &mut [TStore::ValueType])
         )
-        where TStore::ValueType: Copy + Debug + PartialEq + Default {
+        where TStore::ValueType: Clone + Debug + PartialEq + Default {
     cql_db::create_db_unchecked::<TStore>(
         db_location,
         &AXIS
@@ -36,19 +36,19 @@ pub fn unchecked<'a, TStore: CqlWritable + CqlStreamReadable>(
     cql_db::write_value_unchecked::<TStore>(
         db_location,
         &POINT1,
-        value1
+        value1.clone()
     ).unwrap();
 
     cql_db::write_value_unchecked::<TStore>(
         db_location,
         &POINT2,
-        value2
+        value2.clone()
     ).unwrap();
 
     cql_db::write_value_unchecked::<TStore>(
         db_location,
         &POINT3,
-        value3
+        value3.clone()
     ).unwrap();
 
     let mut result = Vec::with_capacity(N_VALUES_TO_READ);
@@ -78,7 +78,7 @@ pub fn checked<'a, TStore: CqlWritable + CqlStreamReadable>(
             value3: TStore::ValueType,
             unpack_stream: &'a dyn Fn(&mut Cursor<Vec<u8>>, usize, &mut [TStore::ValueType])
         )
-        where TStore::ValueType: Copy + Debug + PartialEq + Default {
+        where TStore::ValueType: Clone + Debug + PartialEq + Default {
     cql_db::create_db_unchecked::<TStore>(
         db_location,
         &AXIS
@@ -92,19 +92,19 @@ pub fn checked<'a, TStore: CqlWritable + CqlStreamReadable>(
     cql_db::write_value::<TStore>(
         db_location,
         &POINT1,
-        value1
+        value1.clone()
     ).unwrap();
 
     cql_db::write_value::<TStore>(
         db_location,
         &POINT2,
-        value2
+        value2.clone()
     ).unwrap();
 
     cql_db::write_value::<TStore>(
         db_location,
         &POINT3,
-        value3
+        value3.clone()
     ).unwrap();
 
     let mut result = Vec::with_capacity(N_VALUES_TO_READ);
@@ -134,7 +134,7 @@ pub fn unchecked_write_checked_read<'a, TStore: CqlWritable + CqlStreamReadable>
             value3: TStore::ValueType,
             unpack_stream: &'a dyn Fn(&mut Cursor<Vec<u8>>, usize, &mut [TStore::ValueType])
         )
-        where TStore::ValueType: Copy + Debug + PartialEq + Default {
+        where TStore::ValueType: Clone + Debug + PartialEq + Default {
     cql_db::create_db_unchecked::<TStore>(
         db_location,
         &AXIS
@@ -148,19 +148,19 @@ pub fn unchecked_write_checked_read<'a, TStore: CqlWritable + CqlStreamReadable>
     cql_db::write_value_unchecked::<TStore>(
         db_location,
         &POINT1,
-        value1
+        value1.clone()
     ).unwrap();
 
     cql_db::write_value_unchecked::<TStore>(
         db_location,
         &POINT2,
-        value2
+        value2.clone()
     ).unwrap();
 
     cql_db::write_value_unchecked::<TStore>(
         db_location,
         &POINT3,
-        value3
+        value3.clone()
     ).unwrap();
 
     let mut result = Vec::with_capacity(N_VALUES_TO_READ);
@@ -190,7 +190,7 @@ pub fn checked_write_unchecked_read<'a, TStore: CqlWritable + CqlStreamReadable>
             value3: TStore::ValueType,
             unpack_stream: &'a dyn Fn(&mut Cursor<Vec<u8>>, usize, &mut [TStore::ValueType])
         )
-        where TStore::ValueType: Copy + Debug + PartialEq + Default {
+        where TStore::ValueType: Clone + Debug + PartialEq + Default {
     cql_db::create_db_unchecked::<TStore>(
         db_location,
         &AXIS
@@ -204,19 +204,19 @@ pub fn checked_write_unchecked_read<'a, TStore: CqlWritable + CqlStreamReadable>
     cql_db::write_value::<TStore>(
         db_location,
         &POINT1,
-        value1
+        value1.clone()
     ).unwrap();
 
     cql_db::write_value::<TStore>(
         db_location,
         &POINT2,
-        value2
+        value2.clone()
     ).unwrap();
 
     cql_db::write_value::<TStore>(
         db_location,
         &POINT3,
-        value3
+        value3.clone()
     ).unwrap();
 
     let mut result = Vec::with_capacity(N_VALUES_TO_READ);
