@@ -14,7 +14,7 @@ pub fn unchecked<'a, TStore: CqlWritable + CqlStreamReadable>(
             point: [u64; 1],
             unpack_stream: &'a dyn Fn(&mut Cursor<Vec<u8>>, usize, &mut [TStore::ValueType])
         )
-        where TStore::ValueType: Copy + Debug + PartialEq + Default {
+        where TStore::ValueType: Clone + Debug + PartialEq + Default {
     cql_db::create_db_unchecked::<TStore>(
         db_location,
         &AXIS
@@ -23,13 +23,13 @@ pub fn unchecked<'a, TStore: CqlWritable + CqlStreamReadable>(
     cql_db::write_value_unchecked::<TStore>(
         db_location,
         &point,
-        value1
+        value1.clone()
     ).unwrap();
 
     cql_db::write_value_unchecked::<TStore>(
         db_location,
         &point,
-        value2
+        value2.clone()
     ).unwrap();
 
     const N_VALUES_TO_READ: usize = 1;
@@ -58,7 +58,7 @@ pub fn checked<'a, TStore: CqlWritable + CqlStreamReadable>(
             point: [u64; 1],
             unpack_stream: &'a dyn Fn(&mut Cursor<Vec<u8>>, usize, &mut [TStore::ValueType])
         )
-        where TStore::ValueType: Copy + Debug + PartialEq + Default {
+        where TStore::ValueType: Clone + Debug + PartialEq + Default {
     cql_db::create_db_unchecked::<TStore>(
         db_location,
         &AXIS
@@ -67,13 +67,13 @@ pub fn checked<'a, TStore: CqlWritable + CqlStreamReadable>(
     cql_db::write_value::<TStore>(
         db_location,
         &point,
-        value1
+        value1.clone()
     ).unwrap();
 
     cql_db::write_value::<TStore>(
         db_location,
         &point,
-        value2
+        value2.clone()
     ).unwrap();
 
     const N_VALUES_TO_READ: usize = 1;
@@ -102,7 +102,7 @@ pub fn unchecked_write_unchecked_overwrite_checked_read<'a, TStore: CqlWritable 
             point: [u64; 1],
             unpack_stream: &'a dyn Fn(&mut Cursor<Vec<u8>>, usize, &mut [TStore::ValueType])
         )
-        where TStore::ValueType: Copy + Debug + PartialEq + Default {
+        where TStore::ValueType: Clone + Debug + PartialEq + Default {
     cql_db::create_db_unchecked::<TStore>(
         db_location,
         &AXIS
@@ -111,13 +111,13 @@ pub fn unchecked_write_unchecked_overwrite_checked_read<'a, TStore: CqlWritable 
     cql_db::write_value_unchecked::<TStore>(
         db_location,
         &point,
-        value1
+        value1.clone()
     ).unwrap();
 
     cql_db::write_value_unchecked::<TStore>(
         db_location,
         &point,
-        value2
+        value2.clone()
     ).unwrap();
 
     const N_VALUES_TO_READ: usize = 1;
@@ -146,7 +146,7 @@ pub fn unchecked_write_checked_overwrite_checked_read<'a, TStore: CqlWritable + 
             point: [u64; 1],
             unpack_stream: &'a dyn Fn(&mut Cursor<Vec<u8>>, usize, &mut [TStore::ValueType])
         )
-        where TStore::ValueType: Copy + Debug + PartialEq + Default {
+        where TStore::ValueType: Clone + Debug + PartialEq + Default {
     cql_db::create_db_unchecked::<TStore>(
         db_location,
         &AXIS
@@ -155,13 +155,13 @@ pub fn unchecked_write_checked_overwrite_checked_read<'a, TStore: CqlWritable + 
     cql_db::write_value_unchecked::<TStore>(
         db_location,
         &point,
-        value1
+        value1.clone()
     ).unwrap();
 
     cql_db::write_value::<TStore>(
         db_location,
         &point,
-        value2
+        value2.clone()
     ).unwrap();
 
     const N_VALUES_TO_READ: usize = 1;
@@ -190,7 +190,7 @@ pub fn checked_write_unchecked_overwrite_checked_read<'a, TStore: CqlWritable + 
             point: [u64; 1],
             unpack_stream: &'a dyn Fn(&mut Cursor<Vec<u8>>, usize, &mut [TStore::ValueType])
         )
-        where TStore::ValueType: Copy + Debug + PartialEq + Default {
+        where TStore::ValueType: Clone + Debug + PartialEq + Default {
     cql_db::create_db_unchecked::<TStore>(
         db_location,
         &AXIS
@@ -199,13 +199,13 @@ pub fn checked_write_unchecked_overwrite_checked_read<'a, TStore: CqlWritable + 
     cql_db::write_value::<TStore>(
         db_location,
         &point,
-        value1
+        value1.clone()
     ).unwrap();
 
     cql_db::write_value_unchecked::<TStore>(
         db_location,
         &point,
-        value2
+        value2.clone()
     ).unwrap();
 
     const N_VALUES_TO_READ: usize = 1;
@@ -234,7 +234,7 @@ pub fn checked_write_unchecked_overwrite_unchecked_read<'a, TStore: CqlWritable 
             point: [u64; 1],
             unpack_stream: &'a dyn Fn(&mut Cursor<Vec<u8>>, usize, &mut [TStore::ValueType])
         )
-        where TStore::ValueType: Copy + Debug + PartialEq + Default {
+        where TStore::ValueType: Clone + Debug + PartialEq + Default {
     cql_db::create_db_unchecked::<TStore>(
         db_location,
         &AXIS
@@ -243,13 +243,13 @@ pub fn checked_write_unchecked_overwrite_unchecked_read<'a, TStore: CqlWritable 
     cql_db::write_value::<TStore>(
         db_location,
         &point,
-        value1
+        value1.clone()
     ).unwrap();
 
     cql_db::write_value_unchecked::<TStore>(
         db_location,
         &point,
-        value2
+        value2.clone()
     ).unwrap();
 
     const N_VALUES_TO_READ: usize = 1;
@@ -278,7 +278,7 @@ pub fn unchecked_write_checked_overwrite_unchecked_read<'a, TStore: CqlWritable 
             point: [u64; 1],
             unpack_stream: &'a dyn Fn(&mut Cursor<Vec<u8>>, usize, &mut [TStore::ValueType])
         )
-        where TStore::ValueType: Copy + Debug + PartialEq + Default {
+        where TStore::ValueType: Clone + Debug + PartialEq + Default {
     cql_db::create_db_unchecked::<TStore>(
         db_location,
         &AXIS
@@ -287,13 +287,13 @@ pub fn unchecked_write_checked_overwrite_unchecked_read<'a, TStore: CqlWritable 
     cql_db::write_value_unchecked::<TStore>(
         db_location,
         &point,
-        value1
+        value1.clone()
     ).unwrap();
 
     cql_db::write_value::<TStore>(
         db_location,
         &point,
-        value2
+        value2.clone()
     ).unwrap();
 
     const N_VALUES_TO_READ: usize = 1;
@@ -322,7 +322,7 @@ pub fn checked_write_checked_overwrite_unchecked_read<'a, TStore: CqlWritable + 
             point: [u64; 1],
             unpack_stream: &'a dyn Fn(&mut Cursor<Vec<u8>>, usize, &mut [TStore::ValueType])
         )
-        where TStore::ValueType: Copy + Debug + PartialEq + Default {
+        where TStore::ValueType: Clone + Debug + PartialEq + Default {
     cql_db::create_db_unchecked::<TStore>(
         db_location,
         &AXIS
@@ -331,13 +331,13 @@ pub fn checked_write_checked_overwrite_unchecked_read<'a, TStore: CqlWritable + 
     cql_db::write_value::<TStore>(
         db_location,
         &point,
-        value1
+        value1.clone()
     ).unwrap();
 
     cql_db::write_value::<TStore>(
         db_location,
         &point,
-        value2
+        value2.clone()
     ).unwrap();
 
     const N_VALUES_TO_READ: usize = 1;

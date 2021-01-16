@@ -92,7 +92,7 @@ use byteorder::{ ReadBytesExt, WriteBytesExt, LittleEndian };
 
 use cql_model::{ CqlType, CqlWritable, CqlReadable, CqlStreamReadable };
 
-const CONTENT_SIZE: usize = (255 * 4);
+const CONTENT_SIZE: usize = 255 * 4;
 const LENGTH_SIZE: usize = 2;
 
 /// Tuple wrapping `String` for working with `TinyText` values in a [CQL database](https://docs.rs/cql_db/).

@@ -7,7 +7,7 @@ const AXIS: [u64; 1] = [
 ];
 
 pub fn unchecked<TStore: CqlWritable + CqlReadable>(db_location: &str, value: TStore::ValueType, point: [u64; 1])
-        where TStore::ValueType: Copy + Debug + PartialEq {
+        where TStore::ValueType: Clone + Debug + PartialEq {
     cql_db::create_db_unchecked::<TStore>(
         db_location,
         &AXIS
@@ -16,7 +16,7 @@ pub fn unchecked<TStore: CqlWritable + CqlReadable>(db_location: &str, value: TS
     cql_db::write_value_unchecked::<TStore>(
         db_location,
         &point,
-        value
+        value.clone()
     ).unwrap();
 
     let result1 = cql_db::read_value_unchecked::<TStore>(
@@ -28,7 +28,7 @@ pub fn unchecked<TStore: CqlWritable + CqlReadable>(db_location: &str, value: TS
 }
 
 pub fn checked<TStore: CqlWritable + CqlReadable>(db_location: &str, value: TStore::ValueType, point: [u64; 1])
-        where TStore::ValueType: Copy + Debug + PartialEq {
+        where TStore::ValueType: Clone + Debug + PartialEq {
     cql_db::create_db_unchecked::<TStore>(
         db_location,
         &AXIS
@@ -37,7 +37,7 @@ pub fn checked<TStore: CqlWritable + CqlReadable>(db_location: &str, value: TSto
     cql_db::write_value::<TStore>(
         db_location,
         &point,
-        value
+        value.clone()
     ).unwrap();
 
     let result1 = cql_db::read_value::<TStore>(
@@ -49,7 +49,7 @@ pub fn checked<TStore: CqlWritable + CqlReadable>(db_location: &str, value: TSto
 }
 
 pub fn unchecked_write_checked_read<TStore: CqlWritable + CqlReadable>(db_location: &str, value: TStore::ValueType, point: [u64; 1])
-        where TStore::ValueType: Copy + Debug + PartialEq {
+        where TStore::ValueType: Clone + Debug + PartialEq {
     cql_db::create_db_unchecked::<TStore>(
         db_location,
         &AXIS
@@ -58,7 +58,7 @@ pub fn unchecked_write_checked_read<TStore: CqlWritable + CqlReadable>(db_locati
     cql_db::write_value_unchecked::<TStore>(
         db_location,
         &point,
-        value
+        value.clone()
     ).unwrap();
 
     let result1 = cql_db::read_value::<TStore>(
@@ -70,7 +70,7 @@ pub fn unchecked_write_checked_read<TStore: CqlWritable + CqlReadable>(db_locati
 }
 
 pub fn checked_write_unchecked_read<TStore: CqlWritable + CqlReadable>(db_location: &str, value: TStore::ValueType, point: [u64; 1])
-        where TStore::ValueType: Copy + Debug + PartialEq {
+        where TStore::ValueType: Clone + Debug + PartialEq {
     cql_db::create_db_unchecked::<TStore>(
         db_location,
         &AXIS
@@ -79,7 +79,7 @@ pub fn checked_write_unchecked_read<TStore: CqlWritable + CqlReadable>(db_locati
     cql_db::write_value::<TStore>(
         db_location,
         &point,
-        value
+        value.clone()
     ).unwrap();
 
     let result1 = cql_db::read_value_unchecked::<TStore>(
