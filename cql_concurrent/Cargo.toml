@@ -16,7 +16,7 @@ path = "src/lib.rs"
 [dependencies]
 cql_u64 = "^0.2"
 cql_model = "^0.2"
-cql_db = { path = "../cql_db" }
+cql_db = { path = "../cql_db", features = ["positional"] }
 
 [dev-dependencies]
 cql_u64 = "^0.2"
