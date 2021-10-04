@@ -1,0 +1,24 @@
+[package]
+name = "cql_concurrent"
+description = "todo"
+keywords = ["cql", "database", "array", "storage", "nosql"]
+categories = ["database", "database-implementations", "filesystem", "caching"]
+version = "0.1.0"
+repository = "https://github.com/AndrewSisley/CQLDb/tree/master/cql_storage_types/cql_u64"
+authors = ["Andrew Sisley"]
+edition = "2018"
+license = "MIT OR Apache-2.0"
+
+[lib]
+name = "lib"
+path = "src/lib.rs"
+
+[dependencies]
+cql_u64 = "^0.2"
+cql_model = "^0.2"
+cql_db = { path = "../cql_db" }
+
+[dev-dependencies]
+cql_u64 = "^0.2"
+serial_test = "0.3.2"
+futures = "0.3"
