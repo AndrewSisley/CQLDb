@@ -1456,6 +1456,26 @@ fn validate_read_write_location(db_location: &str, location: &[u64]) -> result::
     Ok(())
 }
 
+#[cfg(feature = "positional")]//dont think this should be a feature(maybe as experimental?), move inward with full calculate_position, and ::database aliases
+pub mod positional {
+    use std::io;
+    use cql_model::{
+        CqlType,
+        CqlWritable,
+        CqlReadable,
+        CqlStreamReadable
+    };
+
+    pub fn calculate_position(db_location: &str, location: &[u64]) -> io::Result<u64> {
+        crate::calculate_position(db_location, location)
+    }
+// think more about this name 'write_value' seems like it risks being mistaken for write_value[1D]
+    pub fn write_value_to_position<TStore: CqlWritable>(db_location: &str, position: u64, value: TStore::ValueType) -> io::Result<()> {
+        crate::database::write_value::<TStore>(db_location, position, value)
+    }
+
+}
+
 fn calculate_position(db_location: &str, location: &[u64]) -> io::Result<u64> {
     if location.len() == 1 {
         // minus one to handle the one-indexing
